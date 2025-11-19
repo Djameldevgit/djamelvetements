@@ -1,0 +1,538 @@
+import React, { useState, useCallback, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from 'react-i18next';
+import { getDataAPI } from "../utils/fetchData";
+import { GLOBALTYPES } from "../redux/actions/globalTypes";
+import UserCard from "../components/UserCard";
+import Posts from "../components/home/Posts";
+
+// 🔥 IMPORTAMOS LOS COMPONENTES ESPECÍFICOS DE DESTINO
+import DestinacionHadjOmra from "../components/forms/hadjpmra/DestinacionHdjaOmra";
+import DestinacionLocationvacances from "../components/forms/locationvacances/DestinacionLocationvacances";
+import Destinacionvoyageorganise from "../components/forms/voyageorgranise/Destinacionvoyageorganise";
+
+import {
+  Container,
+  Form,
+  Button,
+  Spinner,
+  Alert,
+  ListGroup,
+  InputGroup,
+  Row,
+  Col,
+  Card,
+  Accordion,
+  Badge,
+} from "react-bootstrap";
+
+import LoadIcon from "../images/loading.gif";
+
+export default function SearchPage() {
+  const { t, i18n } = useTranslation('search');
+  const languageReducer = useSelector(state => state.languageReducer);
+  
+  useEffect(() => {
+    const lang = languageReducer?.language || 'es';
+    if (i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }, [languageReducer?.language, i18n]);
+
+  // 🔹 Estados - MANTENEMOS EXACTAMENTE LOS MISMOS CAMPOS
+  const [filters, setFilters] = useState({
+    subCategory: "",    
+    destinacion: "",    
+    datedepar: "",      
+    latest: false       
+  });
+
+  // 🔥 NUEVO ESTADO PARA BÚSQUEDA INTELIGENTE
+  const [smartSearch, setSmartSearch] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [userLoading, setUserLoading] = useState(false);
+
+  const { auth } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  // 🔹 Opciones para el select de categoría - PRESERVADO
+  const subCategoryOptions = [
+    { value: "Voyage Organise", label: "Voyage Organisé" },
+    { value: "Location_Vacances", label: "Location Vacances" },
+    { value: "hadj_Omra", label: "Hadj & Omra" }
+  ];
+
+  // 🔹 Buscar posts - PRESERVADO EXACTAMENTE IGUAL
+  const handleSearch = async (e) => {
+    if (e) e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      
+      if (filters.subCategory.trim()) {
+        queryParams.append('subCategory', filters.subCategory.trim());
+      }
+      
+      if (filters.destinacion.trim()) {
+        queryParams.append('destinacion', filters.destinacion.trim());
+      }
+      
+      if (filters.datedepar.trim()) {
+        queryParams.append('datedepar', filters.datedepar.trim());
+      }
+      
+      if (filters.latest) {
+        queryParams.append('sort', '-createdAt');
+      }
+      
+      const queryString = queryParams.toString();
+      const url = `posts${queryString ? `?${queryString}` : ''}`;
+      
+      const res = await getDataAPI(url, auth.token);
+      setResults(res.data.posts || []);
+      
+    } catch (err) {
+      console.error("Error en búsqueda:", err);
+      setError(
+        err.response?.data?.message || err.message || t('errors.searchError')
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔥 NUEVA FUNCIÓN: Búsqueda inteligente
+  const handleSmartSearch = async (e) => {
+    if (e) e.preventDefault();
+    if (!smartSearch.trim()) return;
+    
+    setError(null);
+    setLoading(true);
+
+    try {
+      const queryParams = new URLSearchParams();
+      
+      // ✅ Buscar en múltiples campos
+      queryParams.append('search', smartSearch.trim());
+      
+      const queryString = queryParams.toString();
+      const url = `posts/search${queryString ? `?${queryString}` : ''}`;
+      
+      const res = await getDataAPI(url, auth.token);
+      setResults(res.data.posts || []);
+      
+      // 🔥 Actualizar filtros con los resultados encontrados
+      if (res.data.posts && res.data.posts.length > 0) {
+        const firstPost = res.data.posts[0];
+        setFilters(prev => ({
+          ...prev,
+          subCategory: firstPost.subCategory || "",
+          destinacion: firstPost.destinacion || "",
+          datedepar: firstPost.datedepar || ""
+        }));
+      }
+      
+    } catch (err) {
+      console.error("Error en búsqueda inteligente:", err);
+      setError(
+        err.response?.data?.message || err.message || "Error en búsqueda inteligente"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Buscar últimos viajes automáticamente - PRESERVADO
+  const handleLatestTrips = () => {
+    setFilters(prev => ({
+      ...prev,
+      latest: true,
+      subCategory: "",
+      destinacion: "",
+      datedepar: ""
+    }));
+    setSmartSearch(""); // Limpiar búsqueda inteligente
+  };
+
+  // 🔹 Efecto para búsqueda automática de últimos viajes - PRESERVADO
+  useEffect(() => {
+    if (filters.latest) {
+      handleSearch();
+    }
+  }, [filters.latest]);
+
+  const handleCloseUsers = () => {
+    setUsers([]);
+  };
+
+  // 🔹 Manejo de filtros optimizado - PRESERVADO
+  const updateFilter = (field, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [field]: value,
+      // Limpiar destino cuando cambia la categoría
+      ...(field === 'subCategory' && { destinacion: "" })
+    }));
+  };
+
+  // 🔹 Función específica para actualizar el destino
+  const updateDestinacion = (value) => {
+    setFilters(prev => ({
+      ...prev,
+      destinacion: value
+    }));
+  };
+
+  // 🔹 Limpiar todos los filtros - ACTUALIZADO
+  const handleClearFilters = () => {
+    setFilters({
+      subCategory: "",
+      destinacion: "",
+      datedepar: "",
+      latest: false
+    });
+    setSmartSearch(""); // Limpiar también la búsqueda inteligente
+    setResults([]);
+    setUsers([]);
+    setError(null);
+  };
+
+  // 🔹 Contador de filtros activos - ACTUALIZADO
+  const activeFiltersCount = [
+    filters.subCategory,
+    filters.destinacion,
+    filters.datedepar,
+    filters.latest,
+    smartSearch
+  ].filter(Boolean).length;
+
+  // 🔥 COMPONENTE DE DESTINO DINÁMICO - MANTENIDO ORIGINAL
+  const DestinationSelector = () => {
+    if (!filters.subCategory) {
+      return (
+        <Form.Group>
+          <Form.Label className="small fw-semibold mb-1">
+            <i className="fas fa-map-marker-alt text-success me-1"></i>
+            Destino
+          </Form.Label>
+          <Form.Select size="sm" disabled>
+            <option value="">Seleccione una categoría primero</option>
+          </Form.Select>
+        </Form.Group>
+      );
+    }
+
+    const destinationProps = {
+      postData: { destinacion: filters.destinacion },
+      handleChangeInput: (e) => {
+        if (e.target.name === 'destinacion') {
+          updateDestinacion(e.target.value);
+        }
+      }
+    };
+
+    switch (filters.subCategory) {
+      case "Voyage Organise":
+        return (
+          <Form.Group>
+            <Form.Label className="small fw-semibold mb-1">
+              <i className="fas fa-globe-americas text-success me-1"></i>
+              Destino (Viajes Organizados)
+            </Form.Label>
+            <Destinacionvoyageorganise {...destinationProps} />
+          </Form.Group>
+        );
+      
+      case "Location_Vacances":
+        return (
+          <Form.Group>
+            <Form.Label className="small fw-semibold mb-1">
+              <i className="fas fa-home text-success me-1"></i>
+              Destino (Alquiler Vacaciones)
+            </Form.Label>
+            <DestinacionLocationvacances {...destinationProps} />
+          </Form.Group>
+        );
+      
+      case "hadj_Omra":
+        return (
+          <Form.Group>
+            <Form.Label className="small fw-semibold mb-1">
+              <i className="fas fa-mosque text-success me-1"></i>
+              Destino (Hadj & Omra)
+            </Form.Label>
+            <DestinacionHadjOmra {...destinationProps} />
+          </Form.Group>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Container fluid className="px-0">
+      
+      {/* 🔥 NUEVO: SEARCH INPUT INTELIGENTE SEPARADO */}
+      <Card className="shadow-sm border-primary border-2 rounded-0 mb-3 bg-light">
+        <Card.Body className="p-3">
+          <Form onSubmit={handleSmartSearch}>
+            <Row className="g-2 align-items-center">
+              <Col xl={10} lg={9} md={8}>
+                <Form.Group>
+                  <Form.Label className="small fw-bold mb-1 text-primary">
+                    <i className="fas fa-search me-1"></i>
+                    Búsqueda Inteligente
+                  </Form.Label>
+                  <InputGroup size="sm">
+                    <Form.Control
+                      type="text"
+                      placeholder="Buscar por destino, categoría, fecha... Ej: 'París Voyage Organisé', 'Marruecos hadj', '2024-01-15'"
+                      value={smartSearch}
+                      onChange={(e) => setSmartSearch(e.target.value)}
+                    />
+                    <Button 
+                      variant="primary" 
+                      type="submit"
+                      disabled={!smartSearch.trim()}
+                    >
+                      <i className="fas fa-bolt me-1"></i>
+                      Buscar
+                    </Button>
+                  </InputGroup>
+                  <Form.Text className="text-muted">
+                    Busca en todos los campos: destino, categoría, fecha, etc.
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+              <Col xl={2} lg={3} md={4}>
+                <div className="d-grid">
+                  <Button 
+                    variant="outline-info" 
+                    onClick={handleLatestTrips}
+                    size="sm"
+                  >
+                    <i className="fas fa-bolt me-1"></i>
+                    Últimos Viajes
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Form>
+        </Card.Body>
+      </Card>
+
+      {/* 🔹 BÚSQUEDA PRINCIPAL CON FILTROS - MANTENIDO ORIGINAL */}
+      <Card className="shadow-sm border-0 rounded-0 mb-3">
+        <Card.Body className="p-3">
+          <Form onSubmit={handleSearch}>
+            <Row className="g-2 align-items-end">
+              
+              {/* 🔹 CATEGORÍA - PRESERVADO EXACTAMENTE IGUAL */}
+              <Col xl={3} lg={3} md={6} className="mb-2 mb-md-0">
+                <Form.Group>
+                  <Form.Label className="small fw-semibold mb-1">
+                    <i className="fas fa-tags text-info me-1"></i>
+                    Categoría
+                  </Form.Label>
+                  <Form.Select
+                    value={filters.subCategory}
+                    onChange={(e) => updateFilter('subCategory', e.target.value)}
+                    size="sm"
+                  >
+                    <option value="">Todas las categorías</option>
+                    {subCategoryOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+
+              {/* 🔹 DESTINO DINÁMICO - MANTENIDO ORIGINAL */}
+              <Col xl={3} lg={3} md={6} className="mb-2 mb-md-0">
+                <DestinationSelector />
+              </Col>
+
+              {/* 🔹 FECHA DE SALIDA - PRESERVADO EXACTAMENTE IGUAL */}
+              <Col xl={3} lg={3} md={6} className="mb-2 mb-md-0">
+                <Form.Group>
+                  <Form.Label className="small fw-semibold mb-1">
+                    <i className="fas fa-calendar-alt text-warning me-1"></i>
+                    Fecha Salida
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={filters.datedepar}
+                    onChange={(e) => updateFilter('datedepar', e.target.value)}
+                    size="sm"
+                  />
+                </Form.Group>
+              </Col>
+
+              {/* 🔹 BOTONES DE ACCIÓN - ACTUALIZADO */}
+              <Col xl={3} lg={3} md={12} className="mb-2 mb-md-0">
+                <div className="d-grid gap-2 d-md-flex">
+                  <Button 
+                    variant="primary" 
+                    onClick={handleSearch}
+                    className="flex-fill"
+                    size="sm"
+                  >
+                    <i className="fas fa-search me-1"></i>
+                    Buscar
+                  </Button>
+                  
+                  {activeFiltersCount > 0 && (
+                    <Button 
+                      variant="outline-danger" 
+                      onClick={handleClearFilters}
+                      size="sm"
+                    >
+                      <i className="fas fa-times me-1"></i>
+                      Limpiar
+                    </Button>
+                  )}
+                </div>
+              </Col>
+
+            </Row>
+
+            {/* 🔹 FILTROS ACTIVOS - ACTUALIZADO */}
+            <div className="d-none d-lg-block mt-2">
+              {activeFiltersCount > 0 && (
+                <div className="d-flex align-items-center">
+                  <small className="text-muted me-2">Filtros activos:</small>
+                  {filters.subCategory && (
+                    <Badge bg="info" className="me-1">
+                      {filters.subCategory}
+                    </Badge>
+                  )}
+                  {filters.destinacion && (
+                    <Badge bg="success" className="me-1">
+                      {filters.destinacion}
+                    </Badge>
+                  )}
+                  {filters.datedepar && (
+                    <Badge bg="warning" className="me-1">
+                      {filters.datedepar}
+                    </Badge>
+                  )}
+                  {smartSearch && (
+                    <Badge bg="primary" className="me-1">
+                      "{smartSearch}"
+                    </Badge>
+                  )}
+                  {filters.latest && (
+                    <Badge bg="secondary" className="me-1">
+                      Últimos Viajes
+                    </Badge>
+                  )}
+                  <Badge bg="dark">
+                    {activeFiltersCount} {activeFiltersCount === 1 ? 'filtro' : 'filtros'}
+                  </Badge>
+                </div>
+              )}
+            </div>
+
+          </Form>
+        </Card.Body>
+      </Card>
+
+      {/* 🔹 CONTENIDO PRINCIPAL - PRESERVADO EXACTAMENTE IGUAL */}
+      <Container className="py-3">
+        {/* 🔹 Indicadores Compactos */}
+        {results.length > 0 && (
+          <Alert variant="info" className="px-3 d-flex align-items-center mb-3">
+            <i className="fas fa-info-circle me-2 fs-6"></i>
+            <small className="fw-semibold">
+              {t('results.found', { count: results.length })}
+            </small>
+          </Alert>
+        )}
+
+        {error && (
+          <Alert variant="danger" className="px-3 d-flex align-items-center mb-3">
+            <i className="fas fa-exclamation-triangle me-2 fs-6"></i>
+            <small>{error}</small>
+          </Alert>
+        )}
+
+        {/* 🔹 Lista de Posts - PRESERVADO EXACTAMENTE IGUAL */}
+        <div className="">
+          {loading ? (
+            <Card className="text-center">
+              <Card.Body className="p-3">
+                <img src={LoadIcon} alt="loading" width="40" className="mb-2" />
+                <h6 className="text-muted mb-1">{t('results.searching')}</h6>
+                <small className="text-muted">{t('results.loading')}</small>
+              </Card.Body>
+            </Card>
+          ) : (
+            <Posts filters={filters} />
+          )}
+        </div>
+      </Container>
+    </Container>
+  );
+}
+
+// 🔹 Estilos CSS adicionales para responsive - ACTUALIZADO
+const styles = `
+@media (max-width: 768px) {
+  .container-fluid .card {
+    margin: 0;
+    border-radius: 0 !important;
+  }
+  
+  .container-fluid .card-body {
+    padding: 1rem !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container-fluid .card-body {
+    padding: 1.5rem 2rem !important;
+  }
+}
+
+.d-grid.gap-2.d-md-flex {
+  gap: 0.5rem !important;
+}
+
+/* Estilos para los componentes de destino dentro del search */
+.search-destination-card {
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 0 !important;
+}
+
+.search-destination-card .card-header {
+  display: none !important;
+}
+
+.search-destination-card .card-body {
+  padding: 0 !important;
+}
+
+/* Estilos para la búsqueda inteligente */
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+.border-primary {
+  border-color: #0d6efd !important;
+}
+`;
+
+// Agregar estilos al documento
+const styleSheet = document.createElement("style");
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);

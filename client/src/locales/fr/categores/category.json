@@ -1,0 +1,38 @@
+{
+   
+      "main_category": "Catégorie Principale",
+      "sub_category": "Sous-catégorie",
+      "select_category": "Sélectionnez une catégorie",
+      "select_subcategory": "Sélectionnez une sous-catégorie",
+      "select_first_category": "Choisissez d'abord une catégorie",
+      "choose_main_category": "Choisissez la catégorie principale de votre produit",
+      "choose_appropriate_subcategory": "Choisissez la sous-catégorie appropriée",
+      "subcategory_available_after_category": "La sous-catégorie sera disponible après la catégorie",
+      
+      "clothing": "👕 Vêtements",
+      "mens_clothing": "👔 Vêtements Homme",
+      "womens_clothing": "👗 Vêtements Femme",
+      
+      "footwear": "👟 Chaussures",
+      "mens_shoes": "👞 Chaussures Homme",
+      "womens_shoes": "👠 Chaussures Femme",
+      
+      "jewelry_accessories": "💎 Bijouterie & Accessoires",
+      "watches": "⌚ Montres",
+      "glasses": "👓 Lunettes",
+      "jewelry": "💎 Bijoux",
+      "bags_luggage": "👜 Sacs & Valises",
+      
+      "children": "👶 Enfants",
+      "boys": "👦 Garçons",
+      "girls": "👧 Filles",
+      "baby": "👶 Bébé",
+      
+      "professional": "💼 Professionnel",
+      "professional_clothing": "💼 Tenues professionnelles",
+      
+      "standard": "🔄 Standard",
+      "premium": "⭐ Premium",
+      "basic": "🔹 Basique"
+    }
+ 

@@ -1,0 +1,64 @@
+{
+  
+  
+    "shop": {
+      "officialInfo": "المعلومات الرسمية لمتجرنا",
+      "boutiqueName": "المتجر"
+    },
+    "auth": {
+      "loginToAccess": "سجل الدخول للوصول إلى جميع الوظائف"
+    },
+    "user": {
+      "owner": "المالك"
+    },
+    "contact": {
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "whatsapp": "واتساب",
+      "contactWhatsApp": "التواصل عبر واتساب"
+    },
+    "location": {
+      "wilaya": "الولاية",
+      "commune": "البلدية",
+      "address": "العنوان"
+    },
+    "profile": {
+      "presentation": "التقديم"
+    },
+    "map": {
+      "location": "الموقع على الخريطة",
+      "searching": "جاري البحث عن الموقع...",
+      "locationUnavailable": "الموقع غير متوفر",
+      "usingData": "باستخدام البيانات الرسمية للمتجر",
+      "reload": "تحديث",
+      "street": "الشوارع",
+      "satellite": "الأقمار الصناعية",
+      "terrain": "التضاريس",
+      "distanceToShop": "المسافة إلى المتجر",
+      "recalculate": "إعادة الحساب",
+      "calculate": "حساب",
+      "distanceDescription": "المسافة في خط مستقيم من موقعك الحالي",
+      "getDistance": "انقر على \"حساب\" لمعرفة المسافة من موقعك الحالي",
+      "yourLocation": "موقعك الحالي",
+      "distanceCalculationError": "خطأ في حساب المسافة:",
+      "meters": "م",
+      "kilometers": "كم",
+      "locationNotFound": "الموقع غير موجود للبيانات المقدمة",
+      "generalError": "خطأ في تحميل الموقع",
+      "locationSearchWarning": "تحذير أثناء البحث عن الموقع:",
+      "locationError": "خطأ في الموقع:"
+    },
+    "common": {
+      "back": "رجوع",
+      "initial": "ت",
+      "noImages": "لا توجد صور متاحة",
+      "shopImage": "صورة المتجر",
+      "imageNotAvailable": "الصورة غير متاحة"
+    },
+    "whatsapp": {
+      "defaultMessage": "مرحباً {{username}}، لقد رأيت متجرك في التطبيق وأرغب في معرفة المزيد عن منتجاتك."
+    }
+  }
+  
+ 
+ 

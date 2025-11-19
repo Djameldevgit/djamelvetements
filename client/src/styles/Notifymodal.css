@@ -1,0 +1,22 @@
+/* Para el dropdown de notificaciones en móviles */
+@media (max-width: 768px) {
+  .dropdown-menu.show {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Asegurar que el contenido sea responsive */
+  .notify-modal-container {
+    max-height: 60vh !important;
+  }
+}
+
+/* Para dispositivos muy pequeños (Android) */
+@media (max-width: 480px) {
+  .dropdown-menu.show {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    left: 2.5vw !important;
+    transform: translate(0, -50%) !important;
+  }
+}

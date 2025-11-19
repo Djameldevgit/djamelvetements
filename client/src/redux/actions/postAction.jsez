@@ -1,0 +1,285 @@
+import { GLOBALTYPES } from './globalTypes'
+import { imageUpload } from '../../utils/imageUpload'
+import { postDataAPI, getDataAPI, patchDataAPI, deleteDataAPI } from '../../utils/fetchData'
+import { createNotify, removeNotify } from './notifyAction'
+
+ 
+export const POST_TYPES = {
+    CREATE_POST: 'CREATE_POST',
+    LOADING_POST: 'LOADING_POST',
+    GET_POSTS: 'GET_POSTS',
+    UPDATE_POST: 'UPDATE_POST',
+    GET_POST: 'GET_POST',
+    DELETE_POST: 'DELETE_POST'
+}
+
+export const createPost = ({ 
+    postData, 
+    images, 
+    auth, 
+    socket 
+}) => async (dispatch) => {
+    let media = []
+    try {
+        dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: true} })
+        
+        if(images.length > 0) media = await imageUpload(images)
+
+        // ✅ ENVIAR TODOS LOS CAMPOS NUEVOS
+        const res = await postDataAPI('posts', { 
+            ...postData, // Enviar todo el objeto postData
+            images: media 
+        }, auth.token)
+
+        dispatch({ 
+            type: POST_TYPES.CREATE_POST, 
+            payload: {...res.data.newPost, user: auth.user} 
+        })
+
+        dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: false} })
+
+        // Notify
+        const msg = {
+            id: res.data.newPost._id,
+            text: 'added a new post.',
+            recipients: res.data.newPost.user.followers,
+            url: `/post/${res.data.newPost._id}`,
+            content: postData.description, 
+            image: media[0]?.url
+        }
+
+        dispatch(createNotify({msg, auth, socket}))
+
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const getPosts = (token) => async (dispatch) => {
+    try {
+        dispatch({ type: POST_TYPES.LOADING_POST, payload: true })
+        const res = await getDataAPI('posts', token)
+        
+        dispatch({
+            type: POST_TYPES.GET_POSTS,
+            payload: {...res.data, page: 2}
+        })
+
+        dispatch({ type: POST_TYPES.LOADING_POST, payload: false })
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const updatePost = ({
+    postData,
+    images, 
+    auth, 
+    status
+}) => async (dispatch) => {
+    let media = []
+    const imgNewUrl = images.filter(img => !img.url)
+    const imgOldUrl = images.filter(img => img.url)
+
+    // ✅ COMPARACIÓN MEJORADA CON TODOS LOS CAMPOS NUEVOS
+    const hasChanges = 
+        status.content !== postData.description ||
+        status.title !== postData.title ||
+        status.wilaya !== postData.wilaya ||
+        status.commune !== postData.commune ||
+        status.price !== postData.price ||
+        status.contacto !== postData.contacto ||
+        status.subCategory !== postData.subCategory ||
+        status.alquilergeneral !== postData.alquilergeneral ||
+        status.superficie !== postData.superficie ||
+        status.etage !== postData.etage ||
+        status.piece !== postData.piece ||
+        status.nombredelhotel !== postData.nombredelhotel ||
+        status.adresshotel !== postData.adresshotel ||
+        status.totalhabitaciones !== postData.totalhabitaciones ||
+        status.estrellas !== postData.estrellas ||
+        status.tarifnuit !== postData.tarifnuit ||
+        status.reservacionenlinea !== postData.reservacionenlinea ||
+        status.hotelWebsite !== postData.hotelWebsite ||
+        status.horariollegada !== postData.horariollegada ||
+        status.horadudepar !== postData.horadudepar ||
+        status.datedepar !== postData.datedepar ||
+        status.duracionviaje !== postData.duracionviaje ||
+        status.transporte !== postData.transporte ||
+        status.destinacionvoyage1 !== postData.destinacionvoyage1 ||
+        status.voyage1hotel1 !== postData.voyage1hotel1 ||
+        status.voyage1nombrehotel1 !== postData.voyage1nombrehotel1 ||
+        status.destinacionvoyage2 !== postData.destinacionvoyage2 ||
+        status.voyage2hotel2 !== postData.voyage2hotel2 ||
+        status.voyage1nombrehotel2 !== postData.voyage1nombrehotel2 ||
+        status.fecharegreso !== postData.fecharegreso ||
+        status.serviciosdelhotel !== postData.serviciosdelhotel ||
+        status.incluidoenelprecio !== postData.incluidoenelprecio ||
+        status.cancelarreserva !== postData.cancelarreserva ||
+        status.destinacionhadj !== postData.destinacionhadj ||
+        // Comparar arrays
+        JSON.stringify(status.tipodehabutaciones) !== JSON.stringify(postData.tipodehabutaciones) ||
+        JSON.stringify(status.wifi) !== JSON.stringify(postData.wifi) ||
+        JSON.stringify(status.language) !== JSON.stringify(postData.language) ||
+        JSON.stringify(status.specifications) !== JSON.stringify(postData.specifications) ||
+        // Comparar imágenes
+        imgNewUrl.length > 0 ||
+        imgOldUrl.length !== status.images.length;
+
+    if (!hasChanges) {
+        dispatch({ 
+            type: GLOBALTYPES.ALERT, 
+            payload: { info: 'Aucun changement à mettre à jour' } 
+        });
+        return;
+    }
+
+    try {
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
+        
+        if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
+
+        // ✅ ACTUALIZAR CON TODOS LOS CAMPOS NUEVOS
+        const res = await patchDataAPI(`post/${status._id}`, { 
+            ...postData, // Enviar todo el objeto postData actualizado
+            images: [...imgOldUrl, ...media] 
+        }, auth.token);
+
+        dispatch({ type: POST_TYPES.UPDATE_POST, payload: res.data.newPost });
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });
+        
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: { error: err.response?.data?.msg || 'Échec de la mise à jour' }
+        });
+    }
+}
+
+ 
+ 
+export const likePost = ({post, auth, socket}) => async (dispatch) => {
+    const newPost = {...post, likes: [...post.likes, auth.user]}
+    dispatch({ type: POST_TYPES.UPDATE_POST, payload: newPost})
+
+    socket.emit('likePost', newPost)
+
+    try {
+        await patchDataAPI(`post/${post._id}/like`, null, auth.token)
+        
+        // Notify
+        const msg = {
+            id: auth.user._id,
+            text: 'like your post.',
+            recipients: [post.user._id],
+            url: `/post/${post._id}`,
+            content: post.content, 
+            image: post.images[0].url
+        }
+
+        dispatch(createNotify({msg, auth, socket}))
+
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const unLikePost = ({post, auth, socket}) => async (dispatch) => {
+    const newPost = {...post, likes: post.likes.filter(like => like._id !== auth.user._id)}
+    dispatch({ type: POST_TYPES.UPDATE_POST, payload: newPost})
+
+    socket.emit('unLikePost', newPost)
+
+    try {
+        await patchDataAPI(`post/${post._id}/unlike`, null, auth.token)
+
+        // Notify
+        const msg = {
+            id: auth.user._id,
+            text: 'like your post.',
+            recipients: [post.user._id],
+            url: `/post/${post._id}`,
+        }
+        dispatch(removeNotify({msg, auth, socket}))
+
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const getPost = ({detailPost, id, auth}) => async (dispatch) => {
+    if(detailPost.every(post => post._id !== id)){
+        try {
+            const res = await getDataAPI(`post/${id}`, auth.token)
+            dispatch({ type: POST_TYPES.GET_POST, payload: res.data.post })
+        } catch (err) {
+            dispatch({
+                type: GLOBALTYPES.ALERT,
+                payload: {error: err.response.data.msg}
+            })
+        }
+    }
+}
+
+export const deletePost = ({post, auth, socket}) => async (dispatch) => {
+    dispatch({ type: POST_TYPES.DELETE_POST, payload: post })
+
+    try {
+        const res = await deleteDataAPI(`post/${post._id}`, auth.token)
+
+        // Notify
+        const msg = {
+            id: post._id,
+            text: 'added a new post.',
+            recipients: res.data.newPost.user.followers,
+            url: `/post/${post._id}`,
+        }
+        dispatch(removeNotify({msg, auth, socket}))
+        
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const savePost = ({post, auth}) => async (dispatch) => {
+    const newUser = {...auth.user, saved: [...auth.user.saved, post._id]}
+    dispatch({ type: GLOBALTYPES.AUTH, payload: {...auth, user: newUser}})
+
+    try {
+        await patchDataAPI(`savePost/${post._id}`, null, auth.token)
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}
+
+export const unSavePost = ({post, auth}) => async (dispatch) => {
+    const newUser = {...auth.user, saved: auth.user.saved.filter(id => id !== post._id) }
+    dispatch({ type: GLOBALTYPES.AUTH, payload: {...auth, user: newUser}})
+
+    try {
+        await patchDataAPI(`unSavePost/${post._id}`, null, auth.token)
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {error: err.response.data.msg}
+        })
+    }
+}

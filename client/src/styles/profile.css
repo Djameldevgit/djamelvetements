@@ -1,0 +1,411 @@
+.profile{
+    width: 100%;
+    min-height: 100vh;
+}
+/* ------ Info ---------- */
+.info{
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px 10px;
+}
+.info_container{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.info_content{
+    min-width: 250px;
+    max-width: 550px;
+    width: 100%;
+    flex: 1;
+    opacity: 0.7;
+    margin: 0 15px;
+}
+.info_content_title{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.info_content_title h2{
+    font-size: 2rem;
+    font-weight: 400;
+    transform: translateY(4px);
+    flex: 3;
+}
+.info_content_title button{
+    flex: 2;
+}
+.info_container .follow_btn{
+    color: teal;
+    cursor: pointer;
+}
+.info_container .follow_btn span:hover{
+    text-decoration: underline;
+}
+
+/* -------------- Profile Edit ------------ */
+.edit_profile{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #0008;
+    z-index: 9;
+    overflow: auto;
+}
+.edit_profile form{
+    max-width: 450px;
+    width: 100%;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+.edit_profile .btn_close{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+.edit_profile .info_avatar{
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+    margin: 15px auto;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+.edit_profile .info_avatar img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+.edit_profile .info_avatar span{
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    color: orange;
+    transition: 0.3s ease-in-out;
+    background: #fff5;
+}
+.edit_profile .info_avatar:hover span{
+    bottom: -15%;
+}
+.edit_profile .info_avatar #file_up{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+}
+::-webkit-file-upload-button{
+    cursor: pointer;
+}
+
+/* ----------- Follow ------- */
+.follow{
+    position: fixed;
+    top:0;
+    left: 0;
+    background: #0008;
+    width: 100%;
+    height: 100vh;
+    z-index: 4;
+}
+.follow_box{
+    width: 350px;
+    border: 1px solid #222;
+    border-radius: 5px;
+    background: white;
+    padding: 20px 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.follow_content{
+    width: 100%;
+    height: 350px;
+    overflow: auto;
+}
+.follow_box .close{
+    position: absolute;
+    top: 0;
+    right: 3px;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+/* --------- Save Tab ----------- */
+.profile_tab{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+.profile_tab button{
+    outline: none;
+    border: none;
+    background: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 5px 10px;
+    margin: 0 25px;
+    opacity: 0.5;
+}
+.profile_tab button.active{
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    opacity: 0.8;
+}
+
+/* Profile Tabs - Siempre en misma fila */
+.profile_tab {
+    margin: 20px 0;
+    width: 100%;
+    overflow-x: auto; /* Para scroll horizontal en móviles muy pequeños */
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+}
+
+.profile_tab .btn-group {
+    display: flex;
+    flex-wrap: nowrap; /* Evita que se rompa en varias líneas */
+    white-space: nowrap;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content; /* Se ajusta al contenido */
+    min-width: min-content; /* Mínimo ancho necesario */
+}
+
+.profile_tab .btn {
+    border-radius: 0;
+    padding: 12px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    flex-shrink: 0; /* Evita que los botones se encojan */
+    min-width: 100px; /* Ancho mínimo para cada botón */
+    text-align: center;
+}
+
+/* Estilos específicos para móviles */
+@media (max-width: 576px) {
+    .profile_tab {
+        margin: 15px 0;
+        padding-bottom: 5px; /* Espacio para el scroll */
+    }
+    
+    .profile_tab .btn-group {
+        border-radius: 8px;
+    }
+    
+    .profile_tab .btn {
+        padding: 5px 5px;
+        font-size: 14px;
+        min-width: 80px; /* Menor ancho mínimo en móviles */
+    }
+    
+    .profile_tab .btn  {
+        margin-right: 4px !important;
+    }
+}
+
+/* Para dispositivos muy pequeños (menos de 340px) */
+@media (max-width: 340px) {
+    .profile_tab .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 70px;
+    }
+    
+    .profile_tab .btn i {
+        font-size: 14px;
+    }
+}
+
+/* Scroll personalizado para los tabs */
+.profile_tab::-webkit-scrollbar {
+    height: 4px;
+}
+
+.profile_tab::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.profile_tab::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.profile_tab::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+.profile .post_thumb {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 15px;
+}
+
+.profile .post_thumb_display {
+    min-width: 250px;
+    height: 250px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile .post_thumb_display:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.profile .post_thumb_display img,
+.profile .post_thumb_display video {
+    border-radius: 12px;
+}
+
+.profile .post_thumb_display .post_thumb_menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0008;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: 0.3s;
+    border-radius: 12px;
+}
+
+.profile .post_thumb_display:hover .post_thumb_menu {
+    opacity: 1;
+}
+
+.profile .post_thumb_display .post_thumb_menu i {
+    font-size: 1.8rem;
+    color: white;
+    margin: 0 15px;
+    transition: transform 0.3s ease;
+}
+
+.profile .post_thumb_display .post_thumb_menu i:hover {
+    transform: scale(1.2);
+}
+
+/* Responsive design PARA PROFILE */
+@media (max-width: 768px) {
+    .profile .post_thumb {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-gap: 10px;
+    }
+    
+    .profile .post_thumb_display {
+        min-width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile .post_thumb {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 8px;
+    }
+    
+    .profile .post_thumb_display {
+        min-width: auto;
+        height: 140px;
+    }
+}
+
+/* Responsive design GENERAL */
+@media (max-width: 768px) {
+    .post_thumb {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-gap: 8px;
+    }
+    
+    .post_thumb_display {
+        min-width: 120px;
+        height: 120px;
+    }
+}
+
+
+
+
+
+
+
+
+
+/* ------ Search Posts ---------- */
+.postsSearch .profile {
+    position: relative;
+    z-index: 9999;
+}
+
+.postsSearch .post_thumb {
+    position: relative;
+ 
+}
+
+.postsSearch .post_thumb_display {
+    position: relative;
+  
+}
+
+/* Asegurar que los posts del search tengan z-index bajo */
+.postsSearch .profile .post_thumb,
+.postsSearch .profile .post_thumb_display,
+.postsSearch .profile .post_thumb_menu {
+    position: relative;
+  
+}
+
+/* Dropdown del search debe tener z-index muy alto */
+.dropdown-menu {
+    z-index: 9999 !important;
+}
+
+/* Input group del search con z-index alto */
+.search-input-container {
+    position: relative;
+    z-index: 1000 !important;
+}
+
+/* Card del formulario de búsqueda */
+.card.mb-4 {
+    position: relative;
+    z-index: 1000 !important;
+}
+
+/* Override específico para el dropdown del search */
+#dropdown-filters + .dropdown-menu {
+    z-index: 10000 !important;
+    position: fixed !important;
+}
+
+/* Para móviles - asegurar que el dropdown esté por encima */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        z-index: 10000 !important;
+    }
+    
+    .postsSearch   {
+        z-index: 1 !important;
+    }
+}

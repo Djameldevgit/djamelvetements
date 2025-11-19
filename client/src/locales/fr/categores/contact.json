@@ -1,0 +1,7 @@
+{
+  "phone_number": "Numéro de Téléphone",
+  "enter_phone": "Entrez votre numéro de téléphone",
+  "phone_placeholder": "+33 1 23 45 67 89",
+  "invalid_phone": "Numéro de téléphone invalide",
+  "valid_phone": "Numéro valide"
+}

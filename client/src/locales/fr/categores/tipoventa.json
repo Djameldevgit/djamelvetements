@@ -1,0 +1,10 @@
+{
+  "sale_type": "Type de Vente",
+  "select_sale_type": "Sélectionnez le type de vente",
+  "retail": "Vente au Détail",
+  "wholesale": "Vente en Gros",
+  "both": "Vente Détail et Gros",
+  "retail_description": "Vente de produits individuels ou en petites quantités",
+  "wholesale_description": "Vente en grandes quantités avec prix de gros",
+  "both_description": "Disponible pour vente au détail et en gros"
+}

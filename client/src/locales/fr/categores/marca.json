@@ -1,0 +1,16 @@
+{
+    "brand": "Marque",
+    "select_brand": "Sélectionnez la marque",
+    "other_brand": "Autre marque...",
+    "write_brand": "Écrivez la marque...",
+    "popular_brands": "Marques Populaires",
+    "sports_brands": "Marques Sportives",
+    "fashion_brands": "Marques de Mode",
+    "luxury_brands": "Marques de Luxe",
+    "watch_brands": "Marques de Montres",
+    "glasses_brands": "Marques de Lunettes",
+    "jewelry_brands": "Marques de Bijoux",
+    "shoes_brands": "Marques de Chaussures",
+    "kids_brands": "Marques pour Enfants",
+    "search_brand": "Rechercher une marque..."
+  }

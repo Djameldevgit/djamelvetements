@@ -1,0 +1,105 @@
+{
+
+ 
+    "categories": {
+      "locationVacances": "إيجار عطلات",
+      "hajjUmrah": "الحج والعمرة",
+      "voyageOrganise": "رحلة منظمة",
+      "businessTrip": "رحلة عمل",
+      "tourism": "سياحة",
+      "adventure": "مغامرة",
+      "cultural": "ثقافي",
+      "beach": "شاطئي",
+      "mountain": "جبل",
+      "desert": "صحراء"
+    },
+ 
+    
+    "noCategory": "بدون فئة",
+    "departure": "مغادرة",
+    "destination": "الوجهة",
+    "location": "الموقع",
+    "editPost": "تعديل المنشور",
+    "deletePost": "حذف المنشور",
+    "writeToAgency": "الكتابة إلى الوكالة",
+    "followAgency": "متابعة الوكالة",
+    "sharePost": "مشاركة",
+    "viewDetails": "عرض التفاصيل",
+    "agency": {
+      "contactError": "لا يمكن الاتصال بهذه الوكالة",
+      "profileError": "لا يمكن عرض ملف الوكالة"
+    },
+    
+    "auth": {
+      "required": "مطلوب مصادقة",
+      "loginToContinue": "يرجى تسجيل الدخول للمتابعة",
+      "login": "تسجيل الدخول",
+      "register": "تسجيل"
+    },
+  
+    "home": {
+      "welcome": "مرحباً بكم في منصة السفر الخاصة بنا"
+    },
+    "post": {
+      "departure": "مغادرة",
+      "date": "التاريخ",
+      "destination": "الوجهة", 
+      "departurePlace": "مكان المغادرة",
+      "contactAgency": "الاتصال بالوكالة",
+      "viewAgencyProfile": "عرض ملف الوكالة",
+      "edit": "تعديل المنشور",
+      "editAdmin": "تعديل المنشور (مدير)",
+      "delete": "حذف المنشور",
+      "deleteAdmin": "حذف المنشور (مدير)", 
+      "deleting": "جاري الحذف...",
+      "share": "مشاركة المنشور",
+      "deleteConfirmation": "هل أنت متأكد من رغبتك في حذف هذا المنشور؟"
+    },
+    
+    "date": {
+      "notSpecified": "تاريخ غير محدد"
+    },
+    "travelTypes": {
+      "Location_Vacances": "إيجار عطلات",
+      "hadj_Omra": "حج وعمرة",
+      "Voyage Organise": "رحلة منظمة"
+    },
+ 
+
+
+
+
+
+  "contact_seller": "الاتصال بالوكالة",
+
+  "edit_post": "تعديل المنشور",
+  "edit_post_admin": "تعديل (مدير)",
+  "delete_post": "حذف المنشور",
+  "delete_post_admin": "حذف (مدير)",
+  "share": "مشاركة",
+  "save": "حفظ",
+  "saved": "تم الحفظ",
+  "saving": "جاري الحفظ...",
+  
+  "cancel": "إلغاء",
+  "details": "تفاصيل",
+  "tap_to_see_info": "انقر لرؤية المعلومات",
+  "default_category": "فنان",
+  "default_share_title": "انظر إلى هذا المنشور",
+  "default_share_text": "ألق نظرة على هذا المنشور",
+  "no_permission_delete": "ليس لديك إذن لحذف هذا المنشور",
+  "no_permission_edit": "ليس لديك إذن لتعديل هذا المنشور",
+  "deleting_post": "جاري حذف المنشور...",
+  "post_deleted_success": "تم حذف المنشور بنجاح",
+  "error_deleting_post": "خطأ في حذف المنشور",
+  "post_reported": "تم الإبلاغ عن المنشور",
+  "confirm_delete": "تأكيد الحذف",
+  "delete_confirmation_message": "هل أنت متأكد أنك تريد حذف هذا المنشور؟ لا يمكن التراجع عن هذا الإجراء.",
+  "share_post": "مشاركة المنشور",
+  "close": "إغلاق",
+  "title2": "مطلوب تسجيل الدخول",
+  "message2": "يجب عليك تسجيل الدخول لتنفيذ هذا الإجراء",
+  "login2": "تسجيل الدخول",
+  "register2": "التسجيل",
+  "close2": "إغلاق"
+}

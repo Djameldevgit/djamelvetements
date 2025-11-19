@@ -1,0 +1,152 @@
+/* DetailPostCard.css */
+.detail-post-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-post-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background: white;
+    transform: translateX(-5px);
+}
+
+.detail-post-content {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    min-height: 600px;
+}
+
+/* Sección de imagen */
+.image-section {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 600px;
+    position: relative;
+}
+
+/* Sección de información */
+.info-section {
+  
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-left: 1px solid #e0e0e0;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.post-details {
+    margin: 20px 0;
+    flex-grow: 1;
+}
+
+.comments-section {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .detail-post-content {
+        grid-template-columns: 1fr 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .detail-post-container {
+        padding: 10px;
+    }
+    
+    .detail-post-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        min-height: auto;
+    }
+    
+    .image-section {
+        min-height: 400px;
+        max-height: 50vh;
+    }
+    
+    .info-section {
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+        max-height: 50vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-post-container {
+        padding: 5px;
+    }
+    
+    .detail-post-card {
+        border-radius: 15px;
+    }
+    
+    .info-section {
+        padding: 20px;
+    }
+    
+    .back-button {
+        top: 10px;
+        left: 10px;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Scroll personalizado */
+.info-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.info-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.info-section::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.info-section::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+ 

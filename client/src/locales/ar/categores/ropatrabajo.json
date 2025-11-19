@@ -1,0 +1,73 @@
+{
+    "professional_clothing": "💼 ملابس مهنية",
+    "professional_wear": "ملابس العمل",
+    "uniform_type": "نوع الزي الموحد",
+    "select_uniform_type": "اختر نوع الزي",
+    "professional_sector": "القطاع المهني",
+    "select_sector": "اختر القطاع",
+    "main_color": "اللون الرئيسي",
+    "color_placeholder": "أبيض، أزرق، إلخ",
+    "fabric_material": "القماش/المادة",
+    "select_fabric": "اختر القماش",
+    "safety_standards": "معايير السلامة",
+    "safety_features": "ميزات السلامة",
+    "high_visibility": "عالية الوضوح",
+    "flame_resistant": "مقاومة للحريق",
+    "company_logo": "الشعار/الشركة",
+    "company_placeholder": "اسم الشركة",
+    "custom_logo": "مع شعار مخصص",
+    "features_description": "وصف الميزات",
+    "features_placeholder": "جيوب، أزرار، إغلاق، إلخ",
+    "size_fit": "المقاس والملاءمة",
+    "select_size": "اختر المقاس",
+    "professional_style": "النمط المهني",
+    "select_style": "اختر النمط",
+    "condition": "الحالة",
+    "brand": "الماركة",
+    "brand_placeholder": "اسم الماركة",
+    "certifications": "الشهادات",
+    "has_certifications": "حاصل على شهادات",
+    "wash_instructions": "تعليمات الغسيل",
+    "professional_use": "الاستخدام المهني",
+    "industry_specific": "مخصص للصناعة",
+    "corporate": "شركات",
+    "medical": "طبي",
+    "healthcare": "رعاية صحية",
+    "restaurant": "مطعم",
+    "food_service": "خدمة الطعام",
+    "office": "مكتب",
+    "corporate_office": "مكتب شركات",
+    "industrial": "صناعي",
+    "manufacturing": "تصنيع",
+    "security": "أمن",
+    "safety": "سلامة",
+    "hotel": "فندق",
+    "hospitality": "ضيافة",
+    "construction": "بناء",
+    "education": "تعليم",
+    "retail": "تجزئة",
+    "commerce": "تجارة",
+    "other": "أخرى",
+    "polyester": "بوليستر",
+    "cotton": "قطن",
+    "mixed": "مختلط",
+    "fire_retardant": "مقاوم للحريق",
+    "waterproof": "مقاوم للماء",
+    "certified": "معتمد",
+    "standard": "قياسي",
+    "premium": "متميز",
+    "economy": "اقتصادي",
+    "new": "جديد",
+    "like_new": "كالجديد",
+    "good": "حالة جيدة",
+    "fair": "حالة متوسطة",
+    "corporate_wear": "ملابس شركات",
+    "medical_uniform": "زي طبي",
+    "chef_uniform": "زي طاهي",
+    "security_uniform": "زي أمن",
+    "industrial_uniform": "زي صناعي",
+    "hospitality_uniform": "زي ضيافة",
+    "safety_features_included": "ميزات السلامة متضمنة",
+    "professional_garment": "ملابس مهنية",
+    "work_clothing": "ملابس عمل"
+  }

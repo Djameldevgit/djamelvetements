@@ -1,0 +1,8 @@
+{
+    "condition": "État",
+    "select_condition": "Sélectionnez l'état",
+    "new": "🆕 Nouveau",
+    "used": "🔧 Utilisé",
+    "like_new": "✨ Comme neuf",
+    "refurbished": "🔄 Reconditionné"
+  }

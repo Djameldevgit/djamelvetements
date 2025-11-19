@@ -1,0 +1,97 @@
+.post_thumb{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+    margin: 15px 0;
+    /* REMOVER padding: 0 8px; */
+    box-sizing: border-box;
+}
+
+.post_thumb_display{
+    min-width: 0; /* IMPORTANTE: Permite que se reduzca */
+    height: 180px;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.post_thumb_display img,
+.post_thumb_display video{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.post_thumb_display .post_thumb_menu{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0008;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.post_thumb_display:hover .post_thumb_menu{
+    opacity: 1;
+}
+
+.post_thumb_display .post_thumb_menu i{
+    font-size: 1.3rem;
+    color: white;
+    margin: 0 12px;
+}
+
+/* Tablet - 3 posts por fila */
+@media (min-width: 768px) {
+    .post_thumb{
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        /* REMOVER padding: 0 12px; */
+    }
+    
+    .post_thumb_display{
+        height: 200px;
+    }
+}
+
+/* Desktop - 4 posts por fila */
+@media (min-width: 1024px) {
+    .post_thumb{
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        max-width: 1200px;
+        margin: 20px auto;
+        /* REMOVER padding: 0 15px; */
+    }
+    
+    .post_thumb_display{
+        height: 220px;
+    }
+    
+    .post_thumb_display .post_thumb_menu i{
+        font-size: 1.5rem;
+        margin: 0 15px;
+    }
+}
+
+/* Pantallas muy grandes - mismo 4 posts pero más altura */
+@media (min-width: 1400px) {
+    .post_thumb{
+        max-width: 1300px;
+    }
+    
+    .post_thumb_display{
+        height: 240px;
+    }
+}

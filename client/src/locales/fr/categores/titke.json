@@ -1,0 +1,17 @@
+{
+  "product_title": "Titre du Produit",
+  "characters": "caractères",
+  "tip_title": "Conseil",
+  "title_tip": "Écrivez un titre clair et descriptif qui inclut la marque, le type de produit et les caractéristiques principales.",
+  
+  "title_placeholder": "Ex: Chemise décontractée en coton pour homme...",
+  "title_max_chars": "caractères maximum",
+  "title_required": "Le titre est requis",
+  
+  "examples": {
+    "mens_clothing": "Ex: Chemise costume slim fit...",
+    "womens_clothing": "Ex: Robe d'été légère...", 
+    "shoes": "Ex: Chaussures de sport running...",
+    "accessories": "Ex: Montre bracelet cuir..."
+  }
+}

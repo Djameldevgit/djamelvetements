@@ -1,0 +1,53 @@
+import React from 'react';
+import { Form, Card } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
+
+const CategorySelector = ({ postData, handleChangeInput }) => {
+    const { t, i18n } = useTranslation(["categories"]);
+
+    const categorias = [
+        { value: "VetementsHomme", emoji: "👔", color: "primary" },
+        { value: "VetementsFemme", emoji: "👗", color: "success" },
+        { value: "ChaussuresHomme", emoji: "👞", color: "warning" },
+        { value: "ChaussuresFemme", emoji: "👠", color: "info" },
+        { value: "Montres", emoji: "⌚", color: "secondary" },
+        { value: "Lunettes", emoji: "👓", color: "danger" },
+        { value: "Bijoux", emoji: "💍", color: "dark" },
+        { value: "Garcons", emoji: "👦", color: "primary" },
+        { value: "Filles", emoji: "👧", color: "success" },
+        { value: "Bebe", emoji: "👶", color: "warning" },
+        { value: "TennueProfesionelle", emoji: "💼", color: "info" },
+        { value: "SacsValises", emoji: "👜", color: "secondary" }
+    ];
+
+    return (
+        <Card>
+            <Card.Header >
+                <h5 className="mb-0">
+                    📂 {t('categoriaPublicacion', 'Categoría de Publicación')}
+                </h5>
+            </Card.Header>
+            <Card.Body className="p-3">
+                <Form.Group className="w-100">
+                    <Form.Select 
+                        name="subCategory" 
+                        value={postData.subCategory || ''} 
+                        onChange={handleChangeInput}
+                        size="lg"
+                        required
+                        className="w-100"
+                    >
+                        <option value="">{t('seleccionarCategoria', 'Seleccione una categoría')}</option>
+                        {categorias.map((categoria) => (
+                            <option key={categoria.value} value={categoria.value}>
+                                {categoria.emoji} {t(`categoriass.${categoria.value}`, categoria.value)}
+                            </option>
+                        ))}
+                    </Form.Select>
+                </Form.Group>
+            </Card.Body>
+        </Card>
+    );
+};
+
+export default CategorySelector;

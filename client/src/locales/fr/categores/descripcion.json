@@ -1,0 +1,13 @@
+{
+    "product_description": "Description du Produit",
+    "characters": "caractères",
+    "tip_description": "Conseils pour une bonne description :",
+    "description_tips": "• Matériaux et composition\n• Tailles et mesures disponibles\n• État du produit (neuf, comme neuf, etc.)\n• Caractéristiques spéciales\n• Instructions d'entretien",
+    
+    "description_placeholder": "Décrivez votre produit... Mentionnez les matériaux, tailles disponibles, état, et autres caractéristiques importantes.",
+    "description_max_chars": "caractères maximum",
+    "description_required": "La description est requise",
+    
+    "examples": "Exemples :",
+    "description_examples": "Vêtements : \"Chemise 100% coton, taille M, état comme neuf...\"\nChaussures : \"Chaussures de sport, taille 42, semelle antidérapante...\"\nAccessoires : \"Montre avec bracelet en cuir véritable, résistant à l'eau...\""
+  }

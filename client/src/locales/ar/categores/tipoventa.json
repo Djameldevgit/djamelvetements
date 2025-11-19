@@ -1,0 +1,10 @@
+{
+  "sale_type": "نوع البيع",
+  "select_sale_type": "اختر نوع البيع",
+  "retail": "بيع بالتجزئة",
+  "wholesale": "بيع بالجملة",
+  "both": "بيع تجزئة وجملة",
+  "retail_description": "بيع منتجات فردية أو بكميات صغيرة",
+  "wholesale_description": "بيع بكميات كبيرة بأسعار الجملة",
+  "both_description": "متاح للبيع بالتجزئة وبالجملة"
+}

@@ -1,0 +1,279 @@
+{
+  
+    "categories": {
+      "locationVacances": "Location vacances",
+      "hajjUmrah": "Hajj & Omra",
+      "voyageOrganise": "Voyage Organisé",
+      "businessTrip": "Voyage d'Affaires",
+      "tourism": "Tourisme",
+      "adventure": "Aventure",
+      "cultural": "Culturel",
+      "beach": "Balnéaire",
+      "mountain": "Montagne",
+      "desert": "Désert"
+    },
+    
+    "departure": "Départ",
+    "destination": "Destination",
+    "location": "Localisation",
+    "editPost": "Modifier le post",
+    "deletePost": "Supprimer le post",
+    "writeToAgency": "Écrire à l'agence",
+    "followAgency": "Suivre l'agence",
+    "sharePost": "Partager",
+    "viewDetails": "Voir détails",
+   
+    "auth": {
+      "required": "Authentification requise",
+      "loginToContinue": "Veuillez vous connecter pour continuer",
+      "login": "Se connecter",
+      "register": "S'inscrire"
+    
+  },
+ 
+    "servicess": {
+      "categoria_administrativos": "Services Administratifs",
+      "categoria_hebergement": "Hébergement",
+      "categoria_transport": "Transport",
+      "categoria_guides": "Guides",
+      "categoria_restauration": "Restauration",
+      "categoria_sante": "Santé",
+      "categoria_kits": "Kits Pèlerins",
+      "categoria_premium": "Premium",
+      
+      "visa_hajj_omra": "Visa Hajj/Omra",
+      "permis_sortie": "Permis de sortie",
+      "certificat_vaccination": "Certificat de vaccination",
+      "autorisation_ministerielle": "Autorisation ministérielle",
+      "assistance_documentation": "Assistance documentaire",
+      
+      "hebergement_haram_meca": "Hébergement près du Haram à La Mecque",
+      "hebergement_haram_medina": "Hébergement près du Haram à Médine",
+      "hotel_3_etoiles": "Hôtel 3 étoiles",
+      "hotel_4_etoiles": "Hôtel 4 étoiles",
+      "hotel_5_etoiles": "Hôtel 5 étoiles",
+      "chambre_double": "Chambre double",
+      "chambre_triple": "Chambre triple",
+      "chambre_individuelle": "Chambre individuelle",
+      "suite_familiale": "Suite familiale",
+      
+      "billet_avion_international": "Billet d'avion international",
+      "transfert_aeroport": "Transfert aéroport",
+      "bus_prive_meca_medina": "Bus privé La Mecque-Médine",
+      "navettes_hotels": "Navettes hôtels",
+      "transport_mina_arafat": "Transport Mina-Arafat",
+      "voiture_privee": "Voiture privée",
+      
+      "guide_religieux_francophone": "Guide religieux francophone",
+      "guide_arabophone": "Guide arabophone",
+      "cours_preparation_hajj": "Cours préparation Hajj",
+      "cours_preparation_omra": "Cours préparation Omra",
+      "assistance_rituels": "Assistance aux rituels",
+      "groupe_reduit": "Groupe réduit",
+      
+      "petit_dejeuner": "Petit déjeuner",
+      "demi_pension": "Demi-pension",
+      "pension_complete": "Pension complète",
+      "buffet_sahour": "Buffet Sahour",
+      "repas_speciaux": "Repas spéciaux",
+      "eau_zamzam_illimite": "Eau Zamzam illimitée",
+      
+      "assistance_medicale_24h": "Assistance médicale 24h",
+      "assurance_medicale": "Assurance médicale",
+      "infirmier_accompagnant": "Infirmier accompagnant",
+      "premier_secours": "Premiers secours",
+      "coordination_securite": "Coordination sécurité",
+      "localisateur_groupe": "Localisateur groupe",
+      
+      "kit_pelegrin_complet": "Kit pèlerin complet",
+      "ihram_coton": "Ihram coton",
+      "sac_voyage": "Sac de voyage",
+      "guide_manuel": "Guide manuel",
+      "bouteille_zamzam": "Bouteille Zamzam",
+      "cadeau_souvenir": "Cadeau souvenir",
+      
+      "accompagnement_vip": "Accompagnement VIP",
+      "fast_track_aeroport": "Fast track aéroport",
+      "suite_executive": "Suite exécutive",
+      "concierge_personnel": "Concierge personnel",
+      "restaurant_gastronomique": "Restaurant gastronomique",
+      "transport_berline": "Transport berline"
+    },
+    
+    "descripcion": {
+      "travelTypes": {
+        "hadj_Omra": "Voyage Hajj et Omra",
+        "Voyage Organise": "Voyage Organisé",
+        "Location_Vacances": "Location Vacances"
+      },
+      
+      "labels": {
+        "exceptionalOffer": "Offre exceptionnelle",
+        "exclusiveOffer": "Offre exclusive",
+        "publishedOn": "Publié le",
+        "views": "vues",
+        "towards": "vers",
+        "from": "de",
+        "departureAt": "départ à",
+        "duration": "Durée",
+        "servicesEquipment": "Services et Équipements",
+        "otherServices": "Autres services",
+        "hotelInfo": "Informations de l'Hôtel",
+        "hotelName": "Nom de l'hôtel",
+        "hotelCity": "Ville",
+        "hotelAddress": "Adresse",
+        "hotelZone": "Zone/Région",
+        "completePricing": "Tarifs Complets",
+        "adultPrice": "Adulte",
+        "childPrice": "Enfant (2-12 ans)",
+        "babyPrice": "Bébé (0-2 ans)",
+        "adult": "Adulte",
+        "child": "Enfant",
+        "baby": "Bébé",
+        "specialOptions": "Options Spéciales",
+        "detailedDescription": "Description Détaillée",
+        "readLess": "Lire moins",
+        "readMore": "Lire plus",
+        "uniqueExperience": "Expérience unique",
+        "accommodationFeatures": "Caractéristiques de l'Hébergement",
+        "propertyType": "Type de Propriété",
+        "category": "Catégorie",
+        "capacity": "Capacité",
+        "rooms": "Chambres",
+        "surface": "Surface",
+        "bathrooms": "Salles de bain",
+        "transportDetails": "Détails du Transport",
+        "transportType": "Type de Transport",
+        "airline": "Compagnie Aérienne",
+        "flightClass": "Classe de Vol",
+        "groundTransport": "Transport Terrestre",
+        "specialBenefits": "Avantages Spéciaux"
+      },
+      "sections": {
+        "main": "Présente {{type}}"
+      }
+    },
+    
+    "createpost": {
+      "title": "Titre du voyage",
+      "description": "Description du voyage",
+      "destination": "Destination",
+      "departureDate": "Date de départ",
+      "returnDate": "Date de retour",
+      "duration": "Durée du séjour",
+      "price": "Prix",
+      "contact": "Contact",
+      "selectCategory": "Sélectionner la catégorie",
+      "selectSubCategory": "Sélectionner le type",
+      "selectWilaya": "Sélectionner la wilaya",
+      "selectCommune": "Sélectionner la commune",
+      "addImages": "Ajouter des images",
+      "addServices": "Ajouter des services",
+      "savePost": "Sauvegarder le voyage",
+      "updatePost": "Mettre à jour le voyage"
+    },
+    
+    "forms": {
+      "required": "Ce champ est obligatoire",
+      "invalidEmail": "Email non valide",
+      "invalidPhone": "Téléphone non valide",
+      "minLength": "Minimum {{min}} caractères",
+      "maxLength": "Maximum {{max}} caractères"
+    },
+    
+    "months": {
+      "january": "janvier",
+      "february": "février",
+      "march": "mars",
+      "april": "avril",
+      "may": "mai",
+      "june": "juin",
+      "july": "juillet",
+      "august": "août",
+      "september": "septembre",
+      "october": "octobre",
+      "november": "novembre",
+      "december": "décembre"
+    },
+    
+    "days": {
+      "monday": "lundi",
+      "tuesday": "mardi",
+      "wednesday": "mercredi",
+      "thursday": "jeudi",
+      "friday": "vendredi",
+      "saturday": "samedi",
+      "sunday": "dimanche"
+    },
+    
+    "home": {
+      "welcome": "Bienvenue sur notre plateforme de voyage"
+    },
+    
+    "post": {
+      "departure": "Départ",
+      "date": "Date",
+      "destination": "Destination",
+      "departurePlace": "Lieu de départ",
+      "contactAgency": "Contacter l'agence",
+      "viewAgencyProfile": "Voir le profil de l'agence",
+      "edit": "Modifier la publication",
+      "editAdmin": "Modifier la publication (Admin)",
+      "delete": "Supprimer la publication",
+      "deleteAdmin": "Supprimer la publication (Admin)",
+      "deleting": "Suppression en cours...",
+      "share": "Partager la publication",
+      "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cette publication ?"
+    },
+    
+    "agency": {
+      "contactError": "Impossible de contacter cette agence",
+      "profileError": "Impossible de voir le profil de cette agence"
+    },
+    
+    "date": {
+      "notSpecified": "Date non spécifiée"
+    },
+    
+    "travelTypes": {
+      "Location_Vacances": "Location vacance",
+      "hadj_Omra": "Hajj et Omra",
+      "Voyage Organise": "Voyage Organisé"
+    },
+ 
+
+  
+    "contact_seller": "Contacter l'agence",
+ 
+ 
+  "edit_post": "Modifier la Publication",
+  "edit_post_admin": "Modifier (Admin)",
+  "delete_post": "Supprimer la Publication",
+  "delete_post_admin": "Supprimer (Admin)",
+  "share": "Partager",
+  "save": "Sauvegarder",
+  "saved": "Sauvegardé",
+  "saving": "Sauvegarde en cours...",
+  "report_post": "Signaler la Publication",
+  "cancel": "Annuler",
+  "details": "Détails",
+  "tap_to_see_info": "Touchez pour voir les infos",
+  "default_category": "Artiste",
+  "default_share_title": "Regardez cette publication",
+  "default_share_text": "Jetez un œil à cette publication",
+  "no_permission_delete": "Vous n'avez pas la permission de supprimer cette publication",
+  "no_permission_edit": "Vous n'avez pas la permission de modifier cette publication",
+  "deleting_post": "Suppression de la publication...",
+  "post_deleted_success": "Publication supprimée avec succès",
+  "error_deleting_post": "Erreur lors de la suppression de la publication",
+  "post_reported": "Publication signalée",
+  "confirm_delete": "Confirmer la Suppression",
+  "delete_confirmation_message": "Êtes-vous sûr de vouloir supprimer cette publication ? Cette action ne peut pas être annulée.",
+  "share_post": "Partager la publication",
+  "close": "Fermer",
+  "title2": "Connexion Requise",
+  "message2": "Vous devez vous connecter pour effectuer cette action",
+  "login2": "Se Connecter",
+  "register2": "S'Inscrire",
+  "close2": "Fermer"
+}

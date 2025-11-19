@@ -1,0 +1,99 @@
+const mongoose = require('mongoose')
+
+const postSchema = new mongoose.Schema({
+    // 🔷 CAMPOS DEL SISTEMA BASE
+    images: {
+        type: Array,
+        required: true
+    },
+    likes: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
+    user: { type: mongoose.Types.ObjectId, ref: 'user' },
+
+    // 🔷 CATEGORÍA Y SUBCATEGORÍA
+    category: {
+        type: String,
+        default: "Vetementes"
+    },
+    subCategory: String,
+    contact: String,
+    // 🔷 INFORMACIÓN BÁSICA
+    title: String,
+    description: String,
+    content: String,
+    
+    // 🔷 PRECIO Y VENTA
+    price: String,
+    tipodemoneda: {
+        type: String,
+        default: "USD"
+    },
+    tipoventa: String,
+    
+    // 🔷 CARACTERÍSTICAS GENERALES
+    genero: String,
+    etat: String,
+    color: [],
+    temporada: String,
+    marca: String,
+    material: String,
+    estilo: String,
+    
+    // 🔷 BEBÉS
+    edadbebes: String,
+    
+    // 🔷 BIJOUX
+    tipopiedra: String,
+    tipomaterialbijoux: String,
+    
+    // 🔷 ZAPATOS MUJER
+    alturatacon: String,
+    tipodecierre: String,
+    formadepunta: String,
+    
+    // 🔷 ZAPATOS HOMBRE
+    tipodesuela: String,
+    tipodecierre_hombre: String,
+    
+    // 🔷 COLOR Y TEMPORADA ADICIONAL
+    tipocolor: String,
+    ocasion: String,
+    
+    // 🔷 GAFAS
+    tipodelente: String,
+    anchopuente: String,
+    langitudpatilla: String,
+    
+    // 🔷 RELOJES
+    movimientoreloj: String,
+    materialcorrea: String,
+    resistenciaagua: String,
+    funcionalidades: String,
+    tiporeloj: String,
+    
+    // 🔷 SAC Y VALISE
+    correa: String,
+    tallasaco: String,
+    tipodsangle: String,
+    
+    // 🔷 PROFESIONAL
+    tipodelabata: String,
+    sectordetrabajo: String,
+    
+    // 🔷 TALLA
+    talla: []
+
+}, {
+    timestamps: true
+})
+
+// 🔷 ÍNDICES PARA MEJOR PERFORMANCE
+postSchema.index({ category: 1, subCategory: 1 })
+postSchema.index({ user: 1, createdAt: -1 })
+postSchema.index({ price: 1 })
+postSchema.index({ marca: 1 })
+postSchema.index({ genero: 1 })
+postSchema.index({ etat: 1 })
+postSchema.index({ material: 1 })
+postSchema.index({ temporada: 1 })
+
+module.exports = mongoose.model('post', postSchema)
