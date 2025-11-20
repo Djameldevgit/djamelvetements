@@ -591,104 +591,180 @@ const userCtrl = {
   },
   getUsersAction: async (req, res) => {
     try {
-      const { filter } = req.query;
+      var filter = req.query.filter;
 
-      let query = Users.find();
+      console.log('🔍 Iniciando getUsersAction...');
 
-      const features = new APIfeatures(query, req.query).paginating();
-      let users = await features.query.sort('-createdAt');
+      // 🎯 CORREGIDO: Agregar populate para followers y following
+      var query = Users.find()
+        .select('-password')
+        .populate('followers', 'username fullname avatar')
+        .populate('following', 'username fullname avatar')
+        .lean();
 
-      const usersWithDetails = await Promise.all(
-        users.map(async (user) => {
-          const posts = await Posts.find({ user: user._id });
-          const totalLikesReceived = posts.reduce(
-            (acc, post) => acc + post.likes.length,
-            0
-          );
-          const totalCommentsReceived = posts.reduce(
-            (acc, post) => acc + post.comments.length,
-            0
-          );
-          const reportsReceived = await Report.countDocuments({
-            userId: user._id,
-          });
-          const likesGiven = await Posts.countDocuments({ likes: user._id });
-          const commentsMade = await Comments.countDocuments({
-            user: user._id,
-          });
+      var features = new APIfeatures(query, req.query).paginating();
+      var users = await features.query.sort('-createdAt');
 
-          // 🚀 NUEVO: Buscar información de bloqueo del usuario
-          const blockInfo = await BlockUser.findOne({ user: user._id })
-            .populate('userquibloquea', 'username')
-            .select('motivo content fechaLimite esBloqueado createdAt');
+     
+      // 🎯 VERIFICACIÓN DE SEGURIDAD ANTES DEL MAP
+      if (!users || !Array.isArray(users)) {
+          users = [];
+      }
 
-          // Preparar información de bloqueo
-          let blockInfoData = null;
-          if (blockInfo) {
-            blockInfoData = {
-              motivo: blockInfo.motivo,
-              content: blockInfo.content,
-              fechaLimite: blockInfo.fechaLimite,
-              esBloqueado: blockInfo.esBloqueado,
-              createdAt: blockInfo.createdAt,
-              bloqueadoPor: blockInfo.userquibloquea ? blockInfo.userquibloquea.username : 'Desconocido'
-            };
+      var usersWithDetails = await Promise.all(
+        users.map(async function(user) {
+          try {
+            console.log('🔍 Procesando usuario: ' + user.username, {
+              followers: user.followers,
+              following: user.following
+            });
+
+            var posts = await Posts.find({ user: user._id });
+            
+            // 🎯 CÁLCULOS SEGUROS
+            var totalLikesReceived = posts.reduce(
+              function(acc, post) {
+                return acc + (post.likes ? post.likes.length : 0);
+              },
+              0
+            );
+            
+            var totalCommentsReceived = posts.reduce(
+              function(acc, post) {
+                return acc + (post.comments ? post.comments.length : 0);
+              },
+              0
+            );
+            
+            var reportsReceived = await Report.countDocuments({
+              userId: user._id,
+            });
+            
+            var likesGiven = await Posts.countDocuments({ likes: user._id });
+            var commentsMade = await Comments.countDocuments({
+              user: user._id,
+            });
+
+            // 🎯 CORREGIDO: Typo en blockInfo
+            var blockInfo = await BlockUser.findOne({ user: user._id })
+              .populate('userquibloquea', 'username')
+              .select('motivo content fechaLimite esBloqueado createdAt');
+
+            // 🎯 CORREGIDO: Typo en blockInfoData
+            var blockInfoData = null;
+            if (blockInfo) {
+              blockInfoData = {
+                motivo: blockInfo.motivo,
+                content: blockInfo.content,
+                fechaLimite: blockInfo.fechaLimite,
+                esBloqueado: blockInfo.esBloqueado,
+                createdAt: blockInfo.createdAt,
+                bloqueadoPor: blockInfo.userquibloquea ? blockInfo.userquibloquea.username : 'Desconocido'
+              };
+            }
+
+            // 🎯 ESTRUCTURA SEGURA DEL USUARIO
+            var userObject = Object.assign({}, user);
+            
+            // 🎯 AGREGAR CAMPOS FALTANTES PARA EL FRONTEND
+            userObject.bio = user.bio || '';
+            userObject.story = user.story || '';
+            userObject.website = user.website || '';
+            userObject.mobile = user.mobile || '';
+            userObject.address = user.address || '';
+            
+            // 🎯 CÁLCULOS SEGUROS
+            userObject.postCount = posts.length;
+            userObject.totalLikesReceived = totalLikesReceived;
+            userObject.totalCommentsReceived = totalCommentsReceived;
+            userObject.totalFollowers = user.followers ? user.followers.length : 0;
+            userObject.totalFollowing = user.following ? user.following.length : 0;
+            userObject.totalReportsReceived = reportsReceived;
+            userObject.likesGiven = likesGiven;
+            userObject.commentsMade = commentsMade;
+            userObject.blockInfo = blockInfoData;
+            
+            // 🎯 ASEGURAR ARRAYS PARA EL FRONTEND
+            userObject.posts = posts || [];
+            userObject.followers = user.followers || [];
+            userObject.following = user.following || [];
+
+            return userObject;
+            
+          } catch (userError) {
+            console.error('❌ Error procesando usuario ' + user.username + ':', userError);
+            
+            // 🎯 DEVOLVER USUARIO BÁSICO EN CASO DE ERROR
+            var safeUser = Object.assign({}, user);
+            safeUser.postCount = 0;
+            safeUser.totalLikesReceived = 0;
+            safeUser.totalCommentsReceived = 0;
+            safeUser.totalFollowers = 0;
+            safeUser.totalFollowing = 0;
+            safeUser.totalReportsReceived = 0;
+            safeUser.likesGiven = 0;
+            safeUser.commentsMade = 0;
+            safeUser.blockInfo = null;
+            safeUser.posts = [];
+            safeUser.followers = [];
+            safeUser.following = [];
+            safeUser.bio = user.bio || '';
+            safeUser.story = user.story || '';
+            safeUser.website = user.website || '';
+            safeUser.mobile = user.mobile || '';
+            safeUser.address = user.address || '';
+            
+            return safeUser;
           }
-
-          return {
-            ...user.toObject(),
-            postCount: posts.length,
-            totalLikesReceived,
-            totalCommentsReceived,
-            totalFollowers: user.followers.length,
-            totalFollowing: user.following.length,
-            totalReportsReceived: reportsReceived,
-            likesGiven,
-            commentsMade,
-            // 🚀 Añadir información de bloqueo si existe
-            blockInfo: blockInfoData
-          };
         })
       );
 
       // 📊 Aplicar filtros
       switch (filter) {
         case 'mostLikes':
-          usersWithDetails.sort(
-            (a, b) => b.totalLikesReceived - a.totalLikesReceived
-          );
+          usersWithDetails.sort(function(a, b) {
+            return b.totalLikesReceived - a.totalLikesReceived;
+          });
           break;
         case 'mostComments':
-          usersWithDetails.sort(
-            (a, b) => b.totalCommentsReceived - a.totalCommentsReceived
-          );
+          usersWithDetails.sort(function(a, b) {
+            return b.totalCommentsReceived - a.totalCommentsReceived;
+          });
           break;
         case 'mostFollowers':
-          usersWithDetails.sort(
-            (a, b) => b.totalFollowers - a.totalFollowers
-          );
+          usersWithDetails.sort(function(a, b) {
+            return b.totalFollowers - a.totalFollowers;
+          });
           break;
         case 'mostPosts':
-          usersWithDetails.sort((a, b) => b.postCount - a.postCount);
+          usersWithDetails.sort(function(a, b) {
+            return b.postCount - a.postCount;
+          });
           break;
         case 'mostReports':
-          usersWithDetails.sort(
-            (a, b) => b.totalReportsReceived - a.totalReportsReceived
-          );
+          usersWithDetails.sort(function(a, b) {
+            return b.totalReportsReceived - a.totalReportsReceived;
+          });
           break;
         case 'lastLogin':
-          usersWithDetails.sort(
-            (a, b) => new Date(b.lastLogin) - new Date(a.lastLogin)
-          );
+          usersWithDetails.sort(function(a, b) {
+            var dateA = new Date(a.lastLogin || 0);
+            var dateB = new Date(b.lastLogin || 0);
+            return dateB - dateA;
+          });
           break;
         case 'latestRegistered':
-          usersWithDetails.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
+          usersWithDetails.sort(function(a, b) {
+            var dateA = new Date(a.createdAt);
+            var dateB = new Date(b.createdAt);
+            return dateB - dateA;
+          });
           break;
         default:
-          break; // ningún filtro
+          break;
       }
+
+      console.log('✅ getUsersAction completado: ' + usersWithDetails.length + ' usuarios');
 
       res.json({
         msg: 'Success!',
@@ -696,7 +772,11 @@ const userCtrl = {
         users: usersWithDetails,
       });
     } catch (err) {
-      return res.status(500).json({ msg: err.message });
+      console.error('❌ ERROR en getUsersAction:', err);
+      return res.status(500).json({ 
+        msg: err.message,
+        users: [] // 🎯 Siempre devolver array vacío en error
+      });
     }
   },
   getInactiveUsers: async (req, res) => {

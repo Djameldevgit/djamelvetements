@@ -33,6 +33,7 @@ import Bloqueos404 from './components/adminitration/Bloqueos404';
 import Appinfo2 from './pages/appinfo2';
 import Createpost from './pages/Createpost';
 import Appinfo3 from './pages/appinfo3';
+import Map from './pages/map';
 
 function App() {
   const { auth, status, modal, languageReducer } = useSelector(state => state)
@@ -147,6 +148,7 @@ function App() {
             <Route exact path="/edit-post/:id" component={Createpost} />
             <Route exact path="/bloqueos404" component={Bloqueos404} />
             <Route exact path="/video/:obraId" component={Video} />
+            <Route exact path="/map" component={Map} />
             <Route exact path="/forgot_password" component={ForgotPassword} />
             <Route exact path="/user/reset/:token" component={ResetPassword} />
             <Route 

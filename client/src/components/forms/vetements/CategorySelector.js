@@ -183,15 +183,9 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
             style={rtlStyles.formSelect}
             dir={isRTL ? 'rtl' : 'ltr'}
           >
-            <option value="">
-              {t('category:select_category_placeholder', '👉 Choisissez une catégorie')}
-            </option>
+           
             
-            {/* 👕 VÊTEMENTS */}
-            <optgroup label={categoryGroups.clothing}>
-              <option value="vetements_homme">👔 {t('category:mens_clothing', 'Vêtements Homme')}</option>
-              <option value="vetements_femme">👗 {t('category:womens_clothing', 'Vêtements Femme')}</option>
-            </optgroup>
+            
             
             {/* 👟 CHAUSSURES */}
             <optgroup label={categoryGroups.footwear}>
@@ -223,9 +217,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
 
         {/* 📋 SUBCATEGORÍA - MEJORADO RTL */}
         <div>
-          <Form.Label style={rtlStyles.formLabel}>
-            📋 {t('category:select_subcategory', 'Sous-Catégorie')}
-          </Form.Label>
+         
           
           {selectedCategory && SubCategoryComponent ? (
             <div style={{ width: '100%', direction: rtlStyles.direction }}>
@@ -259,32 +251,8 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
         </div>
 
         {/* 🎯 INDICADOR DE SELECCIÓN ACTUAL - MEJORADO RTL */}
-        {(safePostData.category || safePostData.subCategory) && (
-          <div style={rtlStyles.selectedIndicator}>
-            <div className="fw-semibold">
-              {safePostData.category && (
-                <span>
-                  {categories.find(cat => cat.value === safePostData.category)?.emoji} 
-                  {' '}
-                  {categories.find(cat => cat.value === safePostData.category)?.label}
-                </span>
-              )}
-              {safePostData.subCategory && (
-                <span>
-                  {safePostData.category && ' • '}
-                  {safePostData.subCategory}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ℹ️ TEXTO DE AYUDA MEJORADO */}
-        {!safePostData.category && (
-          <div className={`mt-2 text-muted small ${isRTL ? 'text-end' : ''}`}>
-            {t('category:category_help', 'Sélectionnez une catégorie pour voir les sous-catégories disponibles')}
-          </div>
-        )}
+     
+      
       </Card.Body>
     </Card>
   );

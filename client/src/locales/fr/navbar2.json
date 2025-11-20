@@ -1,7 +1,8 @@
 {
   "installPWA": "Installer l'application",
   "appInstalled": "Application installée",
-
+  "gridView": "Grille",
+  "listView": "Liste",
   "NoPost":"Aucune publication",
   "appName": "vêtements en ligne",
   "loading": "Chargement...",

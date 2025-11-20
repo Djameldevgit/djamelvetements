@@ -2,13 +2,28 @@ import React, { useMemo } from 'react';
 import { Form, Row, Col, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-const Talla = ({ postData, handleChangeInput }) => {
+const Talla = ({ postData, handleArrayChange }) => {
   const { t, i18n } = useTranslation('talla');
   const isRTL = i18n.language === 'ar';
 
+  // 🎯 FUNCIONES SEGURAS
+  const safeArray = (potentialArray) => {
+    if (!potentialArray) return [];
+    if (Array.isArray(potentialArray)) return potentialArray;
+    if (typeof potentialArray === 'string') {
+      return potentialArray.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    return [];
+  };
+
+  const safeIncludes = (array, value) => {
+    const safeArrayValue = safeArray(array);
+    return safeArrayValue.includes(value);
+  };
+
   // 🎯 DEFINICIÓN COMPLETA DE TALLAS POR CATEGORÍA Y SUBCATEGORÍA
   const getFilteredSizes = useMemo(() => {
-    if (!postData.subCategory) return [];
+    if (!postData?.subCategory) return [];
 
     const subCategory = postData.subCategory.toLowerCase();
     const category = postData.category;
@@ -108,60 +123,33 @@ const Talla = ({ postData, handleChangeInput }) => {
     }
 
     return allSizes;
-  }, [postData.category, postData.subCategory, t]);
+  }, [postData?.category, postData?.subCategory, t]);
 
-  // ✅ Manejar cambios en los checkboxes
+  // ✅ Manejar cambios en los checkboxes - CORREGIDO
   const handleSizeChange = (sizeValue) => {
-    let currentSizes = [];
-    
-    if (postData.talla) {
-      if (typeof postData.talla === 'string') {
-        currentSizes = postData.talla.split(',').map(s => s.trim()).filter(Boolean);
-      } else if (Array.isArray(postData.talla)) {
-        currentSizes = [...postData.talla];
-      }
-    }
-    
-    let updatedSizes;
-    if (currentSizes.includes(sizeValue)) {
-      updatedSizes = currentSizes.filter(size => size !== sizeValue);
-    } else {
-      updatedSizes = [...currentSizes, sizeValue];
-    }
-
-    handleChangeInput({
-      target: {
-        name: 'talla',
-        value: updatedSizes
-      }
+    console.log('🔍 Talla - handleSizeChange:', {
+      sizeValue,
+      tallaActual: postData?.talla,
+      tipoTalla: typeof postData?.talla
     });
+
+    // 🎯 LLAMADA CORRECTA A handleArrayChange
+    if (handleArrayChange) {
+      // handleArrayChange espera (fieldName, value) no un event
+      handleArrayChange('talla', sizeValue);
+    } else {
+      console.error('❌ handleArrayChange no está disponible');
+    }
   };
 
-  // ✅ Verificar si una talla está seleccionada
+  // ✅ Verificar si una talla está seleccionada - SEGURO
   const isSizeSelected = (sizeValue) => {
-    if (!postData.talla) return false;
-    
-    if (typeof postData.talla === 'string') {
-      const currentSizes = postData.talla.split(',').map(s => s.trim()).filter(Boolean);
-      return currentSizes.includes(sizeValue);
-    } else if (Array.isArray(postData.talla)) {
-      return postData.talla.includes(sizeValue);
-    }
-    
-    return false;
+    return safeIncludes(postData?.talla, sizeValue);
   };
 
-  // ✅ Contar tallas seleccionadas
+  // ✅ Contar tallas seleccionadas - SEGURO
   const getSelectedCount = () => {
-    if (!postData.talla) return 0;
-    
-    if (typeof postData.talla === 'string') {
-      return postData.talla.split(',').filter(Boolean).length;
-    } else if (Array.isArray(postData.talla)) {
-      return postData.talla.length;
-    }
-    
-    return 0;
+    return safeArray(postData?.talla).length;
   };
 
   // 🎯 FUNCIÓN PARA OBTENER TEXTO TRADUCIDO DE TALLA
@@ -207,7 +195,9 @@ const Talla = ({ postData, handleChangeInput }) => {
     return translations[sizeKey] || sizeKey.replace(/_/g, ' ');
   };
 
-  if (!postData.subCategory) {
+  
+
+  if (!postData?.subCategory) {
     return (
       <div className="text-center py-4 text-muted">
         <div className="mb-2" style={{ fontSize: '2rem' }}>📏</div>

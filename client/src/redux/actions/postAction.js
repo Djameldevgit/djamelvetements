@@ -29,14 +29,26 @@ export const createPost = ({
         
         if(images.length > 0) media = await imageUpload(images)
 
+        console.log('🔍 createPost - Enviando datos:', {
+            postData: postData,
+            imagesCount: images.length,
+            mediaCount: media.length
+        });
+
         // ✅ Enviar postData e images en el body
         const res = await postDataAPI('posts', { 
             postData: {
                 ...postData,
-                content: postData.description || postData.content // Mantener compatibilidad
+                content: postData.description || postData.content || '' // Mantener compatibilidad
             },
             images: media 
         }, auth.token)
+
+        console.log('🔍 createPost - Respuesta del servidor:', {
+            newPost: res.data.newPost,
+            user: res.data.newPost?.user,
+            followers: res.data.newPost?.user?.followers
+        });
 
         dispatch({ 
             type: POST_TYPES.CREATE_POST, 
@@ -45,26 +57,36 @@ export const createPost = ({
 
         dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: false} })
 
-        // Notify
+        // 🎯 NOTIFY SEGURO - Con verificaciones
         const msg = {
             id: res.data.newPost._id,
             text: 'added a new post.',
-            recipients: res.data.newPost.user.followers,
+            // 🎯 VERIFICACIÓN SEGURA DE FOLLOWERS
+            recipients: Array.isArray(res.data.newPost?.user?.followers) 
+                ? res.data.newPost.user.followers 
+                : [],
             url: `/post/${res.data.newPost._id}`,
-            content: postData.description || postData.content, 
-            image: media[0]?.url
+            content: postData.description || postData.content || postData.title || '', 
+            image: media[0]?.url || ''
         }
 
-        dispatch(createNotify({msg, auth, socket}))
+        console.log('🔍 createPost - Notify msg:', msg);
+
+        // 🎯 SOLO CREAR NOTIFY SI HAY RECIPIENTS
+        if (msg.recipients.length > 0) {
+            dispatch(createNotify({msg, auth, socket}))
+        } else {
+            console.log('⏭️ Notify omitido - No hay recipients');
+        }
 
     } catch (err) {
+        console.error('❌ Error en createPost:', err);
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: {error: err.response.data.msg}
+            payload: {error: err.response?.data?.msg || 'Error creating post'}
         })
     }
 }
-
 export const updatePost = ({
     postData,
     images, 

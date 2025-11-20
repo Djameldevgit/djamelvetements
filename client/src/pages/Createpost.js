@@ -46,7 +46,7 @@ import TipoVenta from '../components/forms/vetements/TipoVenta';
 
 // 6. COMPONENTE DE IMÁGENES (EL ÚLTIMO)
 import ImageUpload from '../components/forms/vetements/ImageUpload';
-import Contact from '../components/forms/vetements/Contact';
+import Telefono from '../components/forms/vetements/Telefono';
 
 const getInitialState = () => ({
   // 1. CATEGORÍA/SUBCATEGORÍA (PRIMEROS)
@@ -59,7 +59,6 @@ const getInitialState = () => ({
   content: "",
 
   // 3. CARACTERÍSTICAS GENERALES DEL PRODUCTO
-  // Talla y arrays
   talla: [],
   color: [],
 
@@ -119,10 +118,25 @@ const getInitialState = () => ({
   price: "",
   tipodemoneda: "",
   tipoventa: "",
-  contact: "",
+  telefono: "",
   // 5. IMÁGENES (ÚLTIMAS)
   images: [],
 });
+
+// 🎯 FUNCIONES DE UTILIDAD SEGURAS
+const safeArray = (potentialArray) => {
+  if (!potentialArray) return [];
+  if (Array.isArray(potentialArray)) return potentialArray;
+  if (typeof potentialArray === 'string') {
+    return potentialArray.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
+const safeIncludes = (array, value) => {
+  const safeArrayValue = safeArray(array);
+  return safeArrayValue.includes(value);
+};
 
 const Createpost = () => {
   const { auth, theme, languageReducer} = useSelector((state) => state);
@@ -142,7 +156,7 @@ const Createpost = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [alertVariant, setAlertVariant] = useState("info");
   const [isSubmitting, setIsSubmitting] = useState(false);
- 
+
   // ✅ Configurar idioma
   useEffect(() => {
     const lang = languageReducer?.language || 'fr';
@@ -155,15 +169,10 @@ const Createpost = () => {
   useEffect(() => {
     if (isEdit) {
       if (postToEdit) {
-        // Caso 1: Tenemos postData del state
-        console.log('📥 Cargando desde postToEdit:', postToEdit._id);
         loadPostData(postToEdit);
       } else if (id) {
-        // Caso 2: Tenemos ID pero no postData - cargar desde API
-        console.log('🔄 ID disponible pero sin postData, cargando...');
         loadPostFromAPI(id);
       } else {
-        console.log('❌ Modo edición pero sin ID ni datos');
         showAlertMessage('No se encontraron datos para editar', 'danger');
         setTimeout(() => history.push('/'), 2000);
       }
@@ -180,7 +189,9 @@ const Createpost = () => {
         subCategory: sanitizedData.subCategory || "",
         description: sanitizedData.description || sanitizedData.content || "",
         title: sanitizedData.title || "",
-        images: Array.isArray(sanitizedData.images) ? sanitizedData.images : [],
+        talla: safeArray(sanitizedData.talla),
+        color: safeArray(sanitizedData.color),
+        images: safeArray(sanitizedData.images),
       };
 
       setPostData(finalPostData);
@@ -198,26 +209,17 @@ const Createpost = () => {
       } else {
         setImages([]);
       }
-
-      console.log('✅ Datos cargados correctamente:', finalPostData.title);
     } catch (error) {
-      console.error('❌ Error cargando datos:', error);
       showAlertMessage('Error al cargar los datos del post', 'danger');
     }
   };
 
   const loadPostFromAPI = async (postId) => {
     try {
-      // Aquí deberías tener una acción Redux para obtener el post por ID
-      console.log('📡 Cargando post desde API con ID:', postId);
       showAlertMessage('Cargando datos del post...', 'info');
-      
-      // Ejemplo de cómo cargar desde API:
+      // Aquí deberías tener una acción Redux para obtener el post por ID
       // await dispatch(getPostById(postId));
-      // El post cargado debería estar en el estado de Redux
-      
     } catch (error) {
-      console.error('Error cargando post:', error);
       showAlertMessage('Error al cargar el post desde el servidor', 'danger');
     }
   };
@@ -225,13 +227,11 @@ const Createpost = () => {
   const sanitizePostData = useCallback((data) => {
     if (!data) return {};
     
-    // Limpiar y normalizar los datos
     const cleanData = { ...data };
     
-    // Asegurar que los arrays estén inicializados
-    if (!Array.isArray(cleanData.talla)) cleanData.talla = [];
-    if (!Array.isArray(cleanData.color)) cleanData.color = [];
-    if (!Array.isArray(cleanData.images)) cleanData.images = [];
+    cleanData.talla = safeArray(cleanData.talla);
+    cleanData.color = safeArray(cleanData.color);
+    cleanData.images = safeArray(cleanData.images);
     
     return cleanData;
   }, []);
@@ -243,14 +243,33 @@ const Createpost = () => {
     setTimeout(() => setShowAlert(false), 5000);
   }, []);
 
+  // 🎯 MANEJO DE CAMPOS STRING (inputs normales)
   const handleChangeInput = useCallback((e) => {
     const { name, value, type, checked } = e.target;
+    
     setPostData(prev => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
   }, []);
 
+  // 🎯 MANEJO DE CAMPOS ARRAY (talla, color)
+  const handleArrayChange = useCallback((fieldName, value) => {
+    setPostData(prev => {
+      const currentArray = safeArray(prev[fieldName]);
+      
+      const newArray = safeIncludes(currentArray, value)
+        ? currentArray.filter(item => item !== value)
+        : [...currentArray, value];
+      
+      return {
+        ...prev,
+        [fieldName]: newArray
+      };
+    });
+  }, []);
+
+  // 🎯 MANEJO DE IMÁGENES
   const handleChangeImages = useCallback((e) => {
     const files = [...e.target.files];
     let err = "";
@@ -274,6 +293,7 @@ const Createpost = () => {
     setImages(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+  // 🎯 HANDLE SUBMIT MEJORADO Y SEGURO
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -298,16 +318,20 @@ const Createpost = () => {
     }
 
     try {
+      const safePostData = {
+        ...postData,
+        talla: safeArray(postData.talla),
+        color: safeArray(postData.color),
+        images: safeArray(postData.images),
+        price: Number(postData.price) || 0
+      };
+
       const actionData = {
-        postData: {
-          ...postData,
-          price: Number(postData.price) || 0
-        },
+        postData: safePostData,
         images,
         auth,
       };
 
-      // Para edición, agregar el ID del post
       if (isEdit) {
         const postId = postToEdit?._id || id;
         if (!postId) {
@@ -315,12 +339,6 @@ const Createpost = () => {
         }
         actionData.status = { _id: postId };
       }
-
-      console.log('📤 Enviando datos:', {
-        isEdit,
-        postId: postToEdit?._id || id,
-        actionData
-      });
 
       if (isEdit) {
         await dispatch(updatePost(actionData));
@@ -333,7 +351,6 @@ const Createpost = () => {
       setTimeout(() => history.push('/'), 2000);
 
     } catch (error) {
-      console.error('❌ Error en submit:', error);
       showAlertMessage(
         error.response?.data?.msg || 
         error.message || 
@@ -388,18 +405,15 @@ const Createpost = () => {
   // 4. CARACTERÍSTICAS GENERALES DEL PRODUCTO
   const ProductFeaturesSection = useMemo(() => (
     <div className="px-2">
-      <Talla postData={postData} handleChangeInput={handleChangeInput} />
+      <Talla postData={postData} handleArrayChange={handleArrayChange} />
       <Genero postData={postData} handleChangeInput={handleChangeInput} />
       <Estado postData={postData} handleChangeInput={handleChangeInput} />
-      <Color postData={postData} handleChangeInput={handleChangeInput} />
+      <Color postData={postData} handleArrayChange={handleArrayChange} />
       <TemporadaDeUso postData={postData} handleChangeInput={handleChangeInput} />
       <Marca postData={postData} handleChangeInput={handleChangeInput} />
       <MaterialProducto postData={postData} handleChangeInput={handleChangeInput} />
-
-
-      
     </div>
-  ), [postData, handleChangeInput]);
+  ), [postData, handleChangeInput, handleArrayChange]);
 
   // 5. PRECIO Y VENTA (ANTES DE IMÁGENES)
   const PriceSection = useMemo(() => (
@@ -407,7 +421,7 @@ const Createpost = () => {
       <Price postData={postData} handleChangeInput={handleChangeInput} />
       <TipoMoneda postData={postData} handleChangeInput={handleChangeInput} />
       <TipoVenta postData={postData} handleChangeInput={handleChangeInput} />
-      <Contact postData={postData} handleChangeInput={handleChangeInput} />
+      <Telefono postData={postData} handleChangeInput={handleChangeInput} />
     </div>
   ), [postData, handleChangeInput]);
 
@@ -427,10 +441,8 @@ const Createpost = () => {
     <Container fluid className="p-2" dir={isRTL ? "rtl" : "ltr"}>
       <Row className="g-0">
         <Col xs={12}>
-          
-
           <Card className="border-0 rounded-0">
-            <Card.Header className={`${isEdit ? "bg-warning text-dark" : "bg-primary text-white"} ps-3`}>
+            <Card.Header className={`${isEdit ? "bg-warning text-dark" : "bg-primarhy text-white"} ps-3`}>
               <Row className="align-items-center g-0">
                 <Col>
                   <h2 className="mb-1 fs-6">
@@ -456,76 +468,74 @@ const Createpost = () => {
           )}
 
           <Card className="shadow-none border-0 rounded-0">
-            <Card.Body className="p-0">
-              <Form onSubmit={handleSubmit} className="p-0">
+            <Form onSubmit={handleSubmit} className="p-0">
 
-                {/* 1. CATEGORÍA Y SUBCATEGORÍA */}
-                {CategorySection}
+              {/* 1. CATEGORÍA Y SUBCATEGORÍA */}
+              {CategorySection}
 
-                {postData.subCategory && (
-                  <>
-                    {/* 2. TÍTULO Y DESCRIPCIÓN */}
-                    {TitleDescriptionSection}
+              {postData.subCategory && (
+                <>
+                  {/* 2. TÍTULO Y DESCRIPCIÓN */}
+                  {TitleDescriptionSection}
 
-                    {/* 3. COMPONENTES ESPECÍFICOS POR CATEGORÍA */}
-                    {SpecificCategorySection}
+                  {/* 3. COMPONENTES ESPECÍFICOS POR CATEGORÍA */}
+                  {SpecificCategorySection}
 
-                    {/* 4. CARACTERÍSTICAS GENERALES DEL PRODUCTO */}
-                    {ProductFeaturesSection}
+                  {/* 4. CARACTERÍSTICAS GENERALES DEL PRODUCTO */}
+                  {ProductFeaturesSection}
 
-                    {/* 5. PRECIO Y VENTA */}
-                    {PriceSection}
+                  {/* 5. PRECIO Y VENTA */}
+                  {PriceSection}
 
-                    {/* 6. IMÁGENES */}
-                    {ImageSection}
+                  {/* 6. IMÁGENES */}
+                  {ImageSection}
 
-                    {/* BOTONES DE ACCIÓN */}
-                    <div className="px-2">
-                      <Row className={`g-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <Col xs={8}>
-                          <div className="d-grid gap-1">
-                            <Button
-                              variant={isEdit ? "warning" : "success"}
-                              type="submit"
-                              size="lg"
-                              className="fw-bold py-2"
-                              disabled={isSubmitting}
-                            >
-                              <FaSave className="me-2" />
-                              {isSubmitting ? 'Cargando...' : 
-                                (isEdit ? t('button_update', 'Mettre à jour') : t('button_publish', 'Publier'))}
-                            </Button>
-                          </div>
-                        </Col>
-                        <Col xs={4}>
+                  {/* BOTONES DE ACCIÓN */}
+                  <div className="px-2">
+                    <Row className={`g-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Col xs={8}>
+                        <div className="d-grid gap-1">
                           <Button
-                            variant="outline-secondary"
+                            variant={isEdit ? "warning" : "success"}
+                            type="submit"
                             size="lg"
-                            className="w-100 py-2"
-                            onClick={() => history.goBack()}
+                            className="fw-bold py-2"
                             disabled={isSubmitting}
                           >
-                            <FaTimes className="me-2" />
-                            {t('common.cancel', 'Annuler')}
+                            <FaSave className="me-2" />
+                            {isSubmitting ? 'Cargando...' : 
+                              (isEdit ? t('button_update', 'Mettre à jour') : t('button_publish', 'Publier'))}
                           </Button>
-                        </Col>
-                      </Row>
-                    </div>
-                  </>
-                )}
+                        </div>
+                      </Col>
+                      <Col xs={4}>
+                        <Button
+                          variant="outline-secondary"
+                          size="lg"
+                          className="w-100 py-2"
+                          onClick={() => history.goBack()}
+                          disabled={isSubmitting}
+                        >
+                          <FaTimes className="me-2" />
+                          {t('common.cancel', 'Annuler')}
+                        </Button>
+                      </Col>
+                    </Row>
+                  </div>
+                </>
+              )}
 
-                {!postData.subCategory && (
-                  <Card className="text-center border-0 bg-light">
-                    <Card.Body className="py-4">
-                      <div className="fs-1 mb-2">🏁</div>
-                      <h5 className="text-muted fs-6">
-                        {t('select_category_first', 'Selecciona una categoría para continuar')}
-                      </h5>
-                    </Card.Body>
-                  </Card>
-                )}
-              </Form>
-            </Card.Body>
+              {!postData.subCategory && (
+                <Card className="text-center border-0 bg-light">
+                  <Card.Body className="py-4">
+                    <div className="fs-1 mb-2">🏁</div>
+                    <h5 className="text-muted fs-6">
+                      {t('select_category_first', 'Selecciona una categoría para continuar')}
+                    </h5>
+                  </Card.Body>
+                </Card>
+              )}
+            </Form>
           </Card>
         </Col>
       </Row>

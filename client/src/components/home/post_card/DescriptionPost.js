@@ -21,6 +21,61 @@ const DescriptionPost = ({ post }) => {
         cardShadow: "0 2px 8px rgba(0, 0, 0, 0.12)"
     };
 
+    // 🎯 FUNCIONES DE CONTACTO
+    const handleCallOwner = () => {
+        const phoneNumber = post.telefono || post.user?.mobile;
+        if (!phoneNumber) {
+            alert(isRTL ? 'رقم الهاتف غير متاح' : 'Numéro de téléphone non disponible');
+            return;
+        }
+        
+        // 🎯 LLAMADA DIRECTA SIN CONFIRMACIÓN
+        window.location.href = `tel:${phoneNumber}`;
+    };
+
+    const handleChatWithOwner = () => {
+        if (!post.user || !post.user._id) {
+            alert(isRTL ? 'لا يمكن بدء محادثة مع هذا البائع' : 'Impossible de démarrer une conversation avec ce vendeur');
+            return;
+        }
+        
+        // 🎯 REDIRIGIR AL CHAT - puedes integrar tu lógica de chat aquí
+        alert(isRTL ? 
+            `سيتم فتح الدردشة مع ${post.user.username}` : 
+            `Ouverture de la conversation avec ${post.user.username}`
+        );
+        // Ejemplo: window.open(`/message/${post.user._id}`, '_blank');
+    };
+
+    const handleVideoCall = () => {
+        // 🎯 INICIAR CÁMARA PARA STREAMING/VIDEO LLAMADA
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    alert(isRTL ? 
+                        'الكاميرا جاهزة للاتصال المرئي!' : 
+                        'Caméra activée pour la visioconférence !'
+                    );
+                    // Detener el stream después de mostrar el mensaje
+                    stream.getTracks().forEach(track => track.stop());
+                    // 🎯 Aquí puedes integrar con tu servicio de video llamada
+                    // Ejemplo: window.open(`https://meet.google.com/new`, '_blank');
+                })
+                .catch((error) => {
+                    console.error('Error accessing camera:', error);
+                    alert(isRTL ? 
+                        'تعذر الوصول إلى الكاميرا. يرجى التحقق من الأذونات.' : 
+                        'Impossible d\'accéder à la caméra. Veuillez vérifier les permissions.'
+                    );
+                });
+        } else {
+            alert(isRTL ? 
+                'الاتصال المرئي غير متاح على هذا الجهاز.' : 
+                'La visioconférence n\'est pas disponible sur cet appareil.'
+            );
+        }
+    };
+
     // 🏷️ Información de categoría para tienda de ropa
     const getCategoryInfo = () => {
         const categories = {
@@ -152,435 +207,149 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🆕 FIELDDISPLAY MEJORADO - TEXTO MÁS GRANDE Y NEGRITA
-    const FieldDisplay = ({ label, value, icon, type = "text" }) => {
-        if (!value && type !== "boolean") return null;
-
-        return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '12px',
-                marginBottom: '12px',
-                padding: '10px 0',
-                borderBottom: '1px solid #e5e7eb',
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                width: '100%',
-                wordBreak: 'break-word'
-            }}>
-                <span style={{
-                    fontWeight: '800',
-                    color: '#000000',
-                    minWidth: isRTL ? 'auto' : '140px',
-                    maxWidth: isRTL ? '160px' : '160px',
-                    fontSize: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    flexShrink: 0,
-                    textAlign: isRTL ? 'right' : 'left',
-                    lineHeight: '1.5'
-                }}>
-                    {isRTL ? <>{label} {icon}</> : <>{icon} {label}</>}:
-                </span>
-                <span style={{ 
-                    fontSize: '16px',
-                    color: '#1f2937',
-                    fontWeight: '600',
-                    flex: 1,
-                    textAlign: isRTL ? 'right' : 'left',
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word',
-                    lineHeight: '1.6'
-                }}>
-                    {type === "boolean" ? (
-                        <span style={{
-                            padding: '6px 12px',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '700',
-                            backgroundColor: value ? '#d1fae5' : '#fee2e2',
-                            color: value ? '#065f46' : '#991b1b',
-                            display: 'inline-block'
-                        }}>
-                            {value ? "✅ Oui" : "❌ Non"}
-                        </span>
-                    ) : (
-                        <Highlight>{value}</Highlight>
-                    )}
-                </span>
-            </div>
-        );
-    };
-
-    // 💰 PRICEDISPLAY MEJORADO - TEXTO MÁS GRANDE
-    const PriceDisplay = ({ label, value, currency = "USD" }) => {
-        if (!value) return null;
-
-        return (
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '14px 16px',
-                backgroundColor: '#ecfdf5',
-                borderRadius: '8px',
-                border: '2px solid #10b981',
-                marginBottom: '12px',
-                flexDirection: isRTL ? 'row-reverse' : 'row',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: '0 2px 4px rgba(16, 185, 129, 0.15)'
-            }}>
-                <span style={{ 
-                    fontWeight: '800',
-                    color: '#000000',
-                    fontSize: '16px',
-                    textAlign: isRTL ? 'right' : 'left'
-                }}>
-                    {isRTL ? <>{label} 💰</> : <>💰 {label}</>}:
-                </span>
-                <div style={{ textAlign: isRTL ? 'left' : 'right' }}>
-                    <div style={{ 
-                        fontSize: '20px',
-                        fontWeight: '900',
-                        color: '#065f46',
-                        whiteSpace: 'nowrap',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                    }}>
-                        {value} {currency}
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    // 📋 ARRAYDISPLAY MEJORADO - TEXTO MÁS GRANDE
-    const ArrayDisplay = ({ label, items, icon }) => {
-        if (!items || items.length === 0) return null;
-
-        return (
-            <div style={{ marginBottom: '16px', width: '100%' }}>
-                <div style={{
-                    fontWeight: '800',
-                    color: '#000000',
-                    marginBottom: '12px',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    padding: '8px 0',
-                    borderBottom: '2px solid #e5e7eb'
-                }}>
-                    {isRTL ? <>{label} {icon}</> : <>{icon} {label}</>}:
-                </div>
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '10px',
-                    justifyContent: isRTL ? 'flex-end' : 'flex-start',
-                    marginTop: '10px'
-                }}>
-                    {items.map((item, index) => (
-                        <span key={index} style={{
-                            backgroundColor: '#f3f4f6',
-                            color: '#1f2937',
-                            padding: '10px 14px',
-                            borderRadius: '8px',
-                            fontSize: '15px',
-                            fontWeight: '700',
-                            wordBreak: 'break-word',
-                            textAlign: isRTL ? 'right' : 'left',
-                            border: '1px solid #d1d5db',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                        }}>
-                            {isRTL ? <>{item} ✅</> : <>✅ {item}</>}
-                        </span>
-                    ))}
-                </div>
-            </div>
-        );
-    };
-
-    // 🔹 SECCIÓN 1: ANUNCIO PRINCIPAL - ACTUALIZADO PARA MODA
+    // 🔹 SECCIÓN 1: ANUNCIO PRINCIPAL
     const generateMainAnnouncement = () => {
-        const categoryInfo = getCategoryInfo();
-
         return (
             <div style={{
                 background: styles.mainGradient,
                 color: 'white',
                 padding: '20px',
                 borderRadius: '12px',
-                marginBottom: '16px',
                 textAlign: 'center',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                marginBottom: '20px',
+                boxShadow: styles.cardShadow
             }}>
-                <div style={{ fontSize: '36px', marginBottom: '12px' }}>
-                    {categoryInfo.icon}
-                </div>
                 <h1 style={{
                     margin: '0 0 10px 0',
-                    fontSize: '24px',
-                    fontWeight: '900',
-                    wordBreak: 'break-word',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    fontSize: '22px',
+                    fontWeight: '800',
+                    wordBreak: 'break-word'
                 }}>
-                    {t('excitingProduct', '🎉 Nouveau Produit Exclusif !')}
+                    {post.title || t('descripcion.noTitle', 'Sans titre')}
                 </h1>
-                <p style={{
-                    fontSize: '17px',
-                    opacity: '0.98',
-                    lineHeight: '1.6',
-                    marginBottom: '16px',
-                    padding: '0 12px',
-                    wordBreak: 'break-word',
+                
+                <div style={{
+                    fontSize: '16px',
+                    opacity: '0.9',
                     fontWeight: '600'
                 }}>
-                    <strong style={{ fontSize: '18px' }}>{categoryInfo.title}</strong> {t('proudlyPresents', 'vous présente un')}
-                    <strong style={{ fontSize: '18px' }}> {post.title}</strong> {t('carefullySelected', 'soigneusement sélectionné pour votre style.')}
-                </p>
-
-                {/* Información clave del producto */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    gap: '16px',
-                    flexWrap: 'wrap',
-                    marginTop: '16px'
-                }}>
-                    {post.price && (
-                        <div style={{ 
-                            textAlign: 'center', 
-                            minWidth: '160px',
-                            flex: '1 1 auto', 
-                            maxWidth: '240px',
-                            backgroundColor: 'rgba(255,255,255,0.15)',
-                            padding: '12px',
-                            borderRadius: '8px'
-                        }}>
-                            <div style={{ 
-                                fontSize: '14px',
-                                opacity: '0.9',
-                                fontWeight: '700'
-                            }}>
-                                {isRTL ? 'السعر 💰' : '💰 Prix'}
-                            </div>
-                            <div style={{ 
-                                fontSize: '15px',
-                                fontWeight: '800',
-                                wordBreak: 'break-word',
-                                padding: '6px',
-                                marginTop: '6px'
-                            }}>
-                                {post.price} {post.tipodemoneda || 'USD'}
-                            </div>
-                        </div>
-                    )}
-
-                    {post.etat && (
-                        <div style={{ 
-                            textAlign: 'center',
-                            minWidth: '140px',
-                            flex: '1 1 auto',
-                            maxWidth: '240px',
-                            backgroundColor: 'rgba(255,255,255,0.15)',
-                            padding: '12px',
-                            borderRadius: '8px'
-                        }}>
-                            <div style={{ 
-                                fontSize: '14px',
-                                opacity: '0.9',
-                                fontWeight: '700'
-                            }}>
-                                {isRTL ? 'الحالة 📊' : '📊 État'}
-                            </div>
-                            <div style={{
-                                fontSize: '15px',
-                                fontWeight: '800',
-                                wordBreak: 'break-word',
-                                padding: '6px',
-                                marginTop: '6px'
-                            }}>
-                                {post.etat}
-                            </div>
-                        </div>
-                    )}
-
-                    {post.marca && (
-                        <div style={{ 
-                            textAlign: 'center', 
-                            minWidth: '120px',
-                            flex: '1 1 auto', 
-                            maxWidth: '180px',
-                            backgroundColor: 'rgba(255,255,255,0.15)',
-                            padding: '12px',
-                            borderRadius: '8px'
-                        }}>
-                            <div style={{ 
-                                fontSize: '14px',
-                                opacity: '0.9',
-                                fontWeight: '700'
-                            }}>
-                                {isRTL ? 'العلامة التجارية 🏷️' : '🏷️ Marque'}
-                            </div>
-                            <div style={{ 
-                                fontSize: '15px',
-                                fontWeight: '800',
-                                marginTop: '6px'
-                            }}>
-                                {post.marca}
-                            </div>
-                        </div>
-                    )}
+                    {getCategoryInfo().icon} {getCategoryInfo().title}
                 </div>
             </div>
         );
     };
 
-    // 🔹 SECCIÓN 2: DESCRIPCIÓN DEL PRODUCTO
+    // 🔹 SECCIÓN 2: DESCRIPCIÓN
     const generateDescriptionSection = () => {
-        if (!post.description) return null;
+        if (!post.description && !post.content) return null;
+
+        const description = post.description || post.content;
+        const shouldTruncate = description.length > 200;
+        const displayText = readMore ? description : (shouldTruncate ? description.substring(0, 200) + '...' : description);
 
         return (
             <div style={{
                 backgroundColor: '#f8fafc',
                 padding: '18px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '2px solid #cbd5e1',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: styles.cardShadow
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #e2e8f0'
             }}>
                 <h2 style={{
+                    margin: '0 0 12px 0',
+                    fontSize: '18px',
+                    color: styles.primaryColor,
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '14px',
-                    color: styles.primaryColor,
-                    fontSize: '20px',
-                    fontWeight: '900',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    borderBottom: '2px solid #cbd5e1',
-                    paddingBottom: '10px'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'وصف المنتج 📝' : '📝 Description du Produit'}
+                    📝 {isRTL ? 'الوصف' : t('descripcion.description', 'Description')}
                 </h2>
-                <div style={{
+                
+                <p style={{
+                    margin: '0',
                     fontSize: '16px',
-                    color: '#374151',
-                    lineHeight: '1.7',
-                    textAlign: isRTL ? 'right' : 'left',
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word',
-                    fontWeight: '600'
+                    lineHeight: '1.6',
+                    color: styles.textMedium,
+                    wordBreak: 'break-word'
                 }}>
-                    <span>
-                        {
-                            post.description.length < 120
-                                ? post.description
-                                : readMore ? post.description + ' ' : post.description.slice(0, 120) + '...'
+                    {displayText}
+                </p>
+                
+                {shouldTruncate && (
+                    <button
+                        onClick={() => setReadMore(!readMore)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: styles.purpleColor,
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: '700',
+                            marginTop: '10px',
+                            padding: '5px 0'
+                        }}
+                    >
+                        {readMore ? 
+                            (isRTL ? 'عرض أقل' : t('descripcion.showLess', 'Voir moins')) : 
+                            (isRTL ? 'عرض المزيد' : t('descripcion.showMore', 'Voir plus'))
                         }
-                    </span>
-                    {post.description.length > 120 && (
-                        <span
-                            style={{
-                                color: '#1e293b',
-                                cursor: 'pointer',
-                                fontWeight: '800',
-                                marginLeft: isRTL ? '0' : '10px',
-                                marginRight: isRTL ? '10px' : '0',
-                                fontSize: '15px',
-                                display: 'inline-block',
-                                marginTop: '8px',
-                                textDecoration: 'underline'
-                            }}
-                            onClick={() => setReadMore(!readMore)}
-                        >
-                            {readMore ?
-                                (isRTL ? 'عرض أقل ▲' : '▲ Voir moins') :
-                                (isRTL ? 'قراءة المزيد ▼' : '▼ Lire la suite')}
-                        </span>
-                    )}
-                </div>
+                    </button>
+                )}
             </div>
         );
     };
 
-    // 🔹 SECCIÓN 3: INFORMACIÓN BÁSICA DEL PRODUCTO
+    // 🔹 SECCIÓN 3: INFORMACIÓN BÁSICA
     const generateBasicInfoSection = () => {
         return (
             <div style={{
-                backgroundColor: '#eff6ff',
+                backgroundColor: '#f8fafc',
                 padding: '18px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '2px solid #93c5fd',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: styles.cardShadow
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #e2e8f0'
             }}>
                 <h2 style={{
+                    margin: '0 0 15px 0',
+                    fontSize: '18px',
+                    color: styles.primaryColor,
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '14px',
-                    color: styles.primaryColor,
-                    fontSize: '20px',
-                    fontWeight: '900',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    borderBottom: '2px solid #93c5fd',
-                    paddingBottom: '10px'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'معلومات المنتج 🎯' : '🎯 Informations du Produit'}
+                    ℹ️ {isRTL ? 'المعلومات الأساسية' : t('descripcion.basicInfo', 'Informations de Base')}
                 </h2>
                 
-                <FieldDisplay
-                    label={isRTL ? "العنوان" : "Titre"}
-                    value={post.title}
-                    icon="🏷️"
-                />
-                <FieldDisplay
-                    label={isRTL ? "الفئة" : "Catégorie"}
-                    value={post.category}
-                    icon="📂"
-                />
-                <FieldDisplay
-                    label={isRTL ? "الفئة الفرعية" : "Sous-catégorie"}
-                    value={post.subCategory}
-                    icon="📁"
-                />
-                
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '0',
-                    marginTop: '6px'
-                }}>
-                    <FieldDisplay
-                        label={isRTL ? "الجنس" : "Genre"}
-                        value={post.genero}
-                        icon="👤"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "الحالة" : "État"}
-                        value={post.etat}
-                        icon="📊"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "الماركة" : "Marque"}
-                        value={post.marca}
-                        icon="🏷️"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "المادة" : "Matière"}
-                        value={post.material}
-                        icon="🧵"
-                    />
+                <div style={{ display: 'grid', gap: '12px' }}>
+                    {post.etat && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'الحالة' : t('descripcion.condition', 'État')}:
+                            </span>
+                            <Highlight type="feature">{post.etat}</Highlight>
+                        </div>
+                    )}
+                    
+                    {post.genero && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'الجنس' : t('descripcion.gender', 'Genre')}:
+                            </span>
+                            <Highlight>{post.genero}</Highlight>
+                        </div>
+                    )}
+                    
+                    {post.marca && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'العلامة التجارية' : t('descripcion.brand', 'Marque')}:
+                            </span>
+                            <Highlight>{post.marca}</Highlight>
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -595,302 +364,147 @@ const DescriptionPost = ({ post }) => {
 
         return (
             <div style={{
-                backgroundColor: '#f0fdf4',
+                backgroundColor: '#f8fafc',
                 padding: '18px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '2px solid #86efac',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: styles.cardShadow
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #e2e8f0'
             }}>
                 <h2 style={{
+                    margin: '0 0 15px 0',
+                    fontSize: '18px',
+                    color: styles.primaryColor,
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '14px',
-                    color: styles.successColor,
-                    fontSize: '20px',
-                    fontWeight: '900',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    borderBottom: '2px solid #86efac',
-                    paddingBottom: '10px'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'الألوان والمقاسات 🎨' : '🎨 Couleurs & Tailles'}
+                    🎨 {isRTL ? 'الألوان والمقاسات' : t('descripcion.colorsSizes', 'Couleurs & Tailles')}
                 </h2>
-
-                {hasColors && (
-                    <ArrayDisplay
-                        label={isRTL ? "الألوان المتاحة" : "Couleurs Disponibles"}
-                        items={post.color}
-                        icon="🎨"
-                    />
-                )}
-
-                {hasSizes && (
-                    <ArrayDisplay
-                        label={isRTL ? "المقاسات المتاحة" : "Tailles Disponibles"}
-                        items={post.talla}
-                        icon="📏"
-                    />
-                )}
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '0',
-                    marginTop: '12px'
-                }}>
-                    <FieldDisplay
-                        label={isRTL ? "الموسم" : "Saison"}
-                        value={post.temporada}
-                        icon="🌸"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "نوع اللون" : "Type de Couleur"}
-                        value={post.tipocolor}
-                        icon="🎨"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "المناسبة" : "Occasion"}
-                        value={post.ocasion}
-                        icon="🎉"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "النمط" : "Style"}
-                        value={post.estilo}
-                        icon="👔"
-                    />
+                
+                <div style={{ display: 'grid', gap: '12px' }}>
+                    {hasColors && (
+                        <div>
+                            <span style={{ fontWeight: '600', color: styles.textDark, display: 'block', marginBottom: '8px' }}>
+                                {isRTL ? 'الألوان المتاحة' : t('descripcion.availableColors', 'Couleurs disponibles')}:
+                            </span>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                {post.color.map((color, index) => (
+                                    <Highlight key={index} type="feature">{color}</Highlight>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {hasSizes && (
+                        <div>
+                            <span style={{ fontWeight: '600', color: styles.textDark, display: 'block', marginBottom: '8px' }}>
+                                {isRTL ? 'المقاسات المتاحة' : t('descripcion.availableSizes', 'Tailles disponibles')}:
+                            </span>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                {post.talla.map((size, index) => (
+                                    <Highlight key={index}>{size}</Highlight>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         );
     };
 
-    // 🔹 SECCIÓN 5: PRECIO Y TIPO DE VENTA
+    // 🔹 SECCIÓN 5: PRECIO
     const generatePricingSection = () => {
-        if (!post.price && !post.tipoventa) return null;
+        if (!post.price) return null;
 
         return (
             <div style={{
-                backgroundColor: '#fffbeb',
+                backgroundColor: '#f0fdf4',
                 padding: '18px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '2px solid #fbbf24',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: styles.cardShadow
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #bbf7d0'
             }}>
                 <h2 style={{
+                    margin: '0 0 15px 0',
+                    fontSize: '18px',
+                    color: styles.successColor,
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '14px',
-                    color: styles.warningColor,
-                    fontSize: '20px',
-                    fontWeight: '900',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    borderBottom: '2px solid #fbbf24',
-                    paddingBottom: '10px'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'التسعير 💰' : '💰 Tarification'}
+                    💰 {isRTL ? 'السعر' : t('descripcion.price', 'Prix')}
                 </h2>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '10px'
-                }}>
-                    <PriceDisplay
-                        label={isRTL ? "السعر" : "Prix"}
-                        value={post.price}
-                        currency={post.tipodemoneda || 'USD'}
-                    />
-                </div>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '0',
-                    marginTop: '12px'
-                }}>
-                    <FieldDisplay 
-                        label={isRTL ? "نوع البيع" : "Type de Vente"} 
-                        value={post.tipoventa}
-                        icon="🏷️"
-                    />
-                    <FieldDisplay 
-                        label={isRTL ? "العملة" : "Devise"} 
-                        value={post.tipodemoneda}
-                        icon="💱"
-                    />
+                
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ 
+                        fontSize: '28px', 
+                        fontWeight: '900', 
+                        color: styles.successColor,
+                        marginBottom: '8px'
+                    }}>
+                        <Highlight type="price">
+                            {post.price} {post.tipodemoneda || 'DZD'}
+                        </Highlight>
+                    </div>
+                    
+                    {post.tipoventa && (
+                        <div style={{ 
+                            fontSize: '16px', 
+                            color: styles.textLight,
+                            fontWeight: '600'
+                        }}>
+                            {isRTL ? 'نوع البيع' : t('descripcion.saleType', 'Type de vente')}: {' '}
+                            <Highlight>{post.tipoventa}</Highlight>
+                        </div>
+                    )}
                 </div>
             </div>
         );
     };
 
-    // 🔹 SECCIÓN 6: CAMPOS ESPECÍFICOS POR CATEGORÍA
+    // 🔹 SECCIÓN 6: INFORMACIÓN ESPECÍFICA DE CATEGORÍA
     const generateCategorySpecificSection = () => {
-        const hasSpecificFields = post.edadbebes || post.tipomaterialbijoux || post.tipopiedra ||
-            post.alturatacon || post.tipodecierre || post.formadepunta || post.tipodesuela ||
-            post.tipodecierre_hombre || post.tipodelente || post.anchopuente || post.langitudpatilla ||
-            post.movimientoreloj || post.materialcorrea || post.resistenciaagua || post.funcionalidades ||
-            post.tiporeloj || post.tipodsangle || post.correa || post.tallasaco || post.tipodelabata ||
-            post.sectordetrabajo;
-
-        if (!hasSpecificFields) return null;
-
+        const categoryInfo = getCategoryInfo();
+        
         return (
             <div style={{
                 backgroundColor: '#faf5ff',
                 padding: '18px',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                border: '2px solid #e9d5ff',
-                width: '100%',
-                boxSizing: 'border-box',
-                boxShadow: styles.cardShadow
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #e9d5ff'
             }}>
                 <h2 style={{
+                    margin: '0 0 15px 0',
+                    fontSize: '18px',
+                    color: styles.purpleColor,
+                    fontWeight: '700',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    marginBottom: '14px',
-                    color: styles.purpleColor,
-                    fontSize: '20px',
-                    fontWeight: '900',
-                    flexDirection: isRTL ? 'row-reverse' : 'row',
-                    borderBottom: '2px solid #e9d5ff',
-                    paddingBottom: '10px'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'مواصفات إضافية 🔧' : '🔧 Spécifications Additionnelles'}
+                    {categoryInfo.icon} {isRTL ? 'معلومات الفئة' : t('descripcion.categoryInfo', 'Informations Catégorie')}
                 </h2>
-
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gap: '0'
-                }}>
-                    {/* Bebés */}
-                    <FieldDisplay
-                        label={isRTL ? "عمر الأطفال" : "Âge Bébés"}
-                        value={post.edadbebes}
-                        icon="👶"
-                    />
-
-                    {/* Bijoux */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع الحجر" : "Type de Pierre"}
-                        value={post.tipopiedra}
-                        icon="💎"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "نوع المادة" : "Type de Matériau"}
-                        value={post.tipomaterialbijoux}
-                        icon="🔧"
-                    />
-
-                    {/* Zapatos Mujer */}
-                    <FieldDisplay
-                        label={isRTL ? "ارتفاع الكعب" : "Hauteur Talon"}
-                        value={post.alturatacon}
-                        icon="👠"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "نوع الإغلاق" : "Type de Fermeture"}
-                        value={post.tipodecierre}
-                        icon="🔒"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "شكل المقدمة" : "Forme de la Pointe"}
-                        value={post.formadepunta}
-                        icon="👞"
-                    />
-
-                    {/* Zapatos Hombre */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع النعل" : "Type de Semelle"}
-                        value={post.tipodesuela}
-                        icon="👟"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "نوع الإغلاق" : "Type de Fermeture"}
-                        value={post.tipodecierre_hombre}
-                        icon="🔒"
-                    />
-
-                    {/* Gafas */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع العدسة" : "Type de Verre"}
-                        value={post.tipodelente}
-                        icon="👓"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "عرض الجسر" : "Largeur Pont"}
-                        value={post.anchopuente}
-                        icon="📏"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "طول الذراع" : "Longueur Branche"}
-                        value={post.langitudpatilla}
-                        icon="📐"
-                    />
-
-                    {/* Relojes */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع الحركة" : "Type de Mouvement"}
-                        value={post.movimientoreloj}
-                        icon="⚙️"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "مادة السوار" : "Matière du Bracelet"}
-                        value={post.materialcorrea}
-                        icon="⌚"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "مقاومة الماء" : "Résistance à l'Eau"}
-                        value={post.resistenciaagua}
-                        icon="💧"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "الوظائف" : "Fonctionnalités"}
-                        value={post.funcionalidades}
-                        icon="🔧"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "نوع الساعة" : "Type de Montre"}
-                        value={post.tiporeloj}
-                        icon="⏰"
-                    />
-
-                    {/* Sacs et Valises */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع الحزام" : "Type de Sangle"}
-                        value={post.tipodsangle}
-                        icon="🎒"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "الحزام" : "Correa"}
-                        value={post.correa}
-                        icon="👜"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "مقاس الكيس" : "Taille du Sac"}
-                        value={post.tallasaco}
-                        icon="📦"
-                    />
-
-                    {/* Professionnel */}
-                    <FieldDisplay
-                        label={isRTL ? "نوع المعطف" : "Type de Blouse"}
-                        value={post.tipodelabata}
-                        icon="🥼"
-                    />
-                    <FieldDisplay
-                        label={isRTL ? "قطاع العمل" : "Secteur de Travail"}
-                        value={post.sectordetrabajo}
-                        icon="💼"
-                    />
+                
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ 
+                        fontSize: '20px', 
+                        fontWeight: '800', 
+                        color: styles.purpleColor,
+                        marginBottom: '8px'
+                    }}>
+                        {categoryInfo.title}
+                    </div>
+                    
+                    <div style={{ 
+                        fontSize: '16px', 
+                        color: styles.textLight,
+                        fontStyle: 'italic'
+                    }}>
+                        {categoryInfo.description}
+                    </div>
                 </div>
             </div>
         );
@@ -1032,10 +646,7 @@ const DescriptionPost = ({ post }) => {
                                     justifyContent: 'center',
                                     boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
                                 }}
-                                onClick={() => {
-                                    // ✅ Abre el dialer del teléfono para llamada directa
-                                    window.location.href = `tel:${post.user.mobile}`;
-                                }}
+                                onClick={handleCallOwner}
                                 onTouchStart={(e) => {
                                     e.currentTarget.style.backgroundColor = '#059669';
                                     e.currentTarget.style.transform = 'scale(0.98)';
@@ -1066,33 +677,7 @@ const DescriptionPost = ({ post }) => {
                                     justifyContent: 'center',
                                     boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)'
                                 }}
-                                onClick={() => {
-                                    // ✅ Abre la cámara para streaming/video llamada
-                                    // Puedes integrar con WebRTC, Zoom, Meet, etc.
-                                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                                        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                                            .then(() => {
-                                                // Aquí puedes integrar con tu servicio de video llamada
-                                                alert(isRTL ? 
-                                                    'جاهز للاتصال المرئي! سيتم فتح الكاميرا.' : 
-                                                    'Prêt pour la visioconférence ! La caméra sera activée.'
-                                                );
-                                                // Ejemplo: window.open(`https://meet.google.com/new?phone=${post.user.mobile}`, '_blank');
-                                            })
-                                            .catch(() => {
-                                                alert(isRTL ? 
-                                                    'تعذر الوصول إلى الكاميرا. يرجى التحقق من الأذونات.' : 
-                                                    'Impossible d\'accéder à la caméra. Veuillez vérifier les permissions.'
-                                                );
-                                            });
-                                    } else {
-                                        // Fallback para dispositivos sin cámara
-                                        alert(isRTL ? 
-                                            'الاتصال المرئي غير متاح على هذا الجهاز.' : 
-                                            'La visioconférence n\'est pas disponible sur cet appareil.'
-                                        );
-                                    }
-                                }}
+                                onClick={handleVideoCall}
                                 onTouchStart={(e) => {
                                     e.currentTarget.style.backgroundColor = '#7c3aed';
                                     e.currentTarget.style.transform = 'scale(0.98)';
@@ -1117,10 +702,183 @@ const DescriptionPost = ({ post }) => {
                     </div>
                 )}
 
+                {/* 🎯 NUEVA SECCIÓN: ICONOS DE CONTACTO AL FINAL */}
+                <div style={{
+                    backgroundColor: 'rgba(255,255,255,0.15)',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    marginTop: '16px'
+                }}>
+                    <h3 style={{
+                        fontSize: '16px',
+                        marginBottom: '12px',
+                        fontWeight: '700',
+                        opacity: '0.9'
+                    }}>
+                        {isRTL ? 'طرق التواصل السريعة' : 'Contact Rapide'}
+                    </h3>
+                    
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: '20px',
+                        alignItems: 'center',
+                        flexWrap: 'wrap'
+                    }}>
+                        {/* Icono Teléfono */}
+                        <div 
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                padding: '10px',
+                                borderRadius: '8px',
+                                minWidth: '80px'
+                            }}
+                            onClick={handleCallOwner}
+                            onTouchStart={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(16, 185, 129, 0.3)';
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onTouchEnd={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                            title={isRTL ? 'اتصال هاتفي' : 'Appel téléphonique'}
+                        >
+                            <div style={{
+                                fontSize: '24px',
+                                marginBottom: '6px',
+                                backgroundColor: '#10b981',
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
+                            }}>
+                                📞
+                            </div>
+                            <span style={{
+                                fontSize: '12px',
+                                fontWeight: '700',
+                                textAlign: 'center'
+                            }}>
+                                {isRTL ? 'اتصال' : 'Appel'}
+                            </span>
+                        </div>
+
+                        {/* Icono Chat */}
+                        <div 
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                padding: '10px',
+                                borderRadius: '8px',
+                                minWidth: '80px'
+                            }}
+                            onClick={handleChatWithOwner}
+                            onTouchStart={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.3)';
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onTouchEnd={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                            title={isRTL ? 'دردشة مع البائع' : 'Chat avec le vendeur'}
+                        >
+                            <div style={{
+                                fontSize: '24px',
+                                marginBottom: '6px',
+                                backgroundColor: '#3b82f6',
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)'
+                            }}>
+                                💬
+                            </div>
+                            <span style={{
+                                fontSize: '12px',
+                                fontWeight: '700',
+                                textAlign: 'center'
+                            }}>
+                                {isRTL ? 'دردشة' : 'Chat'}
+                            </span>
+                        </div>
+
+                        {/* Icono Cámara/Video */}
+                        <div 
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                padding: '10px',
+                                borderRadius: '8px',
+                                minWidth: '80px'
+                            }}
+                            onClick={handleVideoCall}
+                            onTouchStart={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.3)';
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onTouchEnd={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                            title={isRTL ? 'اتصال مرئي' : 'Appel vidéo'}
+                        >
+                            <div style={{
+                                fontSize: '24px',
+                                marginBottom: '6px',
+                                backgroundColor: '#8b5cf6',
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '0 2px 8px rgba(139, 92, 246, 0.4)'
+                            }}>
+                                📹
+                            </div>
+                            <span style={{
+                                fontSize: '12px',
+                                fontWeight: '700',
+                                textAlign: 'center'
+                            }}>
+                                {isRTL ? 'فيديو' : 'Vidéo'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div style={{
+                        fontSize: '11px',
+                        opacity: '0.7',
+                        marginTop: '12px',
+                        fontStyle: 'italic',
+                        textAlign: 'center'
+                    }}>
+                        {isRTL ? 'انقر على أيقونة للاتصال الفوري' : 'Cliquez sur une icône pour un contact immédiat'}
+                    </div>
+                </div>
+
                 <p style={{ 
                     fontSize: '15px',
                     opacity: '0.9', 
-                    margin: '0',
+                    margin: '16px 0 0 0',
                     wordBreak: 'break-word',
                     fontWeight: '700'
                 }}>

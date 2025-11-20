@@ -315,7 +315,7 @@ export const deleteUser = ({id, auth}) => async (dispatch) => {
   
   export const getAdminComments = ({ adminUserId, auth }) => async (dispatch) => {
     try {
-      console.log('[FRONTEND] Solicitando comentarios para:', adminUserId);
+      
       
       const res = await getDataAPI(`admin/comments/${adminUserId}`, auth.token);
       

@@ -10,12 +10,9 @@ const postSchema = new mongoose.Schema({
     user: { type: mongoose.Types.ObjectId, ref: 'user' },
 
     // 🔷 CATEGORÍA Y SUBCATEGORÍA
-    category: {
-        type: String,
-        default: "Vetementes"
-    },
+    category : String,
     subCategory: String,
-    contact: String,
+    telefono: Number,
     // 🔷 INFORMACIÓN BÁSICA
     title: String,
     description: String,
@@ -25,7 +22,7 @@ const postSchema = new mongoose.Schema({
     price: String,
     tipodemoneda: {
         type: String,
-        default: "USD"
+        default: "DA"
     },
     tipoventa: String,
     

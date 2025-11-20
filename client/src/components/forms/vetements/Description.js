@@ -64,9 +64,9 @@ const Description = ({ postData = {}, handleChangeInput, theme }) => {
     // 🌍 PLACEHOLDERS POR IDIOMA
     const getPlaceholder = () => {
         if (isRTL) {
-            return "صف منتجك... اذكر المواد، القياسات المتاحة، الحالة، وميزات أخرى مهمة."
+            return "صف منتجك..."
         } else if (isFrench) {
-            return "Décrivez votre produit... Mentionnez les matériaux, tailles disponibles, état, et autres caractéristiques importantes."
+            return "Décrivez votre produit...  "
         } else {
             return "Describe tu producto... Menciona materiales, tallas disponibles, condición y otras características importantes."
         }
@@ -74,8 +74,7 @@ const Description = ({ postData = {}, handleChangeInput, theme }) => {
 
     return (
         <Card style={rtlStyles.card}>
-            <Card.Body className="p-4" style={{ direction: rtlStyles.direction }}>
-                <Form.Group>
+                  <Form.Group>
                     {/* 📄 DESCRIPCIÓN CON EMOJI Y TRADUCCIÓN */}
                     <Form.Label style={rtlStyles.formLabel}>
                         📄 {t('product_description', 'Descripción del Producto')}
@@ -84,7 +83,7 @@ const Description = ({ postData = {}, handleChangeInput, theme }) => {
                     <Form.Control
                         as="textarea"
                         name="description"
-                        rows={4}
+                        rows={2}
                         placeholder={getPlaceholder()}
                         value={safePostData.description}
                         onChange={handleChangeInput}
@@ -93,14 +92,10 @@ const Description = ({ postData = {}, handleChangeInput, theme }) => {
                         maxLength={500}
                     />
                     
-                    {/* 🔢 CONTADOR DE CARACTERES - DIRECCIÓN FIJA PARA NÚMEROS */}
-                    <Form.Text style={rtlStyles.characterCount}>
-                        {safePostData.description.length}/500 {t('createpost:characters', 'caracteres')}
-                    </Form.Text>
+                   
                 </Form.Group>
  
-              
-            </Card.Body>
+           
         </Card>
     )
 }

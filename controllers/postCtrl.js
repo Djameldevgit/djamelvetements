@@ -26,9 +26,7 @@ const postCtrl = {
                 return res.status(400).json({msg: "Veuillez ajouter au moins une photo."})
             }
     
-            if (!postData) {
-                return res.status(400).json({msg: "Données du post manquantes."})
-            }
+           
     
             // Validación de campos requeridos
             if (!postData.subCategory) {
@@ -68,15 +66,8 @@ const postCtrl = {
         try {
             const { postData, images } = req.body
     
-            if (!postData) {
-                return res.status(400).json({msg: "Données du post manquantes."})
-            }
-    
-            // Validación de campos requeridos
-            if (!postData.subCategory) {
-                return res.status(400).json({msg: "La catégorie est requise."})
-            }
-     
+         
+           
     
             // Buscar y actualizar el post
             const post = await Posts.findOneAndUpdate(
@@ -86,9 +77,7 @@ const postCtrl = {
                         ...postData, // ✅ TODOS los campos automáticamente
                         images: images || postData.images,
                         
-                        // Solo campos críticos
-                        category: postData.category || "vatements",
-                      
+                     
                         // Arrays
                         
                     }
@@ -262,7 +251,7 @@ getPosts: async (req, res) => {
 
         const posts = await features.query
             .sort(sortOption)
-            .populate("user likes", "avatar username fullname followers")
+            .populate("user likes", "avatar username fullname mobile presentacion story:website address followers")
             .populate({
                 path: "comments",
                 populate: {

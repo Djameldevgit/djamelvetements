@@ -78,9 +78,17 @@ const CardFooter = ({ post }) => {
             return;
         }
         
-        if (window.confirm(`Voulez-vous appeler ${post.phone} ?`)) {
-            window.location.href = `tel:${post.phone}`;
-        }
+        // 🎯 LLAMADA DIRECTA SIN CONFIRMACIÓN - MEJOR EXPERIENCIA DE USUARIO
+        window.location.href = `tel:${post.phone}`;
+        
+        // 🎯 OPCIÓN: Mostrar alerta informativa (opcional)
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: { 
+                success: `Appel en cours vers ${post.phone}`,
+                duration: 2000 // 2 segundos
+            }
+        });
     };
 
     const startCamera = async () => {
@@ -246,10 +254,23 @@ const CardFooter = ({ post }) => {
                                 style={{
                                     width: '30px',
                                     height: '30px',
-                                    cursor: post.phone ? 'pointer' : 'not-allowed'
+                                    cursor: post.phone ? 'pointer' : 'not-allowed',
+                                    transition: 'all 0.2s ease'
                                 }}
                                 onClick={post.phone ? handleCallOwner : undefined}
-                                title={post.phone ? "Appeler le vendeur" : "Numéro non disponible"}
+                                title={post.phone ? `Appeler ${post.phone}` : "Numéro non disponible"}
+                                onMouseEnter={(e) => {
+                                    if (post.phone) {
+                                        e.currentTarget.style.transform = 'scale(1.1)';
+                                        e.currentTarget.style.color = '#0056b3';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (post.phone) {
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                        e.currentTarget.style.color = '';
+                                    }
+                                }}
                             >
                                 <FaPhone size={16} />
                             </div>
@@ -260,10 +281,19 @@ const CardFooter = ({ post }) => {
                                 style={{
                                     width: '30px',
                                     height: '30px',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease'
                                 }}
                                 onClick={handleChatWithOwner}
                                 title="Envoyer un message au vendeur"
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                    e.currentTarget.style.color = '#198754';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                    e.currentTarget.style.color = '';
+                                }}
                             >
                                 <FaComment size={16} />
                             </div>
@@ -276,7 +306,8 @@ const CardFooter = ({ post }) => {
                                 style={{
                                     width: '30px',
                                     height: '30px',
-                                    cursor: (post.user && post.user.mobile) ? 'pointer' : 'not-allowed'
+                                    cursor: (post.user && post.user.mobile) ? 'pointer' : 'not-allowed',
+                                    transition: 'all 0.2s ease'
                                 }}
                                 onClick={(post.user && post.user.mobile) ? handleVideoCall : undefined}
                                 title={
@@ -284,6 +315,18 @@ const CardFooter = ({ post }) => {
                                         ? "Test de streaming vidéo" 
                                         : "Streaming non disponible"
                                 }
+                                onMouseEnter={(e) => {
+                                    if (post.user && post.user.mobile) {
+                                        e.currentTarget.style.transform = 'scale(1.1)';
+                                        e.currentTarget.style.color = '#0dcaf0';
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (post.user && post.user.mobile) {
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                        e.currentTarget.style.color = '';
+                                    }
+                                }}
                             >
                                 <FaVideo size={16} />
                             </div>

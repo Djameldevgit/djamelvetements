@@ -1,3 +1,4 @@
+/* 🎯 ESTILOS BASE - VISTA GRID (2 columnas por defecto en móvil) */
 .post_thumb{
     width: 100%;
     display: grid;
@@ -6,12 +7,12 @@
     gap: 8px;
     overflow: hidden;
     margin: 15px 0;
-    /* REMOVER padding: 0 8px; */
     box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
 .post_thumb_display{
-    min-width: 0; /* IMPORTANTE: Permite que se reduzca */
+    min-width: 0;
     height: 180px;
     width: 100%;
     position: relative;
@@ -52,12 +53,36 @@
     margin: 0 12px;
 }
 
-/* Tablet - 3 posts por fila */
+/* 🎯 MODO LISTA (1 columna) - SOLO EN MÓVIL */
+@media (max-width: 767px) {
+    body[data-post-view="list"] .post_thumb {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+    }
+    
+    body[data-post-view="list"] .post_thumb_display {
+        height: 220px;
+        border-radius: 8px;
+    }
+}
+
+/* 🎯 MODO GRID (2 columnas) - SOLO EN MÓVIL */
+@media (max-width: 767px) {
+    body[data-post-view="grid"] .post_thumb {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    body[data-post-view="grid"] .post_thumb_display {
+        height: 180px;
+    }
+}
+
+/* 🎯 TABLET - 3 posts por fila (siempre grid) */
 @media (min-width: 768px) {
     .post_thumb{
         grid-template-columns: repeat(3, 1fr);
         gap: 12px;
-        /* REMOVER padding: 0 12px; */
     }
     
     .post_thumb_display{
@@ -65,14 +90,13 @@
     }
 }
 
-/* Desktop - 4 posts por fila */
+/* 🎯 DESKTOP - 4 posts por fila (siempre grid) */
 @media (min-width: 1024px) {
     .post_thumb{
         grid-template-columns: repeat(4, 1fr);
         gap: 15px;
         max-width: 1200px;
         margin: 20px auto;
-        /* REMOVER padding: 0 15px; */
     }
     
     .post_thumb_display{
@@ -85,7 +109,7 @@
     }
 }
 
-/* Pantallas muy grandes - mismo 4 posts pero más altura */
+/* 🎯 PANTALLAS MUY GRANDES */
 @media (min-width: 1400px) {
     .post_thumb{
         max-width: 1300px;

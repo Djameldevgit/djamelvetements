@@ -1,15 +1,25 @@
 import React, { useMemo } from 'react'
-import { Form, Row, Col, Badge } from 'react-bootstrap'
+import { Form, Badge } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
-const Color = ({ postData = {}, handleChangeInput, theme }) => {
+const Color = ({ postData = {}, handleArrayChange }) => {
     const { t, i18n } = useTranslation('color')
     const isRTL = i18n.language === 'ar' || i18n.language === 'he'
 
-    const safePostData = {
-        color: postData?.color || [],
-        ...postData
-    }
+    // 🎯 FUNCIONES SEGURAS
+    const safeArray = (potentialArray) => {
+        if (!potentialArray) return [];
+        if (Array.isArray(potentialArray)) return potentialArray;
+        if (typeof potentialArray === 'string') {
+            return potentialArray.split(',').map(s => s.trim()).filter(Boolean);
+        }
+        return [];
+    };
+
+    const safeIncludes = (array, value) => {
+        const safeArrayValue = safeArray(array);
+        return safeArrayValue.includes(value);
+    };
 
     // Función segura para obtener traducciones
     const getTranslation = (key, fallback) => {
@@ -22,7 +32,7 @@ const Color = ({ postData = {}, handleChangeInput, theme }) => {
 
     // 🎯 DEFINICIÓN COMPLETA DE COLORES POR CATEGORÍA
     const getFilteredColors = useMemo(() => {
-        if (!postData.subCategory) return []
+        if (!postData?.subCategory) return []
 
         const subCategory = postData.subCategory.toLowerCase();
         const category = postData.category;
@@ -124,25 +134,27 @@ const Color = ({ postData = {}, handleChangeInput, theme }) => {
         }
 
         return allColors;
-    }, [postData.category, postData.subCategory, t]);
+    }, [postData?.category, postData?.subCategory, t]);
 
+    // ✅ Manejar cambios en los checkboxes - CORREGIDO
     const handleColorToggle = (colorValue) => {
-        const currentColors = safePostData.color || []
-        const newColors = currentColors.includes(colorValue)
-            ? currentColors.filter(c => c !== colorValue)
-            : [...currentColors, colorValue]
-        
-        handleChangeInput({
-            target: {
-                name: 'color',
-                value: newColors
-            }
-        })
+        // 🎯 LLAMADA CORRECTA A handleArrayChange
+        if (handleArrayChange) {
+            handleArrayChange('color', colorValue);
+        }
     }
 
-    const selectedCount = safePostData.color?.length || 0
+    // ✅ Verificar si un color está seleccionado - SEGURO
+    const isColorSelected = (colorValue) => {
+        return safeIncludes(postData?.color, colorValue);
+    }
 
-    if (!postData.subCategory) {
+    // ✅ Contar colores seleccionados - SEGURO
+    const getSelectedCount = () => {
+        return safeArray(postData?.color).length;
+    }
+
+    if (!postData?.subCategory) {
         return (
             <div className="text-center py-4 text-muted">
                 <div className="mb-2" style={{ fontSize: '2rem' }}>🎨</div>
@@ -159,9 +171,9 @@ const Color = ({ postData = {}, handleChangeInput, theme }) => {
                 <span className="fw-bold fs-6">
                     🎨 {getTranslation('colors', 'Colores')}
                 </span>
-                {selectedCount > 0 && (
+                {getSelectedCount() > 0 && (
                     <Badge bg="primary" className="fs-6">
-                        {selectedCount} {getTranslation('selected', 'seleccionados')}
+                        {getSelectedCount()} {getTranslation('selected', 'seleccionados')}
                     </Badge>
                 )}
             </div>
@@ -175,7 +187,7 @@ const Color = ({ postData = {}, handleChangeInput, theme }) => {
                                 id={`color-${color.value}`}
                                 name="color"
                                 value={color.value}
-                                checked={safePostData.color?.includes(color.value)}
+                                checked={isColorSelected(color.value)} // 🎯 USAR FUNCIÓN SEGURA
                                 onChange={() => handleColorToggle(color.value)}
                                 className={`flex-shrink-0 ${isRTL ? 'ms-2' : 'me-2'}`}
                             />

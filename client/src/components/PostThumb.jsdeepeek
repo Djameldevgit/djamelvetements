@@ -1,0 +1,112 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next';
+
+const PostThumb = ({posts, result}) => {
+    const { theme } = useSelector(state => state)
+    const { languageReducer } = useSelector(state => state);
+    const { t } = useTranslation('jsonglobal');  
+    const lang = languageReducer.language || 'en'; 
+
+    // 🎯 VERIFICACIONES DE SEGURIDAD - CRÍTICAS
+    if (!posts) {
+        console.warn('❌ PostThumb: posts es undefined o null');
+        return <h2 className="text-center text-danger">{t('No_Post', { lng: lang })}</h2>
+    }
+
+    if (!Array.isArray(posts)) {
+        console.warn('❌ PostThumb: posts no es un array', typeof posts);
+        return <h2 className="text-center text-danger">{t('No_Post', { lng: lang })}</h2>
+    }
+
+    if (posts.length === 0 || result === 0) {
+        return <h2 className="text-center text-danger">{t('No_Post', { lng: lang })}</h2>
+    }
+
+    console.log('✅ PostThumb procesando:', posts.length, 'posts');
+
+    return (
+        <div className="post_thumb">
+            {
+                posts.map(post => {
+                    // 🎯 VERIFICACIÓN SEGURA DE CADA POST
+                    if (!post) {
+                        console.warn('⚠️ PostThumb: post es null/undefined, omitiendo');
+                        return null;
+                    }
+
+                    const postId = post._id;
+                    if (!postId) {
+                        console.warn('⚠️ PostThumb: post sin _id, omitiendo', post);
+                        return null;
+                    }
+
+                    // 🎯 VERIFICACIÓN SEGURA DE IMÁGENES
+                    const images = post.images || [];
+                    const firstImage = images[0] || {};
+                    const imageUrl = firstImage.url || '';
+                    const isVideo = imageUrl.match(/video/i);
+                    
+                    // 🎯 VERIFICACIÓN SEGURA DE ARRAYS
+                    const likesCount = post.likes ? post.likes.length : 0;
+                    const commentsCount = post.comments ? post.comments.length : 0;
+                    const viewsCount = post.views ? post.views.length : 0;
+
+                    return (
+                        <Link key={postId} to={`/post/${postId}`}>
+                            <div className="post_thumb_display">
+                                {
+                                    isVideo && imageUrl ? (
+                                        <video 
+                                            controls 
+                                            src={imageUrl} 
+                                            alt={imageUrl}
+                                            style={{filter: theme ? 'invert(1)' : 'invert(0)'}} 
+                                        />
+                                    ) : imageUrl ? (
+                                        <img 
+                                            src={imageUrl} 
+                                            alt={imageUrl}
+                                            style={{filter: theme ? 'invert(1)' : 'invert(0)'}} 
+                                        />
+                                    ) : (
+                                        // 🎯 IMAGEN POR DEFECTO SI NO HAY IMAGEN
+                                        <div 
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                background: theme ? '#2d3748' : '#e2e8f0',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: theme ? '#e2e8f0' : '#2d3748',
+                                                filter: theme ? 'invert(1)' : 'invert(0)'
+                                            }}
+                                        >
+                                            {t('No_Image', { lng: lang }) || 'No Image'}
+                                        </div>
+                                    )
+                                }
+
+                                <div className="post_thumb_menu">
+                                    <i className="far fa-heart">{likesCount}</i>
+                                    <i className="far fa-comment">{commentsCount}</i>
+                                    <i className="far fa-eye">{viewsCount}</i>
+                                </div>
+                            </div>
+                        </Link>
+                    )
+                })
+            }
+        </div>
+    )
+}
+
+// 🎯 PROPIEDADES POR DEFECTO PARA MÁS SEGURIDAD
+PostThumb.defaultProps = {
+    posts: [],
+    result: 0
+}
+
+export default PostThumb

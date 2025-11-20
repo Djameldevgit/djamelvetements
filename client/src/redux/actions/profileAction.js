@@ -45,6 +45,8 @@ export const getProfileUsers = ({id, auth}) => async (dispatch) => {
     }
     
 }
+
+
 export const updateProfileUser = ({userData, avatar, auth}) => async (dispatch) => {
     if(!userData.fullname)
     return dispatch({type: GLOBALTYPES.ALERT, payload: {error: "Please add your full name."}})
@@ -52,11 +54,8 @@ export const updateProfileUser = ({userData, avatar, auth}) => async (dispatch) 
     if(userData.fullname.length > 25)
     return dispatch({type: GLOBALTYPES.ALERT, payload: {error: "Your full name too long."}})
 
-    if(userData.story && userData.story.length > 200)
+    if(userData.story.length > 200)
     return dispatch({type: GLOBALTYPES.ALERT, payload: {error: "Your story too long."}})
-
-    if(userData.presentacion && userData.presentacion.length > 150)
-    return dispatch({type: GLOBALTYPES.ALERT, payload: {error: "Your presentation too long."}})
 
     try {
         let media;
@@ -64,41 +63,23 @@ export const updateProfileUser = ({userData, avatar, auth}) => async (dispatch) 
 
         if(avatar) media = await imageUpload([avatar])
 
-        // ✅ ENVIAR TODOS LOS CAMPOS que el backend espera
-        const updateData = {
-            fullname: userData.fullname,
-            presentacion: userData.presentacion || '',
-            username: auth.user.username, // Mantener el username actual
-            mobile: userData.mobile || '',
-            address: userData.address || '',
-            story: userData.story || '',
-            website: userData.website || '',
+        const res = await patchDataAPI("user", {
+            ...userData,
             avatar: avatar ? media[0].url : auth.user.avatar
-        }
+        }, auth.token)
 
-        // ✅ Solo incluir email si fue modificado
-        if (userData.email && userData.email !== auth.user.email) {
-            updateData.email = userData.email;
-        }
-
-    
-
-        const res = await patchDataAPI("user", updateData, auth.token)
-
-        // ✅ Actualizar el estado correctamente
         dispatch({
             type: GLOBALTYPES.AUTH,
             payload: {
                 ...auth,
                 user: {
-                    ...auth.user,
-                    ...updateData
+                    ...auth.user, ...userData,
+                    avatar: avatar ? media[0].url : auth.user.avatar,
                 }
             }
         })
 
         dispatch({type: GLOBALTYPES.ALERT, payload: {success: res.data.msg}})
-        
     } catch (err) {
         dispatch({
             type: GLOBALTYPES.ALERT, 
@@ -106,6 +87,7 @@ export const updateProfileUser = ({userData, avatar, auth}) => async (dispatch) 
         })
     }
 }
+
 export const follow = ({users, user, auth, socket}) => async (dispatch) => {
     let newUser;
     
@@ -137,9 +119,7 @@ export const follow = ({users, user, auth, socket}) => async (dispatch) => {
         // Notify
         const msg = {
             id: auth.user._id,
-            text: 'hasstartedtofollowyou',
-            textNs: 'notify', 
-         
+            text: 'has started to follow you.',
             recipients: [newUser._id],
             url: `/profile/${auth.user._id}`,
         }
@@ -189,7 +169,7 @@ export const unfollow = ({users, user, auth, socket}) => async (dispatch) => {
         // Notify
         const msg = {
             id: auth.user._id,
-            text: 'hasstartedtounfollowyou',
+            text: 'has started to follow you.',
             recipients: [newUser._id],
             url: `/profile/${auth.user._id}`,
         }

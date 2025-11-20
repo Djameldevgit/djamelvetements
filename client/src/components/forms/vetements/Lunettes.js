@@ -114,7 +114,7 @@ const Lunettes = ({ postData, handleChangeInput }) => {
               {t('temple_length', 'Longitud patilla (mm)')}
             </Form.Label>
             <Form.Control
-              type="number"
+              type="text"
               name="langitudpatilla"
               value={postData.langitudpatilla}
               onChange={handleChangeInput}
