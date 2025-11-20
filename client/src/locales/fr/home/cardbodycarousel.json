@@ -18,8 +18,8 @@
     "location": "Localisation",
     "editPost": "Modifier le post",
     "deletePost": "Supprimer le post",
-    "writeToAgency": "Écrire à l'agence",
-    "followAgency": "Suivre l'agence",
+    "writeToAgency": "Écrire a la boutique",
+    "followAgency": "Suivre la boutique",
     "sharePost": "Partager",
     "viewDetails": "Voir détails",
    
@@ -215,8 +215,8 @@
       "date": "Date",
       "destination": "Destination",
       "departurePlace": "Lieu de départ",
-      "contactAgency": "Contacter l'agence",
-      "viewAgencyProfile": "Voir le profil de l'agence",
+      "contactAgency": "Contacter l'a boutique",
+      "viewAgencyProfile": "Voir le profil de la boutique",
       "edit": "Modifier la publication",
       "editAdmin": "Modifier la publication (Admin)",
       "delete": "Supprimer la publication",
@@ -243,7 +243,7 @@
  
 
   
-    "contact_seller": "Contacter l'agence",
+    "contact_seller": "Contacter la boutque",
  
  
   "edit_post": "Modifier la Publication",

@@ -37,22 +37,28 @@ import {
   FaIdCard,
   FaRuler,
   FaLocationArrow,
-  FaWhatsapp
+  FaWhatsapp,
+  FaVideo,
+  FaShoppingCart,
+  FaTruck
 } from "react-icons/fa";
 
-// 🎯 DATOS ESTÁTICOS DE LA TIENDA - ÚNICA FUENTE DE VERDAD
+// 🎯 DATOS ESTÁTICOS DE LA TIENDA - ACTUALIZADOS
 const SHOP_DATA = {
   _id: 'Boutique Djamel',
   username: 'Djamel',
-  nombretienda: 'Boutique Elegante',
+  nombretienda: 'Vêtements Djamel',
   role: 'admin',
   wilaya: 'alger',
   commune: 'reghaia', 
-  address: 'cite mafal',
+  address: 'Cite Soumam, Alger',
   mobile: '+213 661 23 45 67',
   email: 'djamelart@fmail.com',
-  presentacion: 'Más de 10 años vistiendo a la mujer moderna. Especialistas en trajes tradicionales, vestidos de fiesta y ropa casual de alta calidad. Telas importadas y diseños exclusivos.',
-  avatar: '/images/boutique-logo.png'
+  presentacion: 'Más de 10 años vistiendo a la femme moderne. Spécialistes en tenues traditionnelles, robes de soirée et vêtements décontractés de haute qualité. Tissus importés et designs exclusifs.',
+  avatar: '/images/boutique-logo.png',
+  // 🆕 NUEVOS CAMPOS
+  typesVente: 'Vente en détail et en gros',
+  proprietaire: 'Djamel'
 };
 
 // 🆕 FUNCIÓN PARA CALCULAR DISTANCIA
@@ -78,7 +84,7 @@ const useUserLocation = () => {
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        reject(new Error('Geolocalización no soportada'));
+        reject(new Error('Geolocalisation non supportée'));
         return;
       }
 
@@ -97,16 +103,16 @@ const useUserLocation = () => {
           resolve(location);
         },
         (error) => {
-          let errorMessage = 'Error obteniendo ubicación';
+          let errorMessage = 'Erreur lors de l\'obtention de la localisation';
           switch (error.code) {
             case error.PERMISSION_DENIED:
-              errorMessage = 'Permiso de ubicación denegado';
+              errorMessage = 'Autorisation de localisation refusée';
               break;
             case error.POSITION_UNAVAILABLE:
-              errorMessage = 'Información de ubicación no disponible';
+              errorMessage = 'Informations de localisation non disponibles';
               break;
             case error.TIMEOUT:
-              errorMessage = 'Tiempo de espera agotado';
+              errorMessage = 'Délai d\'attente dépassé';
               break;
           }
           setLocationError(errorMessage);
@@ -151,7 +157,7 @@ const DistanceCalculator = ({ shopPosition }) => {
         setDistance(calculatedDistance);
       }
     } catch (error) {
-      console.error(t('map.distanceCalculationError', 'Error calculando distancia:'), error);
+      console.error(t('map.distanceCalculationError', 'Erreur de calcul de distance:'), error);
     } finally {
       setCalculating(false);
     }
@@ -176,7 +182,7 @@ const DistanceCalculator = ({ shopPosition }) => {
       <div className="d-flex align-items-center justify-content-between mb-2">
         <div className="d-flex align-items-center">
           <FaRuler className="text-primary me-2" size={20} />
-          <h6 className="mb-0 fw-bold">{t('map.distanceToShop', 'Distancia a la tienda')}</h6>
+          <h6 className="mb-0 fw-bold">{t('map.distanceToShop', 'Distance à la boutique')}</h6>
         </div>
         
         <Button
@@ -193,7 +199,7 @@ const DistanceCalculator = ({ shopPosition }) => {
             <FaLocationArrow />
           )}
           <span className="ms-2">
-            {distance ? t('map.recalculate', 'Recalcular') : t('map.calculate', 'Calcular')}
+            {distance ? t('map.recalculate', 'Recalculer') : t('map.calculate', 'Calculer')}
           </span>
         </Button>
       </div>
@@ -204,7 +210,7 @@ const DistanceCalculator = ({ shopPosition }) => {
             <h4 className="mb-0">{formatDistance(distance)}</h4>
           </Badge>
           <p className="text-muted small mb-0 mt-1">
-            {t('map.distanceDescription', 'Distancia en línea recta desde tu ubicación actual')}
+            {t('map.distanceDescription', 'Distance en ligne droite depuis votre position actuelle')}
           </p>
         </div>
       ) : locationError ? (
@@ -213,13 +219,13 @@ const DistanceCalculator = ({ shopPosition }) => {
         </Alert>
       ) : (
         <p className="text-muted small mb-0">
-          {t('map.getDistance', 'Haz clic en "Calcular" para conocer la distancia desde tu ubicación actual')}
+          {t('map.getDistance', 'Cliquez sur "Calculer" pour connaître la distance depuis votre position actuelle')}
         </p>
       )}
       
       {userLocation && (
         <small className="text-muted d-block mt-2">
-          {t('map.yourLocation', 'Tu ubicación actual')}: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+          {t('map.yourLocation', 'Votre position actuelle')}: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
         </small>
       )}
     </div>
@@ -278,7 +284,7 @@ const ImageCarousel = ({ images }) => {
     return (
       <div className="text-center py-4 bg-light rounded">
         <FaStore size={32} className="text-muted mb-2" />
-        <p className="text-muted mb-0">{t('common.noImages', 'No hay imágenes disponibles')}</p>
+        <p className="text-muted mb-0">{t('common.noImages', 'Aucune image disponible')}</p>
       </div>
     );
   }
@@ -294,7 +300,7 @@ const ImageCarousel = ({ images }) => {
             <img
               className="d-block w-100 h-100 object-fit-cover"
               src={image}
-              alt={t('common.shopImage', 'Imagen de la tienda') + ` ${index + 1}`}
+              alt={t('common.shopImage', 'Image de la boutique') + ` ${index + 1}`}
               style={{ objectFit: 'cover' }}
               onError={(e) => {
                 e.target.style.display = 'none';
@@ -305,7 +311,7 @@ const ImageCarousel = ({ images }) => {
             />
             <div className="position-absolute text-center" style={{ display: 'none' }}>
               <FaStore size={48} className="text-muted mb-2" />
-              <p className="text-muted">{t('common.imageNotAvailable', 'Imagen no disponible')}</p>
+              <p className="text-muted">{t('common.imageNotAvailable', 'Image non disponible')}</p>
             </div>
           </div>
         </Carousel.Item>
@@ -340,13 +346,12 @@ const Map = () => {
     '/images/shop2.jpg', 
     '/images/shop3.jpg',
     '/images/shop4.jpg'
-
   ].filter(img => img);
 
   // Proveedores de mapas
   const mapProviders = {
     street: {
-      name: t('map.street', 'Street'),
+      name: t('map.street', 'Rue'),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: '© OpenStreetMap'
     },
@@ -360,6 +365,33 @@ const Map = () => {
       url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
       attribution: '© OpenTopoMap'
     }
+  };
+
+  // 🎯 FUNCIONES DE CONTACTO MEJORADAS
+  const handleCallOwner = () => {
+    const phoneNumber = selectedUser.mobile;
+    if (!phoneNumber) {
+      alert('Numéro de téléphone non disponible');
+      return;
+    }
+    
+    // 🎯 LLAMADA DIRECTA
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
+  const handleVideoCall = () => {
+    // 🎯 INICIAR VIDEO LLAMADA (puedes integrar con tu servicio)
+    alert('Fonction d\'appel vidéo sera bientôt disponible!');
+    
+    // Ejemplo de integración con servicio de video
+    // const videoCallUrl = `https://meet.jit.si/tassili-${selectedUser._id}-${Date.now()}`;
+    // window.open(videoCallUrl, '_blank');
+  };
+
+  const contactViaWhatsApp = () => {
+    const message = `Bonjour ${selectedUser.username}, j'ai vu votre boutique dans l'application et je suis intéressé par vos produits.`;
+    const whatsappUrl = `https://wa.me/${selectedUser.mobile.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   // 🎯 BUSCAR UBICACIÓN CON DATOS ESTÁTICOS
@@ -406,7 +438,7 @@ const Map = () => {
           const response = await fetch(url, { 
             headers: { 
               'User-Agent': 'ShopApp/1.0',
-              'Accept-Language': i18n.language || 'en'
+              'Accept-Language': i18n.language || 'fr'
             } 
           });
           
@@ -425,17 +457,17 @@ const Map = () => {
             }
           }
         } catch (error) {
-          console.warn(t('map.locationSearchWarning', 'Advertencia buscando ubicación:'), error);
+          console.warn(t('map.locationSearchWarning', 'Avertissement lors de la recherche de localisation:'), error);
           continue;
         }
       }
       
       // Si no se encontró ninguna ubicación
-      setError(t('map.locationNotFound', 'Ubicación no encontrada para los datos proporcionados'));
+      setError(t('map.locationNotFound', 'Localisation non trouvée pour les données fournies'));
       
     } catch (error) {
-      console.error(t('map.locationError', 'Error de ubicación:'), error);
-      setError(t('map.generalError', 'Error cargando la ubicación'));
+      console.error(t('map.locationError', 'Erreur de localisation:'), error);
+      setError(t('map.generalError', 'Erreur lors du chargement de la localisation'));
     } finally {
       setLoading(false);
     }
@@ -454,273 +486,282 @@ const Map = () => {
     setMapStyle(style);
   };
 
-  // 🎯 FUNCIÓN PARA CONTACTAR POR WHATSAPP
-  const contactViaWhatsApp = () => {
-    const message = t('whatsapp.defaultMessage', `Hola {{username}}, vi tu tienda en la app y me interesa conocer más sobre tus productos.`, { 
-      username: selectedUser.username 
-    });
-    const whatsappUrl = `https://wa.me/${selectedUser.mobile.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
   return (
     <Container fluid className="py-4" dir={isRTL ? "rtl" : "ltr"}>
-    <Row className="justify-content-center">
-      <Col lg={10} xl={8}>
-        
-        {/* 🎯 HEADER SIMPLIFICADO */}
-        <Card className="shadow-sm mb-3 border-0 bg-light">
-          <Card.Body className="text-center">
-            <h4 className="text-primary mb-2">
-              <FaStore className="me-2" />
-              {selectedUser.nombretienda}
-            </h4>
-            <p className="mb-0">
-              <strong>Información oficial de nuestra tienda</strong>
-              <br />
-              <small className="text-muted">
-                {!isUserAuthenticated && (
-                  <Link to="/login" className="text-decoration-none">
-                    Inicia sesión para acceder a todas las funciones
-                  </Link>
-                )}
-              </small>
-            </p>
-          </Card.Body>
-        </Card>
-
-        {/* CAROUSEL */}
-        <Card className="shadow-sm mb-3 border-0">
-          <Card.Body className="p-0">
-            <ImageCarousel images={carouselImages} />
-          </Card.Body>
-        </Card>
-
-        {/* 🎯 INFORMACIÓN DE LA TIENDA - SIEMPRE LA MISMA */}
-        <Card className="shadow-sm mb-3 border-0">
-          <Card.Body>
-            <Row className={`g-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              
-              {/* Propietario */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaUser className={`text-primary ${isRTL ? "ms-2" : "me-2"}`} size={18} />
-                  <div className="d-flex align-items-center">
-                    <strong className="text-dark me-2">{t('user.owner', 'Dueño')}:</strong>
-                    <span className="text-primary"><strong>{selectedUser.username}</strong></span>
-                  </div>
-                </div>
-              </Col>
-
-              {/* Nombre de la Tienda */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaStore className={`text-primary ${isRTL ? "ms-2" : "me-2"}`} size={18} />
-                  <strong className="text-dark me-2">{t('shop.boutiqueName', 'Tienda')}:</strong>
-                  <span><strong>{selectedUser.nombretienda}</strong></span>
-                </div>
-              </Col>
-
-              {/* Teléfono */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaPhone className={`text-success ${isRTL ? "ms-2" : "me-2"}`} size={16} />
-                  <strong className="text-dark me-2">{t('contact.phone', 'Teléfono')}:</strong>
-                  <span><strong>{selectedUser.mobile}</strong></span>
-                  <Button 
-                    variant="success" 
-                    size="sm" 
-                    className="ms-2"
-                    onClick={contactViaWhatsApp}
-                  >
-                    <FaWhatsapp className="me-1" />
-                    WhatsApp
-                  </Button>
-                </div>
-              </Col>
-
-              {/* Email */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaEnvelope className={`text-danger ${isRTL ? "ms-2" : "me-2"}`} size={16} />
-                  <strong className="text-dark me-2">{t('contact.email', 'Email')}:</strong>
-                  <span><strong>{selectedUser.email}</strong></span>
-                </div>
-              </Col>
-
-              {/* Wilaya */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaMapMarkerAlt className={`text-warning ${isRTL ? "ms-2" : "me-2"}`} size={16} />
-                  <strong className="text-dark me-2">{t('location.wilaya', 'Wilaya')}:</strong>
-                  <span><strong>{selectedUser.wilaya}</strong></span>
-                </div>
-              </Col>
-
-              {/* Commune */}
-              <Col xs={12} lg={6}>
-                <div className="d-flex align-items-center">
-                  <FaCity className={`text-info ${isRTL ? "ms-2" : "me-2"}`} size={16} />
-                  <strong className="text-dark me-2">{t('location.commune', 'Comuna')}:</strong>
-                  <span><strong>{selectedUser.commune}</strong></span>
-                </div>
-              </Col>
-
-              {/* Dirección */}
-              <Col xs={12}>
-                <div className="d-flex align-items-center">
-                  <FaHome className={`text-secondary ${isRTL ? "ms-2" : "me-2"}`} size={16} />
-                  <strong className="text-dark me-2">{t('location.address', 'Dirección')}:</strong>
-                  <span><strong>{selectedUser.address}</strong></span>
-                </div>
-              </Col>
-
-              {/* Presentación */}
-              <Col xs={12}>
-                <div className="d-flex align-items-start">
-                  <FaIdCard className={`text-primary ${isRTL ? "ms-2" : "me-2 mt-1"}`} size={16} />
-                  <div>
-                    <strong className="text-dark me-2">{t('profile.presentation', 'Presentación')}:</strong>
-                    <span>{selectedUser.presentacion}</span>
-                  </div>
-                </div>
-              </Col>
-
-            </Row>
-          </Card.Body>
-        </Card>
-
-        {/* MAPA - SIEMPRE FUNCIONAL */}
-        <Card className="shadow-sm border-0">
-          <Card.Header className="bg-white border-bottom">
-            <Row className={`align-items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Col>
-                <h5 className="mb-0">
-                  <FaGlobe className={isRTL ? "ms-2" : "me-2"} />
-                  {t('map.location', 'Ubicación en el Mapa')}
-                </h5>
-                <small className="text-muted">
-                  {selectedUser.wilaya && `${selectedUser.wilaya}`}
-                  {selectedUser.commune && `, ${selectedUser.commune}`}
-                  {selectedUser.address && `, ${selectedUser.address}`}
-                </small>
-              </Col>
-              <Col xs="auto">
-                <ButtonGroup size="sm">
-                  {Object.keys(mapProviders).map(style => (
-                    <Button
-                      key={style}
-                      variant={mapStyle === style ? "primary" : "outline-primary"}
-                      onClick={() => handleMapStyleChange(style)}
-                    >
-                      {mapProviders[style].name}
-                    </Button>
-                  ))}
-                </ButtonGroup>
-              </Col>
-            </Row>
-          </Card.Header>
+      <Row className="justify-content-center">
+        <Col lg={10} xl={8}>
           
-          <Card.Body className="p-0">
-            {loading && (
-              <div className="text-center py-5">
-                <Spinner animation="border" variant="primary" size="lg" />
-                <p className="mt-3 fs-5">{t('map.searching', 'Buscando ubicación...')}</p>
-              </div>
-            )}
-            
-            {error && !loading && (
-              <Alert variant="warning" className="m-4">
-                <div className="d-flex align-items-center">
-                  <i className={`fas fa-exclamation-triangle ${isRTL ? "ms-2" : "me-2"}`}></i>
-                  <div>
-                    <strong>Ubicación no disponible</strong>
-                    <p className="mb-0">{error}</p>
-                  </div>
-                </div>
-              </Alert>
-            )}
+          {/* 🎯 HEADER SIMPLIFICADO */}
+          <Card className="shadow-sm mb-3 border-0 bg-light">
+            <Card.Body className="text-center">
+              <h4 className="text-primary mb-2">
+                <FaStore className="me-2" />
+                {selectedUser.nombretienda}
+              </h4>
+              <p className="mb-0">
+                <strong>Informations officielles de notre boutique</strong>
+                <br />
+                <small className="text-muted">
+                  {!isUserAuthenticated && (
+                    <Link to="/login" className="text-decoration-none">
+                      Connectez-vous pour accéder à toutes les fonctionnalités
+                    </Link>
+                  )}
+                </small>
+              </p>
+            </Card.Body>
+          </Card>
 
-            {!loading && !error && (
-              <>
-                <div style={{ height: '400px', width: '100%' }}>
-                  <MapContainer 
-                    center={mapCenter} 
-                    zoom={zoomLevel} 
-                    style={{ height: '100%', width: '100%' }}
-                    scrollWheelZoom={true}
-                    key={`${mapStyle}-${mapCenter[0]}-${mapCenter[1]}`}
-                  >
-                    <ChangeView center={mapCenter} zoom={zoomLevel} />
-                    <TileLayer
-                      url={mapProviders[mapStyle].url}
-                      attribution={mapProviders[mapStyle].attribution}
-                    />
-                    
-                    <Marker position={markerPosition} icon={ShopIcon}>
-                      <Popup>
-                        <div style={{ minWidth: '250px', textAlign: isRTL ? 'right' : 'left' }}>
-                          <h6 className="fw-bold text-primary mb-2">
-                            {selectedUser.nombretienda}
-                          </h6>
-                          {selectedUser.wilaya && <div className="mb-1"><strong>📍 {t('location.wilaya', 'Wilaya')}:</strong> {selectedUser.wilaya}</div>}
-                          {selectedUser.commune && <div className="mb-1"><strong>🏘️ {t('location.commune', 'Comuna')}:</strong> {selectedUser.commune}</div>}
-                          {selectedUser.address && <div className="mb-1"><strong>🏠 {t('location.address', 'Dirección')}:</strong> {selectedUser.address}</div>}
-                          {selectedUser.mobile && (
-                            <Button 
-                              variant="success" 
-                              size="sm" 
-                              className="w-100 mt-2"
-                              onClick={contactViaWhatsApp}
-                            >
-                              <FaWhatsapp className="me-1" />
-                              Contactar por WhatsApp
-                            </Button>
-                          )}
-                        </div>
-                      </Popup>
-                    </Marker>
-                  </MapContainer>
-                </div>
+          {/* CAROUSEL */}
+          <Card className="shadow-sm mb-3 border-0">
+            <Card.Body className="p-0">
+              <ImageCarousel images={carouselImages} />
+            </Card.Body>
+          </Card>
+
+          {/* 🎯 INFORMACIÓN DE LA TIENDA - ACTUALIZADA SEGÚN ESPECIFICACIONES */}
+          <Card className="shadow-sm mb-3 border-0">
+            <Card.Body>
+              <Row className={`g-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 
-                {/* COMPONENTE DE CÁLCULO DE DISTANCIA */}
-                <DistanceCalculator shopPosition={shopPosition} />
-              </>
-            )}
-          </Card.Body>
-          
-          <Card.Footer className="bg-white">
-            <Row className={`align-items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Col>
-                <small className="text-muted">
-                  {t('map.usingData', 'Usando datos oficiales de la tienda')}
-                </small>
-              </Col>
-              <Col xs="auto">
-                <div className="d-flex gap-2">
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    onClick={searchLocation}
-                    disabled={loading}
-                  >
-                    <FaSyncAlt className={isRTL ? "ms-1" : "me-1"} />
-                    {t('map.reload', 'Actualizar')}
-                  </Button>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    onClick={handleGoBack}
-                  >
-                    {t('common.back', 'Volver')}
-                  </Button>
+                {/* 01 - Nombre de la tienda con icono */}
+                <Col xs={12}>
+                  <div className="d-flex align-items-center p-2 bg-primary bg-opacity-10 rounded">
+                    <FaStore className="text-primary me-3" size={24} />
+                    <div>
+                      <h5 className="mb-0 text-primary fw-bold">{selectedUser.nombretienda}</h5>
+                      <small className="text-muted">Boutique de vêtements et mode</small>
+                    </div>
+                  </div>
+                </Col>
+
+                {/* 02 - Propriétaire */}
+                <Col xs={12}>
+                  <div className="d-flex align-items-center p-2 border-bottom">
+                    <FaUser className="text-secondary me-3" size={20} />
+                    <div className="d-flex align-items-center w-100">
+                      <strong className="text-dark me-2">Propriétaire:</strong>
+                      <span className="text-primary fw-bold fs-6">{selectedUser.proprietaire}</span>
+                    </div>
+                  </div>
+                </Col>
+
+                {/* 03 - Types de vente */}
+                <Col xs={12}>
+                  <div className="d-flex align-items-center p-2 border-bottom">
+                    <FaShoppingCart className="text-success me-3" size={20} />
+                    <div className="d-flex align-items-center w-100">
+                      <strong className="text-dark me-2">Types de vente:</strong>
+                      <span className="text-success fw-bold fs-6">{selectedUser.typesVente}</span>
+                    </div>
+                  </div>
+                </Col>
+
+                {/* 04 - Adresse complète */}
+                <Col xs={12}>
+                  <div className="d-flex align-items-center p-2 border-bottom">
+                    <FaMapMarkerAlt className="text-danger me-3" size={20} />
+                    <div className="d-flex align-items-center w-100">
+                      <strong className="text-dark me-2">Adresse:</strong>
+                      <span className="fw-bold fs-6">{selectedUser.address}</span>
+                    </div>
+                  </div>
+                </Col>
+
+                {/* 05 - Téléphone avec acciones */}
+                <Col xs={12}>
+                  <div className="p-3 bg-light rounded">
+                    <div className="d-flex align-items-center mb-2">
+                      <FaPhone className="text-success me-3" size={20} />
+                      <div className="d-flex align-items-center">
+                        <strong className="text-dark me-2">Téléphone:</strong>
+                        <span className="fw-bold fs-6">{selectedUser.mobile}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Botones de acción para teléfono */}
+                    <div className="d-flex gap-2 mt-2">
+                      <Button 
+                        variant="success" 
+                        size="sm"
+                        onClick={handleCallOwner}
+                        className="d-flex align-items-center"
+                      >
+                        <FaPhone className="me-1" />
+                        Appeler
+                      </Button>
+                      
+                      <Button 
+                        variant="info" 
+                        size="sm"
+                        onClick={handleVideoCall}
+                        className="d-flex align-items-center"
+                      >
+                        <FaVideo className="me-1" />
+                        Vidéo
+                      </Button>
+                      
+                      <Button 
+                        variant="success" 
+                        size="sm"
+                        onClick={contactViaWhatsApp}
+                        className="d-flex align-items-center"
+                        style={{backgroundColor: '#25D366', borderColor: '#25D366'}}
+                      >
+                        <FaWhatsapp className="me-1" />
+                        WhatsApp
+                      </Button>
+                    </div>
+                  </div>
+                </Col>
+
+                {/* Información adicional */}
+                <Col xs={12}>
+                  <div className="d-flex align-items-start p-2 mt-2">
+                    <FaIdCard className="text-primary me-3 mt-1" size={18} />
+                    <div>
+                      <strong className="text-dark me-2">Présentation:</strong>
+                      <p className="mb-0 text-muted">{selectedUser.presentacion}</p>
+                    </div>
+                  </div>
+                </Col>
+
+              </Row>
+            </Card.Body>
+          </Card>
+
+          {/* MAPA - SIEMPRE FUNCIONAL */}
+          <Card className="shadow-sm border-0">
+            <Card.Header className="bg-white border-bottom">
+              <Row className={`align-items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <Col>
+                  <h5 className="mb-0">
+                    <FaGlobe className={isRTL ? "ms-2" : "me-2"} />
+                    {t('map.location', 'Localisation sur la Carte')}
+                  </h5>
+                  <small className="text-muted">
+                    {selectedUser.wilaya && `${selectedUser.wilaya}`}
+                    {selectedUser.commune && `, ${selectedUser.commune}`}
+                    {selectedUser.address && `, ${selectedUser.address}`}
+                  </small>
+                </Col>
+                <Col xs="auto">
+                  <ButtonGroup size="sm">
+                    {Object.keys(mapProviders).map(style => (
+                      <Button
+                        key={style}
+                        variant={mapStyle === style ? "primary" : "outline-primary"}
+                        onClick={() => handleMapStyleChange(style)}
+                      >
+                        {mapProviders[style].name}
+                      </Button>
+                    ))}
+                  </ButtonGroup>
+                </Col>
+              </Row>
+            </Card.Header>
+            
+            <Card.Body className="p-0">
+              {loading && (
+                <div className="text-center py-5">
+                  <Spinner animation="border" variant="primary" size="lg" />
+                  <p className="mt-3 fs-5">{t('map.searching', 'Recherche de localisation...')}</p>
                 </div>
-              </Col>
-            </Row>
-          </Card.Footer>
-        </Card>
-      </Col>
-    </Row>
-  </Container>
+              )}
+              
+              {error && !loading && (
+                <Alert variant="warning" className="m-4">
+                  <div className="d-flex align-items-center">
+                    <i className={`fas fa-exclamation-triangle ${isRTL ? "ms-2" : "me-2"}`}></i>
+                    <div>
+                      <strong>Localisation non disponible</strong>
+                      <p className="mb-0">{error}</p>
+                    </div>
+                  </div>
+                </Alert>
+              )}
+
+              {!loading && !error && (
+                <>
+                  <div style={{ height: '400px', width: '100%' }}>
+                    <MapContainer 
+                      center={mapCenter} 
+                      zoom={zoomLevel} 
+                      style={{ height: '100%', width: '100%' }}
+                      scrollWheelZoom={true}
+                      key={`${mapStyle}-${mapCenter[0]}-${mapCenter[1]}`}
+                    >
+                      <ChangeView center={mapCenter} zoom={zoomLevel} />
+                      <TileLayer
+                        url={mapProviders[mapStyle].url}
+                        attribution={mapProviders[mapStyle].attribution}
+                      />
+                      
+                      <Marker position={markerPosition} icon={ShopIcon}>
+                        <Popup>
+                          <div style={{ minWidth: '250px', textAlign: isRTL ? 'right' : 'left' }}>
+                            <h6 className="fw-bold text-primary mb-2">
+                              {selectedUser.nombretienda}
+                            </h6>
+                            {selectedUser.wilaya && <div className="mb-1"><strong>📍 {t('location.wilaya', 'Wilaya')}:</strong> {selectedUser.wilaya}</div>}
+                            {selectedUser.commune && <div className="mb-1"><strong>🏘️ {t('location.commune', 'Commune')}:</strong> {selectedUser.commune}</div>}
+                            {selectedUser.address && <div className="mb-1"><strong>🏠 {t('location.address', 'Adresse')}:</strong> {selectedUser.address}</div>}
+                            {selectedUser.mobile && (
+                              <Button 
+                                variant="success" 
+                                size="sm" 
+                                className="w-100 mt-2"
+                                onClick={contactViaWhatsApp}
+                              >
+                                <FaWhatsapp className="me-1" />
+                                Contacter par WhatsApp
+                              </Button>
+                            )}
+                          </div>
+                        </Popup>
+                      </Marker>
+                    </MapContainer>
+                  </div>
+                  
+                  {/* COMPONENTE DE CÁLCULO DE DISTANCIA */}
+                  <DistanceCalculator shopPosition={shopPosition} />
+                </>
+              )}
+            </Card.Body>
+            
+            <Card.Footer className="bg-white">
+              <Row className={`align-items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <Col>
+                  <small className="text-muted">
+                    {t('map.usingData', 'Utilisation des données officielles de la boutique')}
+                  </small>
+                </Col>
+                <Col xs="auto">
+                  <div className="d-flex gap-2">
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={searchLocation}
+                      disabled={loading}
+                    >
+                      <FaSyncAlt className={isRTL ? "ms-1" : "me-1"} />
+                      {t('map.reload', 'Actualiser')}
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={handleGoBack}
+                    >
+                      {t('common.back', 'Retour')}
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Card.Footer>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

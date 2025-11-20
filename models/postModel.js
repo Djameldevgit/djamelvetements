@@ -12,7 +12,18 @@ const postSchema = new mongoose.Schema({
     // 🔷 CATEGORÍA Y SUBCATEGORÍA
     category : String,
     subCategory: String,
-    telefono: Number,
+    telefono: {
+        type: String,
+        default: "0658556296", // ✅ Cambiado a String y con valor por defecto
+        validate: {
+            validator: function(phone) {
+                if (!phone) return true; // Permitir vacío (usará default)
+                // Validar formato de teléfono (números y + opcional)
+                return /^[\d+][\d\s-()]+$/.test(phone);
+            },
+            message: 'Formato de teléfono inválido'
+        }
+    },
     // 🔷 INFORMACIÓN BÁSICA
     title: String,
     description: String,

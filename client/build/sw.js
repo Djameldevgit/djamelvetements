@@ -1,5 +1,5 @@
 // sw.js - Service Worker optimizado y corregido
-const CACHE_NAME = 'agence-voyage-v2.1'; // Cambia la versión para forzar actualización
+const CACHE_NAME = 'Vêtements Djamel-v2.1'; // Cambia la versión para forzar actualización
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',

@@ -34,6 +34,7 @@ import Appinfo2 from './pages/appinfo2';
 import Createpost from './pages/Createpost';
 import Appinfo3 from './pages/appinfo3';
 import Map from './pages/Map';
+import PostId from './pages/PostId';
 
 function App() {
   const { auth, status, modal, languageReducer } = useSelector(state => state)
@@ -146,6 +147,8 @@ function App() {
             <Route exact path="/infoaplicacionn3" component={Appinfo3} />
             <Route exact path="/create-post" component={Createpost} />
             <Route exact path="/edit-post/:id" component={Createpost} />
+            <Route exact path="/post/:id" component={PostId} />
+
             <Route exact path="/bloqueos404" component={Bloqueos404} />
             <Route exact path="/video/:obraId" component={Video} />
             <Route exact path="/Map" component={Map} />

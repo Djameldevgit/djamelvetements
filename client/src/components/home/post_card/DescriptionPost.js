@@ -21,7 +21,7 @@ const DescriptionPost = ({ post }) => {
         cardShadow: "0 2px 8px rgba(0, 0, 0, 0.12)"
     };
 
-    // 🎯 FUNCIONES DE CONTACTO
+    // 🎯 FUNCIONES DE CONTACTO MEJORADAS
     const handleCallOwner = () => {
         const phoneNumber = post.telefono || post.user?.mobile;
         if (!phoneNumber) {
@@ -40,26 +40,47 @@ const DescriptionPost = ({ post }) => {
         }
         
         // 🎯 REDIRIGIR AL CHAT - puedes integrar tu lógica de chat aquí
-        alert(isRTL ? 
-            `سيتم فتح الدردشة مع ${post.user.username}` : 
-            `Ouverture de la conversation avec ${post.user.username}`
-        );
-        // Ejemplo: window.open(`/message/${post.user._id}`, '_blank');
+        const chatUrl = `/chat/${post.user._id}`;
+        window.open(chatUrl, '_blank');
+        
+        // Mensaje temporal
+        setTimeout(() => {
+            alert(isRTL ? 
+                `تم فتح الدردشة مع ${post.user.username}` : 
+                `Conversation ouverte avec ${post.user.username}`
+            );
+        }, 500);
     };
 
     const handleVideoCall = () => {
-        // 🎯 INICIAR CÁMARA PARA STREAMING/VIDEO LLAMADA
+        // 🎯 INICIAR CÁMARA PARA STREAMING/VIDEO LLAMADA MEJORADO
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Primero solicitar permisos de cámara
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then((stream) => {
-                    alert(isRTL ? 
-                        'الكاميرا جاهزة للاتصال المرئي!' : 
-                        'Caméra activée pour la visioconférence !'
-                    );
-                    // Detener el stream después de mostrar el mensaje
-                    stream.getTracks().forEach(track => track.stop());
-                    // 🎯 Aquí puedes integrar con tu servicio de video llamada
-                    // Ejemplo: window.open(`https://meet.google.com/new`, '_blank');
+                    // Crear URL de video llamada (puedes integrar con tu servicio)
+                    const videoCallUrl = `https://meet.jit.si/tassili-${post.user?._id || 'store'}-${Date.now()}`;
+                    
+                    // Abrir ventana de video llamada
+                    const videoWindow = window.open(videoCallUrl, '_blank', 
+                        'width=800,height=600,scrollbars=yes,resizable=yes');
+                    
+                    if (videoWindow) {
+                        alert(isRTL ? 
+                            'جاري فتح غرفة الفيديو...' : 
+                            'Ouverture de la salle de visioconférence...'
+                        );
+                    } else {
+                        alert(isRTL ? 
+                            'تم منع النافذة المنبثقة. يرجى السماح بالنوافذ المنبثقة لهذا الموقع.' : 
+                            'Popup bloqué. Veuillez autoriser les popups pour ce site.'
+                        );
+                    }
+                    
+                    // Detener el stream después de usar
+                    setTimeout(() => {
+                        stream.getTracks().forEach(track => track.stop());
+                    }, 1000);
                 })
                 .catch((error) => {
                     console.error('Error accessing camera:', error);
@@ -510,381 +531,242 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🔹 SECCIÓN 7: CONTACTO Y COMPRA - CON ICONOS DE TELÉFONO Y CÁMARA
+    // 🔹 SECCIÓN 7: CONTACTO Y COMPRA - COMPLETAMENTE REDISEÑADA
     const generateContactSection = () => {
+        const ownerName = post.user?.username || 'Propriétaire';
+        const phoneNumber = post.telefono || post.user?.mobile || 'Non disponible';
+
         return (
             <div style={{
                 background: styles.contactGradient,
                 color: 'white',
-                padding: '18px',
-                borderRadius: '10px',
+                padding: '20px',
+                borderRadius: '12px',
                 textAlign: 'center',
                 width: '100%',
                 boxSizing: 'border-box',
             }}>
                 <h2 style={{
-                    margin: '0 0 12px 0',
-                    fontSize: '18px',
+                    margin: '0 0 16px 0',
+                    fontSize: '20px',
+                    fontWeight: '800',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
-                    flexWrap: 'wrap',
-                    fontWeight: '800'
+                    gap: '8px'
                 }}>
-                    {isRTL ? 'جاهز للشراء؟ 📞' : '📞 Prêt à Acheter ?'}
+                    👑 {isRTL ? 'معلومات المتجر' : 'Informations du Vendeur'}
                 </h2>
 
-                <p style={{ 
-                    marginBottom: '14px',
-                    fontSize: '16px',
-                    opacity: '0.95',
-                    padding: '0 10px',
-                    lineHeight: '1.5',
-                    wordBreak: 'break-word',
-                    fontWeight: '600'
-                }}>
-                    {isRTL 
-                        ? 'لا تفوت هذه الفرصة الفريدة! اتصل بنا الآن.'
-                        : t('contact.dontMiss', 'Ne manquez pas cette opportunité unique ! Contactez-nous dès maintenant.')
-                    }
-                </p>
-
-                {post.user?.username && (
-                    <div style={{
-                        backgroundColor: 'rgba(255,255,255,0.2)',
-                        padding: '14px 18px',
-                        borderRadius: '8px',
-                        display: 'inline-block',
-                        marginBottom: '14px',
-                        maxWidth: '100%',
-                        wordBreak: 'break-word'
-                    }}>
-                        <div style={{ 
-                            fontSize: '13px',
-                            opacity: '0.85', 
-                            marginBottom: '6px',
-                            fontWeight: '700'
-                        }}>
-                            {isRTL ? 'البائع 👤' : '👤 Vendeur'}
-                        </div>
-                        <div style={{ 
-                            fontSize: '18px',
-                            fontWeight: '900',
-                            direction: 'ltr',
-                            padding: '8px 12px',
-                            borderRadius: '6px',
-                            backgroundColor: 'rgba(255,255,255,0.1)',
-                            display: 'inline-block',
-                            minWidth: '200px',
-                            border: '1px solid rgba(255,255,255,0.3)'
-                        }}>
-                            {post.user.username}
-                        </div>
-                    </div>
-                )}
-
-                {/* Sección de contacto telefónico con iconos de llamada y cámara */}
-                {post.user?.mobile && (
-                    <div style={{
-                        backgroundColor: 'rgba(255,255,255,0.2)',
-                        padding: '18px',
-                        borderRadius: '8px',
-                        display: 'inline-block',
-                        marginBottom: '14px',
-                        maxWidth: '100%',
-                        wordBreak: 'break-word'
-                    }}>
-                        <div style={{ 
-                            fontSize: '13px',
-                            opacity: '0.85', 
-                            marginBottom: '12px',
-                            fontWeight: '700'
-                        }}>
-                            {isRTL ? 'اتصل بنا 📞' : '📞 Contactez-nous'}
-                        </div>
-                        
-                        {/* Número de teléfono principal */}
-                        <div style={{ 
-                            fontSize: '18px',
-                            fontWeight: '900',
-                            direction: 'ltr',
-                            padding: '8px 12px',
-                            borderRadius: '6px',
-                            backgroundColor: 'rgba(255,255,255,0.1)',
-                            display: 'inline-block',
-                            minWidth: '200px',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            marginBottom: '12px'
-                        }}>
-                            {post.user.mobile}
-                        </div>
-
-                        {/* Botones de acción */}
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            gap: '12px',
-                            flexWrap: 'wrap',
-                            marginTop: '12px'
-                        }}>
-                            {/* Botón de llamada directa */}
-                            <div 
-                                style={{ 
-                                    backgroundColor: '#10b981',
-                                    color: 'white',
-                                    padding: '12px 16px',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontWeight: '800',
-                                    fontSize: '14px',
-                                    transition: 'all 0.3s ease',
-                                    minWidth: '140px',
-                                    justifyContent: 'center',
-                                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
-                                }}
-                                onClick={handleCallOwner}
-                                onTouchStart={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#059669';
-                                    e.currentTarget.style.transform = 'scale(0.98)';
-                                }}
-                                onTouchEnd={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#10b981';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                }}
-                            >
-                                📞 {isRTL ? 'اتصال' : 'Appeler'}
-                            </div>
-
-                            {/* Botón de video llamada/cámara */}
-                            <div 
-                                style={{ 
-                                    backgroundColor: '#8b5cf6',
-                                    color: 'white',
-                                    padding: '12px 16px',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                    fontWeight: '800',
-                                    fontSize: '14px',
-                                    transition: 'all 0.3s ease',
-                                    minWidth: '140px',
-                                    justifyContent: 'center',
-                                    boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)'
-                                }}
-                                onClick={handleVideoCall}
-                                onTouchStart={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#7c3aed';
-                                    e.currentTarget.style.transform = 'scale(0.98)';
-                                }}
-                                onTouchEnd={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#8b5cf6';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                }}
-                            >
-                                📹 {isRTL ? 'فيديو' : 'Vidéo'}
-                            </div>
-                        </div>
-
-                        <div style={{
-                            fontSize: '12px',
-                            opacity: '0.7',
-                            marginTop: '10px',
-                            fontStyle: 'italic'
-                        }}>
-                            {isRTL ? 'انقر للاتصال المباشر أو الفيديو' : 'Cliquez pour appeler ou vidéo'}
-                        </div>
-                    </div>
-                )}
-
-                {/* 🎯 NUEVA SECCIÓN: ICONOS DE CONTACTO AL FINAL */}
+                {/* Información del dueño de la tienda */}
                 <div style={{
                     backgroundColor: 'rgba(255,255,255,0.15)',
                     padding: '16px',
-                    borderRadius: '8px',
-                    marginTop: '16px'
+                    borderRadius: '10px',
+                    marginBottom: '20px',
+                    textAlign: 'center'
                 }}>
-                    <h3 style={{
-                        fontSize: '16px',
-                        marginBottom: '12px',
-                        fontWeight: '700',
-                        opacity: '0.9'
+                    <div style={{
+                        fontSize: '14px',
+                        opacity: '0.9',
+                        marginBottom: '8px',
+                        fontWeight: '700'
                     }}>
-                        {isRTL ? 'طرق التواصل السريعة' : 'Contact Rapide'}
-                    </h3>
+                        {isRTL ? 'صاحب المتجر 👤' : '👤 Propriétaire de la Boutique'}
+                    </div>
                     
                     <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: '20px',
-                        alignItems: 'center',
-                        flexWrap: 'wrap'
+                        fontSize: '18px',
+                        fontWeight: '900',
+                        padding: '10px 16px',
+                        borderRadius: '8px',
+                        backgroundColor: 'rgba(255,255,255,0.1)',
+                        display: 'inline-block',
+                        border: '2px solid rgba(255,255,255,0.3)',
+                        marginBottom: '12px',
+                        minWidth: '200px'
                     }}>
-                        {/* Icono Teléfono */}
-                        <div 
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                                padding: '10px',
-                                borderRadius: '8px',
-                                minWidth: '80px'
-                            }}
-                            onClick={handleCallOwner}
-                            onTouchStart={(e) => {
-                                e.currentTarget.style.backgroundColor = 'rgba(16, 185, 129, 0.3)';
-                                e.currentTarget.style.transform = 'scale(1.05)';
-                            }}
-                            onTouchEnd={(e) => {
-                                e.currentTarget.style.backgroundColor = 'transparent';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            title={isRTL ? 'اتصال هاتفي' : 'Appel téléphonique'}
-                        >
-                            <div style={{
-                                fontSize: '24px',
-                                marginBottom: '6px',
-                                backgroundColor: '#10b981',
-                                width: '50px',
-                                height: '50px',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
-                            }}>
-                                📞
-                            </div>
-                            <span style={{
-                                fontSize: '12px',
-                                fontWeight: '700',
-                                textAlign: 'center'
-                            }}>
-                                {isRTL ? 'اتصال' : 'Appel'}
-                            </span>
-                        </div>
-
-                        {/* Icono Chat */}
-                        <div 
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                                padding: '10px',
-                                borderRadius: '8px',
-                                minWidth: '80px'
-                            }}
-                            onClick={handleChatWithOwner}
-                            onTouchStart={(e) => {
-                                e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.3)';
-                                e.currentTarget.style.transform = 'scale(1.05)';
-                            }}
-                            onTouchEnd={(e) => {
-                                e.currentTarget.style.backgroundColor = 'transparent';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            title={isRTL ? 'دردشة مع البائع' : 'Chat avec le vendeur'}
-                        >
-                            <div style={{
-                                fontSize: '24px',
-                                marginBottom: '6px',
-                                backgroundColor: '#3b82f6',
-                                width: '50px',
-                                height: '50px',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: '0 2px 8px rgba(59, 130, 246, 0.4)'
-                            }}>
-                                💬
-                            </div>
-                            <span style={{
-                                fontSize: '12px',
-                                fontWeight: '700',
-                                textAlign: 'center'
-                            }}>
-                                {isRTL ? 'دردشة' : 'Chat'}
-                            </span>
-                        </div>
-
-                        {/* Icono Cámara/Video */}
-                        <div 
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                                padding: '10px',
-                                borderRadius: '8px',
-                                minWidth: '80px'
-                            }}
-                            onClick={handleVideoCall}
-                            onTouchStart={(e) => {
-                                e.currentTarget.style.backgroundColor = 'rgba(139, 92, 246, 0.3)';
-                                e.currentTarget.style.transform = 'scale(1.05)';
-                            }}
-                            onTouchEnd={(e) => {
-                                e.currentTarget.style.backgroundColor = 'transparent';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                            title={isRTL ? 'اتصال مرئي' : 'Appel vidéo'}
-                        >
-                            <div style={{
-                                fontSize: '24px',
-                                marginBottom: '6px',
-                                backgroundColor: '#8b5cf6',
-                                width: '50px',
-                                height: '50px',
-                                borderRadius: '50%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                boxShadow: '0 2px 8px rgba(139, 92, 246, 0.4)'
-                            }}>
-                                📹
-                            </div>
-                            <span style={{
-                                fontSize: '12px',
-                                fontWeight: '700',
-                                textAlign: 'center'
-                            }}>
-                                {isRTL ? 'فيديو' : 'Vidéo'}
-                            </span>
-                        </div>
+                        {ownerName}
                     </div>
 
                     <div style={{
-                        fontSize: '11px',
-                        opacity: '0.7',
-                        marginTop: '12px',
-                        fontStyle: 'italic',
-                        textAlign: 'center'
+                        fontSize: '14px',
+                        opacity: '0.9',
+                        marginBottom: '8px',
+                        fontWeight: '700',
+                        marginTop: '12px'
                     }}>
-                        {isRTL ? 'انقر على أيقونة للاتصال الفوري' : 'Cliquez sur une icône pour un contact immédiat'}
+                        {isRTL ? 'رقم الهاتف 📞' : '📞 Téléphone de Contact'}
+                    </div>
+                    
+                    <div style={{
+                        fontSize: '16px',
+                        fontWeight: '800',
+                        padding: '8px 14px',
+                        borderRadius: '6px',
+                        backgroundColor: 'rgba(255,255,255,0.1)',
+                        display: 'inline-block',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        direction: 'ltr',
+                        fontFamily: 'monospace'
+                    }}>
+                        {phoneNumber}
                     </div>
                 </div>
 
+                {/* Botones de acción principales */}
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: '12px',
+                    marginBottom: '20px'
+                }}>
+                    {/* Llamada telefónica */}
+                    <div 
+                        style={{
+                            backgroundColor: '#10b981',
+                            color: 'white',
+                            padding: '14px 8px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontWeight: '800',
+                            fontSize: '13px',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+                            border: '2px solid rgba(255,255,255,0.2)'
+                        }}
+                        onClick={handleCallOwner}
+                        onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = '#059669';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '#10b981';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        <div style={{ fontSize: '24px' }}>📞</div>
+                        <div>{isRTL ? 'اتصال' : 'Appeler'}</div>
+                    </div>
+
+                    {/* Chat */}
+                    <div 
+                        style={{
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            padding: '14px 8px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontWeight: '800',
+                            fontSize: '13px',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+                            border: '2px solid rgba(255,255,255,0.2)'
+                        }}
+                        onClick={handleChatWithOwner}
+                        onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = '#2563eb';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '#3b82f6';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        <div style={{ fontSize: '24px' }}>💬</div>
+                        <div>{isRTL ? 'دردشة' : 'Chat'}</div>
+                    </div>
+
+                    {/* Video llamada */}
+                    <div 
+                        style={{
+                            backgroundColor: '#8b5cf6',
+                            color: 'white',
+                            padding: '14px 8px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontWeight: '800',
+                            fontSize: '13px',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 12px rgba(139, 92, 246, 0.4)',
+                            border: '2px solid rgba(255,255,255,0.2)'
+                        }}
+                        onClick={handleVideoCall}
+                        onTouchStart={(e) => {
+                            e.currentTarget.style.backgroundColor = '#7c3aed';
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                        }}
+                        onTouchEnd={(e) => {
+                            e.currentTarget.style.backgroundColor = '#8b5cf6';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        <div style={{ fontSize: '24px' }}>📹</div>
+                        <div>{isRTL ? 'فيديو' : 'Vidéo'}</div>
+                    </div>
+                </div>
+
+                {/* Descripción de las opciones de contacto */}
+                <div style={{
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    padding: '14px',
+                    borderRadius: '8px',
+                    marginTop: '12px'
+                }}>
+                    <div style={{
+                        fontSize: '14px',
+                        fontWeight: '700',
+                        marginBottom: '8px',
+                        opacity: '0.9'
+                    }}>
+                        {isRTL ? 'خيارات التواصل:' : 'Options de contact:'}
+                    </div>
+                    
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '8px',
+                        fontSize: '11px',
+                        opacity: '0.8'
+                    }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontWeight: '700' }}>📞 {isRTL ? 'اتصال' : 'Appel'}</div>
+                            <div>{isRTL ? 'اتصال فوري' : 'Appel instantané'}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontWeight: '700' }}>💬 {isRTL ? 'دردشة' : 'Chat'}</div>
+                            <div>{isRTL ? 'مراسلة مباشرة' : 'Messagerie directe'}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontWeight: '700' }}>📹 {isRTL ? 'فيديو' : 'Vidéo'}</div>
+                            <div>{isRTL ? 'مكالمة فيديو' : 'Appel vidéo'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Mensaje final */}
                 <p style={{ 
                     fontSize: '15px',
                     opacity: '0.9', 
-                    margin: '16px 0 0 0',
-                    wordBreak: 'break-word',
-                    fontWeight: '700'
+                    margin: '20px 0 0 0',
+                    fontWeight: '700',
+                    fontStyle: 'italic'
                 }}>
                     {isRTL 
-                        ? '🎉 اشتر بثقة تامة!'
-                        : t('contact.guarantee', 'Achetez en toute confiance !') + ' 🎉'
+                        ? '🛍️ تسوق بثقة واتصل بالبائع مباشرة!'
+                        : '🛍️ Achetez en confiance - Contactez le vendeur directement !'
                     }
                 </p>
             </div>

@@ -9,44 +9,13 @@ import { FaSave, FaTimes } from 'react-icons/fa';
 import { createPost, updatePost } from '../redux/actions/postAction';
 
 // 🔷 IMPORTS OPTIMIZADOS - ORGANIZADOS POR ORDEN DE USO
-// 1. CATEGORÍA Y SUBCATEGORÍA (PRIMEROS)
-import CategorySelector from '../components/forms/vetements/CategorySelector';
- 
-// 2. TÍTULO Y DESCRIPCIÓN
-import Title from '../components/forms/vetements/Title';
-import Description from '../components/forms/vetements/Description';
+// ... (tus imports existentes)
 
-// 3. COMPONENTES DE CARACTERÍSTICAS DEL PRODUCTO
-import Talla from '../components/forms/vetements/Talla';
-import Genero from '../components/forms/vetements/Genero';
-import Estado from '../components/forms/vetements/Estado';
-import Color from '../components/forms/vetements/Color';
-import TemporadaDeUso from '../components/forms/vetements/TemporadaDeUso';
-import Marca from '../components/forms/vetements/Marca';
-import MaterialProducto from '../components/forms/vetements/MaterialProducto';
-
-// 4. COMPONENTES ESPECÍFICOS POR CATEGORÍA
-import Bebe from '../components/forms/vetements/Bebe';
-import Bijoux from '../components/forms/vetements/Bijoux';
-import ChaussureFemme from '../components/forms/vetements/ChaussureFemme';
-import ChaussureHome from '../components/forms/vetements/ChaussureHome';
-import Filles from '../components/forms/vetements/Filles';
-import Garcons from '../components/forms/vetements/Garcons';
-import Lunettes from '../components/forms/vetements/Lunettes';
-import Montres from '../components/forms/vetements/Montres';
-import SacsValises from '../components/forms/vetements/SacsValises';
-import TennueProfesionelle from '../components/forms/vetements/TennueProfesionelle';
-import VetementsFemme from '../components/forms/vetements/VetementsFemme';
-import VetementsHomme from '../components/forms/vetements/VetementsHomme';
-
-// 5. COMPONENTES DE PRECIO Y VENTA (ANTES DE LAS IMÁGENES)
-import Price from '../components/forms/vetements/Price';
-import TipoMoneda from '../components/forms/vetements/TipoMoneda';
-import TipoVenta from '../components/forms/vetements/TipoVenta';
-
-// 6. COMPONENTE DE IMÁGENES (EL ÚLTIMO)
-import ImageUpload from '../components/forms/vetements/ImageUpload';
-import Telefono from '../components/forms/vetements/Telefono';
+// 🎯 CONFIGURACIÓN DE VALORES POR DEFECTO
+const DEFAULT_VALUES = {
+  PHONE: "0658556296",
+  // Puedes agregar más valores por defecto aquí
+};
 
 const getInitialState = () => ({
   // 1. CATEGORÍA/SUBCATEGORÍA (PRIMEROS)
@@ -62,68 +31,19 @@ const getInitialState = () => ({
   talla: [],
   color: [],
 
-  // Bebés
-  edadBebes: "",
-
-  // Bijoux
-  tipoMaterialBijoux: "",
-  tipoPiedra: "",
-
-  // Zapatos mujer
-  alturaTacon: "",
-  tipoDeCierre: "",
-  formaDePunta: "",
-
-  // Zapatos hombres
-  tipoDeSuela: "",
-  tipoDeCierreHombre: "",
-
-  // Color y temporada
-  temporada: "",
-  tipocolor: "",
-  ocasion: "",
-
-  // Estilo
-  estilo: "",
-
-  // Género y estado
-  genero: "",
-  etat: "",
-
-  // Gafas
-  anchoPuente: "",
-  longitudPatilla: "",
-
-  // Marca y material
-  marca: "",
-  material: "",
-
-  // Relojes
-  tiporeloj: "",
-  movimientoReloj: "",
-  materialCorrea: "",
-  resistenciaAgua: "",
-  funcionalidades: "",
-
-  // Sacvalise
-  tipoSangle: "",
-  correa: "",
-  tallaSaco: "",
-
-  // Profesionales
-  tipoDeLabata: "",
-  sectorDeTrabajo: "",
+  // ... (tus otros campos existentes)
 
   // 4. PRECIO Y VENTA (ANTES DE LAS IMÁGENES)
   price: "",
   tipodemoneda: "",
   tipoventa: "",
-  telefono: "",
+  telefono: DEFAULT_VALUES.PHONE, // ✅ TELÉFONO POR DEFECTO
+
   // 5. IMÁGENES (ÚLTIMAS)
   images: [],
 });
 
-// 🎯 FUNCIONES DE UTILIDAD SEGURAS
+// 🎯 FUNCIONES DE UTILIDAD SEGURAS (mantén las existentes)
 const safeArray = (potentialArray) => {
   if (!potentialArray) return [];
   if (Array.isArray(potentialArray)) return potentialArray;
@@ -139,7 +59,7 @@ const safeIncludes = (array, value) => {
 };
 
 const Createpost = () => {
-  const { auth, theme, languageReducer} = useSelector((state) => state);
+  const { auth, theme, languageReducer } = useSelector((state) => state);
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
@@ -165,7 +85,7 @@ const Createpost = () => {
     }
   }, [languageReducer?.language, i18n]);
 
-  // ✅ CARGAR DATOS MEJORADO - SOLO UNA VEZ
+  // ✅ CARGAR DATOS MEJORADO - MANTENER TELÉFONO POR DEFECTO EN EDICIÓN
   useEffect(() => {
     if (isEdit) {
       if (postToEdit) {
@@ -192,6 +112,8 @@ const Createpost = () => {
         talla: safeArray(sanitizedData.talla),
         color: safeArray(sanitizedData.color),
         images: safeArray(sanitizedData.images),
+        // ✅ Mantener teléfono existente o usar por defecto
+        telefono: sanitizedData.telefono || DEFAULT_VALUES.PHONE,
       };
 
       setPostData(finalPostData);
@@ -214,36 +136,9 @@ const Createpost = () => {
     }
   };
 
-  const loadPostFromAPI = async (postId) => {
-    try {
-      showAlertMessage('Cargando datos del post...', 'info');
-      // Aquí deberías tener una acción Redux para obtener el post por ID
-      // await dispatch(getPostById(postId));
-    } catch (error) {
-      showAlertMessage('Error al cargar el post desde el servidor', 'danger');
-    }
-  };
+  // ... (mantén tus otras funciones existentes: loadPostFromAPI, sanitizePostData, showAlertMessage)
 
-  const sanitizePostData = useCallback((data) => {
-    if (!data) return {};
-    
-    const cleanData = { ...data };
-    
-    cleanData.talla = safeArray(cleanData.talla);
-    cleanData.color = safeArray(cleanData.color);
-    cleanData.images = safeArray(cleanData.images);
-    
-    return cleanData;
-  }, []);
-
-  const showAlertMessage = useCallback((message, variant) => {
-    setAlertMessage(message);
-    setAlertVariant(variant);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 5000);
-  }, []);
-
-  // 🎯 MANEJO DE CAMPOS STRING (inputs normales)
+  // 🎯 MANEJO DE CAMPOS STRING (MEJORADO PARA TELÉFONO)
   const handleChangeInput = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     
@@ -253,52 +148,22 @@ const Createpost = () => {
     }));
   }, []);
 
-  // 🎯 MANEJO DE CAMPOS ARRAY (talla, color)
-  const handleArrayChange = useCallback((fieldName, value) => {
-    setPostData(prev => {
-      const currentArray = safeArray(prev[fieldName]);
-      
-      const newArray = safeIncludes(currentArray, value)
-        ? currentArray.filter(item => item !== value)
-        : [...currentArray, value];
-      
-      return {
-        ...prev,
-        [fieldName]: newArray
-      };
-    });
+  // 🎯 MANEJO ESPECÍFICO PARA TELÉFONO
+  const handlePhoneChange = useCallback((phoneValue) => {
+    setPostData(prev => ({
+      ...prev,
+      telefono: phoneValue || DEFAULT_VALUES.PHONE
+    }));
   }, []);
 
-  // 🎯 MANEJO DE IMÁGENES
-  const handleChangeImages = useCallback((e) => {
-    const files = [...e.target.files];
-    let err = "";
-    const newImages = [];
+  // ... (mantén tus otras funciones: handleArrayChange, handleChangeImages, deleteImages)
 
-    files.forEach(file => {
-      if (!file) err = t('validation_images_required');
-      else if (file.size > 5 * 1024 * 1024) err = t('validation_images_size');
-      else newImages.push(file);
-    });
-
-    if (err) {
-      showAlertMessage(err, "danger");
-      return;
-    }
-
-    setImages(prev => [...prev, ...newImages]);
-  }, [t, showAlertMessage]);
-
-  const deleteImages = useCallback((index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-  }, []);
-
-  // 🎯 HANDLE SUBMIT MEJORADO Y SEGURO
+  // 🎯 HANDLE SUBMIT MEJORADO - VALIDAR TELÉFONO
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Validaciones
+    // Validaciones básicas
     if (!postData.subCategory) {
       showAlertMessage(t('validation_category_required'), "danger");
       setIsSubmitting(false);
@@ -317,13 +182,23 @@ const Createpost = () => {
       return;
     }
 
+    // ✅ Validación opcional de teléfono
+    if (!postData.telefono || postData.telefono.trim() === '') {
+      // Usar teléfono por defecto si está vacío
+      setPostData(prev => ({
+        ...prev,
+        telefono: DEFAULT_VALUES.PHONE
+      }));
+    }
+
     try {
       const safePostData = {
         ...postData,
         talla: safeArray(postData.talla),
         color: safeArray(postData.color),
         images: safeArray(postData.images),
-        price: Number(postData.price) || 0
+        price: Number(postData.price) || 0,
+        telefono: postData.telefono || DEFAULT_VALUES.PHONE // ✅ Asegurar teléfono
       };
 
       const actionData = {
@@ -365,7 +240,7 @@ const Createpost = () => {
 
   // ✅ COMPONENTES ORGANIZADOS EN EL ORDEN SOLICITADO
 
-  // 1. CATEGORÍA Y SUBCATEGORÍA (PRIMEROS)
+  // 1. CATEGORÍA Y SUBCATEGORÍA
   const CategorySection = useMemo(() => (
     <div className="px-2">
       <CategorySelector postData={postData} handleChangeInput={handleChangeInput} />
@@ -415,15 +290,18 @@ const Createpost = () => {
     </div>
   ), [postData, handleChangeInput, handleArrayChange]);
 
-  // 5. PRECIO Y VENTA (ANTES DE IMÁGENES)
+  // 5. PRECIO Y VENTA (CON TELÉFONO POR DEFECTO)
   const PriceSection = useMemo(() => (
     <div className="px-2">
       <Price postData={postData} handleChangeInput={handleChangeInput} />
       <TipoMoneda postData={postData} handleChangeInput={handleChangeInput} />
       <TipoVenta postData={postData} handleChangeInput={handleChangeInput} />
-      <Telefono postData={postData} handleChangeInput={handleChangeInput} />
+      <Contact 
+        postData={postData} 
+        handleChangeInput={handlePhoneChange} // ✅ Pasar función específica
+      />
     </div>
-  ), [postData, handleChangeInput]);
+  ), [postData, handleChangeInput, handlePhoneChange]);
 
   // 6. IMÁGENES (ÚLTIMAS)
   const ImageSection = useMemo(() => (
@@ -442,7 +320,7 @@ const Createpost = () => {
       <Row className="g-0">
         <Col xs={12}>
           <Card className="border-0 rounded-0">
-            <Card.Header className={`${isEdit ? "bg-warning text-dark" : "bg-primarhy text-white"} ps-3`}>
+            <Card.Header className={`${isEdit ? "bg-warning text-dark" : "bg-primary text-white"} ps-3`}>
               <Row className="align-items-center g-0">
                 <Col>
                   <h2 className="mb-1 fs-6">
