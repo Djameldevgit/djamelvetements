@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
    
     <!-- Meta tags PWA mejorados -->
-    <meta name="theme-color" content="#2c5aa0" />
+    <meta name="theme-color" content="#d63384" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Boutique Vêtements">
+    <meta name="apple-mobile-web-app-title" content="Vetements">
     
     <meta
       name="description"
-      content="Tassili Vêtements - Votre boutique de mode en ligne pour des looks tendance et uniques"
+      content="Vetements - Votre boutique de mode en ligne. Découvrez les dernières tendances de vêtements et accessoires"
     />
     
     <!-- Usar rutas absolutas para los iconos -->
@@ -35,7 +35,7 @@
     <!-- Preload crítico -->
     <link rel="preload" href="/static/js/bundle.js" as="script">
     
-    <title>Tassili Vêtements - Mode Tendence, Collections Exclusives</title>
+    <title>Vetements - Boutique de Mode en Ligne</title>
 
     <style>
       /* Loading screen para PWA */
@@ -45,7 +45,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+        background: linear-gradient(135deg, #d63384 0%, #a61e4d 100%);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -73,20 +73,41 @@
       .pwa-standalone {
         padding-top: env(safe-area-inset-top);
       }
+
+      /* Estado offline */
+      .offline-indicator {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #ff6b6b;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        z-index: 10000;
+        font-size: 14px;
+      }
     </style>
   </head>
   <body>
+    <!-- Indicador de estado offline -->
+    <div class="offline-indicator" id="offline-indicator">
+      <i class="fas fa-wifi"></i> Vous êtes actuellement hors ligne
+    </div>
+
     <!-- Loading screen para PWA -->
     <div id="pwa-loading">
       <div class="loading-spinner"></div>
-      <h4>Tassili Vêtements</h4>
+      <h4>Vetements</h4>
       <p>Chargement de la boutique...</p>
+      <small id="loading-status" style="margin-top: 10px; opacity: 0.8;"></small>
     </div>
 
     <noscript>
       <div class="alert alert-danger m-3">
         <h4>JavaScript Requis</h4>
-        <p>Vous devez activer JavaScript pour utiliser Tassili Vêtements.</p>
+        <p>Vous devez activer JavaScript pour utiliser Vetements.</p>
       </div>
     </noscript>
     
@@ -102,36 +123,80 @@
     <!-- Script PWA MEJORADO Y ESTABILIZADO -->
     <script>
       // ==================== CONFIGURACIÓN PWA ESTABILIZADA ====================
-      console.log('🚀 Initialisation de la PWA...');
+      console.log('🚀 Inicializando PWA Vetements...');
       
       // Variables globales
       window.deferredPrompt = null;
       window.isPWAInstalled = false;
+      window.isOnline = navigator.onLine;
 
-      // 1. Ocultar loading screen cuando la app esté lista - MEJORADO
-      window.addEventListener('load', function() {
-        console.log('📱 Page chargée complètement');
+      // Función para manejar el estado de conexión
+      function updateOnlineStatus() {
+        window.isOnline = navigator.onLine;
+        const offlineIndicator = document.getElementById('offline-indicator');
+        const loadingStatus = document.getElementById('loading-status');
         
-        // Ocultar loading screen después de un tiempo mínimo
+        if (!window.isOnline) {
+          console.log('🌐 Estado: Hors ligne');
+          if (offlineIndicator) offlineIndicator.style.display = 'block';
+          if (loadingStatus) {
+            loadingStatus.textContent = 'Connexion perdue - Affichage du contenu disponible';
+          }
+          // Si estamos offline, ocultar el loading más rápido
+          hideLoadingScreen(500);
+        } else {
+          console.log('🌐 Estado: En ligne');
+          if (offlineIndicator) offlineIndicator.style.display = 'none';
+          if (loadingStatus) loadingStatus.textContent = '';
+        }
+      }
+
+      // Función mejorada para ocultar loading screen
+      function hideLoadingScreen(delay = 800) {
         setTimeout(function() {
           const loading = document.getElementById('pwa-loading');
           if (loading) {
             loading.style.opacity = '0';
             setTimeout(() => {
               if (loading.parentNode) {
-                loading.remove();
+                loading.style.display = 'none';
               }
             }, 500);
           }
-        }, 800); // Reducido a 800ms para mejor UX
+        }, delay);
+      }
+
+      // 1. Ocultar loading screen cuando la app esté lista - MEJORADO
+      window.addEventListener('load', function() {
+        console.log('📱 Page Vetements chargée complètement');
+        updateOnlineStatus();
+        
+        // Si estamos online, esperar un poco antes de ocultar
+        // Si estamos offline, ocultar inmediatamente
+        if (window.isOnline) {
+          hideLoadingScreen(800);
+        } else {
+          hideLoadingScreen(300);
+        }
+      });
+
+      // Escuchar cambios de conexión
+      window.addEventListener('online', function() {
+        console.log('📶 Connexion rétablie');
+        updateOnlineStatus();
+      });
+
+      window.addEventListener('offline', function() {
+        console.log('📵 Connexion perdue');
+        updateOnlineStatus();
       });
 
       // 2. Función global para instalar PWA - ESTABILIZADA
       window.installPWA = function() {
-        console.log('🔧 Exécution de installPWA...');
+        console.log('🔧 Exécution de l\'installation PWA...');
         
         if (window.deferredPrompt) {
-          console.log('📲 Affichage de la demande d\'installation...');
+          console.log('📲 Affichage de l\'invite d\'installation...');
           return window.deferredPrompt.prompt()
             .then(() => window.deferredPrompt.userChoice)
             .then((choiceResult) => {
@@ -155,10 +220,8 @@
               return false;
             });
         } else {
-          console.log('⚠️ Aucune demande d\'installation disponible');
-          // Si no hay deferredPrompt pero estamos en modo instalable, redirigir
+          console.log('⚠️ Aucun deferredPrompt disponible');
           if (window.matchMedia('(display-mode: browser)').matches) {
-            // Mostrar instrucciones de instalación manual
             alert('Pour installer l\'application, utilisez le menu de votre navigateur et sélectionnez "Ajouter à l\'écran d\'accueil"');
           }
           return Promise.resolve(false);
@@ -186,17 +249,14 @@
 
       // 5. Registrar Service Worker - VERSIÓN ESTABILIZADA
       if ('serviceWorker' in navigator) {
-        // Esperar a que la página esté completamente cargada
         window.addEventListener('load', function() {
           console.log('🔧 Enregistrement du Service Worker...');
           
-          // Solo registrar en producción y si el SW existe
           const registerSW = () => {
             navigator.serviceWorker.register('/sw.js')
               .then(function(registration) {
                 console.log('✅ SW enregistré correctement:', registration.scope);
                 
-                // Verificar si hay una nueva versión del SW
                 registration.addEventListener('updatefound', () => {
                   const newWorker = registration.installing;
                   console.log('🔄 Nouvelle version du SW trouvée:', newWorker.state);
@@ -204,43 +264,38 @@
                   newWorker.addEventListener('statechange', () => {
                     console.log('📊 État du nouveau SW:', newWorker.state);
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      // Nuevo contenido disponible
                       console.log('🆕 Nouveau contenu disponible, veuillez recharger.');
                     }
                   });
                 });
               })
               .catch(function(error) {
-                console.error('❌ Erreur d\'enregistrement du SW:', error);
-                // No reintentar automáticamente para evitar bucles
+                console.error('❌ Erreur d\'enregistrement SW:', error);
               });
           };
 
-          // Pequeño delay para evitar conflictos con la carga de la página
           setTimeout(registerSW, 500);
         });
 
-        // Manejar cambios de controlador
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-          console.log('🔄 Contrôleur changé - possible mise à jour du SW');
+          console.log('🔄 Controller changé - mise à jour possible du SW');
         });
       }
 
       // 6. Verificar estado de PWA al cargar - SIMPLIFICADO
       window.addEventListener('DOMContentLoaded', function() {
         console.log('🔍 Vérification de l\'état PWA...');
+        updateOnlineStatus();
         
-        // Verificar si ya está instalada
         if (localStorage.getItem('pwaInstalled') === 'true') {
           window.isPWAInstalled = true;
         }
         
-        // Verificar display mode
         if (window.matchMedia('(display-mode: standalone)').matches) {
           window.isPWAInstalled = true;
           localStorage.setItem('pwaInstalled', 'true');
           document.body.classList.add('pwa-standalone');
-          console.log('📱 PWA détectée par le mode d\'affichage');
+          console.log('📱 PWA détectée par display mode');
         }
       });
 
@@ -249,7 +304,7 @@
         console.error('🚨 Erreur globale capturée:', e.error);
       });
 
-      console.log('✅ Configuration PWA terminée');
+      console.log('✅ Configuration PWA Vetements terminée');
     </script>
   </body>
 </html>

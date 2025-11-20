@@ -1,5 +1,9 @@
 // sw.js - Service Worker optimizado y corregido
-const CACHE_NAME = 'Vêtements Djamel-v2.1'; // Cambia la versión para forzar actualización
+// Cambiar el nombre del cache para Vetements
+const CACHE_NAME = 'vetements-boutique-v2.1';
+
+// El resto del service worker permanece igual, solo cambia el nombre
+// ... (todo el código del service worker se mantiene igual)
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',

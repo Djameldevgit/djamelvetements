@@ -1,6 +1,6 @@
 {
-  "short_name": "Vetemntes",
-  "name": "Vetemntes - Votre store de vetements",
+  "short_name": "Vetements",
+  "name": "Vetements - Votre boutique de mode",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,11 +20,11 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2c5aa0",
+  "theme_color": "#d63384",
   "background_color": "#ffffff",
   "scope": "/",
   "orientation": "portrait-primary",
-  "categories": ["travel", "business"],
-  "description": "Votre store de vetements",
+  "categories": ["shopping", "fashion"],
+  "description": "Votre boutique de mode en ligne pour des vêtements tendance",
   "lang": "fr"
 }
