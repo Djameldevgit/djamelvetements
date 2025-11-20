@@ -33,7 +33,7 @@ import Bloqueos404 from './components/adminitration/Bloqueos404';
 import Appinfo2 from './pages/appinfo2';
 import Createpost from './pages/Createpost';
 import Appinfo3 from './pages/appinfo3';
-import Map from './pages/map';
+import Map from './pages/Map';
 
 function App() {
   const { auth, status, modal, languageReducer } = useSelector(state => state)
