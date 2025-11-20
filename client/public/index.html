@@ -1,40 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="./icon-web-01.png" />
+    <link rel="icon" href="/icon-web-01.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+   
+    <!-- Meta tags PWA mejorados -->
+    <meta name="theme-color" content="#2c5aa0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Boutique Vêtements">
+    
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Tassili Vêtements - Votre boutique de mode en ligne pour des looks tendance et uniques"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    
+    <!-- Usar rutas absolutas para los iconos -->
+    <link rel="apple-touch-icon" href="/icon-web-01.png" />
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
    
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- Bootstrap CSS consolidado -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" rel="stylesheet">
+    <!-- Preload crítico -->
+    <link rel="preload" href="/static/js/bundle.js" as="script">
     
-    <title>V-Network</title>
+    <title>Tassili Vêtements - Mode Tendence, Collections Exclusives</title>
+
+    <style>
+      /* Loading screen para PWA */
+      #pwa-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+        transition: opacity 0.5s ease;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .pwa-standalone {
+        padding-top: env(safe-area-inset-top);
+      }
+    </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Loading screen para PWA -->
+    <div id="pwa-loading">
+      <div class="loading-spinner"></div>
+      <h4>Tassili Vêtements</h4>
+      <p>Chargement de la boutique...</p>
+    </div>
+
+    <noscript>
+      <div class="alert alert-danger m-3">
+        <h4>JavaScript Requis</h4>
+        <p>Vous devez activer JavaScript pour utiliser Tassili Vêtements.</p>
+      </div>
+    </noscript>
+    
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- Script PWA MEJORADO Y ESTABILIZADO -->
+    <script>
+      // ==================== CONFIGURACIÓN PWA ESTABILIZADA ====================
+      console.log('🚀 Initialisation de la PWA...');
+      
+      // Variables globales
+      window.deferredPrompt = null;
+      window.isPWAInstalled = false;
+
+      // 1. Ocultar loading screen cuando la app esté lista - MEJORADO
+      window.addEventListener('load', function() {
+        console.log('📱 Page chargée complètement');
+        
+        // Ocultar loading screen después de un tiempo mínimo
+        setTimeout(function() {
+          const loading = document.getElementById('pwa-loading');
+          if (loading) {
+            loading.style.opacity = '0';
+            setTimeout(() => {
+              if (loading.parentNode) {
+                loading.remove();
+              }
+            }, 500);
+          }
+        }, 800); // Reducido a 800ms para mejor UX
+      });
+
+      // 2. Función global para instalar PWA - ESTABILIZADA
+      window.installPWA = function() {
+        console.log('🔧 Exécution de installPWA...');
+        
+        if (window.deferredPrompt) {
+          console.log('📲 Affichage de la demande d\'installation...');
+          return window.deferredPrompt.prompt()
+            .then(() => window.deferredPrompt.userChoice)
+            .then((choiceResult) => {
+              console.log('✅ Résultat:', choiceResult.outcome);
+              
+              if (choiceResult.outcome === 'accepted') {
+                console.log('🎉 Utilisateur a accepté l\'installation');
+                window.isPWAInstalled = true;
+                localStorage.setItem('pwaInstalled', 'true');
+                window.dispatchEvent(new Event('pwaInstalled'));
+              } else {
+                console.log('❌ Utilisateur a refusé l\'installation');
+              }
+              
+              window.deferredPrompt = null;
+              return choiceResult.outcome === 'accepted';
+            })
+            .catch((error) => {
+              console.error('❌ Erreur dans installPWA:', error);
+              window.deferredPrompt = null;
+              return false;
+            });
+        } else {
+          console.log('⚠️ Aucune demande d\'installation disponible');
+          // Si no hay deferredPrompt pero estamos en modo instalable, redirigir
+          if (window.matchMedia('(display-mode: browser)').matches) {
+            // Mostrar instrucciones de instalación manual
+            alert('Pour installer l\'application, utilisez le menu de votre navigateur et sélectionnez "Ajouter à l\'écran d\'accueil"');
+          }
+          return Promise.resolve(false);
+        }
+      };
+
+      // 3. Capturar beforeinstallprompt - MANEJO SIMPLIFICADO
+      window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('🎯 Événement beforeinstallprompt capturé!');
+        e.preventDefault();
+        window.deferredPrompt = e;
+        localStorage.setItem('pwaInstallAvailable', 'true');
+        window.dispatchEvent(new CustomEvent('pwaInstallAvailable'));
+      });
+
+      // 4. Detectar cuando se instala la PWA
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('🎉 PWA installée avec succès!');
+        window.isPWAInstalled = true;
+        window.deferredPrompt = null;
+        localStorage.setItem('pwaInstalled', 'true');
+        localStorage.removeItem('pwaInstallAvailable');
+        window.dispatchEvent(new Event('pwaInstalled'));
+      });
+
+      // 5. Registrar Service Worker - VERSIÓN ESTABILIZADA
+      if ('serviceWorker' in navigator) {
+        // Esperar a que la página esté completamente cargada
+        window.addEventListener('load', function() {
+          console.log('🔧 Enregistrement du Service Worker...');
+          
+          // Solo registrar en producción y si el SW existe
+          const registerSW = () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(function(registration) {
+                console.log('✅ SW enregistré correctement:', registration.scope);
+                
+                // Verificar si hay una nueva versión del SW
+                registration.addEventListener('updatefound', () => {
+                  const newWorker = registration.installing;
+                  console.log('🔄 Nouvelle version du SW trouvée:', newWorker.state);
+                  
+                  newWorker.addEventListener('statechange', () => {
+                    console.log('📊 État du nouveau SW:', newWorker.state);
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // Nuevo contenido disponible
+                      console.log('🆕 Nouveau contenu disponible, veuillez recharger.');
+                    }
+                  });
+                });
+              })
+              .catch(function(error) {
+                console.error('❌ Erreur d\'enregistrement du SW:', error);
+                // No reintentar automáticamente para evitar bucles
+              });
+          };
+
+          // Pequeño delay para evitar conflictos con la carga de la página
+          setTimeout(registerSW, 500);
+        });
+
+        // Manejar cambios de controlador
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('🔄 Contrôleur changé - possible mise à jour du SW');
+        });
+      }
+
+      // 6. Verificar estado de PWA al cargar - SIMPLIFICADO
+      window.addEventListener('DOMContentLoaded', function() {
+        console.log('🔍 Vérification de l\'état PWA...');
+        
+        // Verificar si ya está instalada
+        if (localStorage.getItem('pwaInstalled') === 'true') {
+          window.isPWAInstalled = true;
+        }
+        
+        // Verificar display mode
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          window.isPWAInstalled = true;
+          localStorage.setItem('pwaInstalled', 'true');
+          document.body.classList.add('pwa-standalone');
+          console.log('📱 PWA détectée par le mode d\'affichage');
+        }
+      });
+
+      // 7. Manejar errores globales para diagnóstico
+      window.addEventListener('error', function(e) {
+        console.error('🚨 Erreur globale capturée:', e.error);
+      });
+
+      console.log('✅ Configuration PWA terminée');
+    </script>
   </body>
 </html>
