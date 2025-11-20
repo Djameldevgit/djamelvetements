@@ -1,6 +1,6 @@
 {
-  "short_name": "Agence Voyage",
-  "name": "Agence Voyage - Votre partenaire de voyage",
+  "short_name": "Vetemntes",
+  "name": "Vetemntes - Votre store de vetements",
   "icons": [
     {
       "src": "favicon.ico",
@@ -25,6 +25,6 @@
   "scope": "/",
   "orientation": "portrait-primary",
   "categories": ["travel", "business"],
-  "description": "Votre agence de voyage de confiance pour des expériences inoubliables",
+  "description": "Votre store de vetements",
   "lang": "fr"
 }
