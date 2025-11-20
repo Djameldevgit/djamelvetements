@@ -299,59 +299,80 @@ const Navbar2 = () => {
           }}
         >
           {/* Logo y Brand */}
-          <div className="d-flex align-items-center" style={{ minWidth: 0, flex: '0 1 auto' }}>
-            <Link
-              to="/"
-              className="btn p-0"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: isMobile ? '38px' : '50px',
-                height: isMobile ? '38px' : '50px',
-                marginRight: isMobile ? '8px' : '12px',
-                background: 'transparent',
-                border: 'none',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                flexShrink: 0
-              }}
-            >
-              <img
-                src="/images/logo.png"
-                alt="Logo"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                  borderRadius: '8px'
-                }}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-            </Link>
+      
+<div className="d-flex align-items-center" style={{ minWidth: 0, flex: '0 1 auto' }}>
+  <Link
+    to="/"
+    onDoubleClick={(e) => {
+      e.preventDefault();
+      window.location.reload();
+    }}
+    className="btn p-0"
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: isMobile ? '38px' : '50px',
+      height: isMobile ? '38px' : '50px',
+      marginRight: isMobile ? '8px' : '12px',
+      background: 'transparent',
+      border: 'none',
+      borderRadius: '10px',
+      overflow: 'hidden',
+      flexShrink: 0
+    }}
+    title="Click para ir al inicio - Doble click para recargar"
+  >
+    <img
+      src="/images/logo.png"
+      alt="Logo"
+      style={{
+        width: '100%',
+        height: '100%',
+        objectFit: 'contain',
+        borderRadius: '8px'
+      }}
+      onError={(e) => {
+        e.target.style.display = 'none';
+      }}
+    />
+  </Link>
 
-            {!isMobile && (
-              <Navbar.Brand href="/" className="py-2 mb-0" style={{ flexShrink: 0 }}>
-                <Card.Title
-                  className="mb-0"
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    fontWeight: 'bold',
-                    fontSize: '1.4rem',
-                    letterSpacing: '0.5px',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {t('appName')}
-                </Card.Title>
-              </Navbar.Brand>
-            )}
-          </div>
+  {!isMobile && (
+    <Link
+      to="/"
+      onDoubleClick={(e) => {
+        e.preventDefault();
+        window.location.reload();
+      }}
+      style={{
+        background: 'none',
+        border: 'none',
+        padding: 0,
+        textDecoration: 'none'
+      }}
+      title="Click para ir al inicio - Doble click para recargar"
+    >
+      <Navbar.Brand className="py-2 mb-0" style={{ flexShrink: 0 }}>
+        <Card.Title
+          className="mb-0"
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 'bold',
+            fontSize: '1.4rem',
+            letterSpacing: '0.5px',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {t('appName')}
+        </Card.Title>
+      </Navbar.Brand>
+    </Link>
+  )}
+</div>
 
           {/* Iconos de acción */}
           <div 
@@ -511,329 +532,323 @@ const Navbar2 = () => {
             )}
 
             {/* 🔥 DROPDOWN DE USUARIO MEJORADO */}
-            <NavDropdown
-              align="end"
-              title={
-                auth.user ? (
-                  <div
-                    style={{
-                      width: isMobile ? '38px' : '42px',
-                      height: isMobile ? '38px' : '42px',
-                      borderRadius: '10px',
-                      padding: '2px',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      position: 'relative'
-                    }}
-                  >
-                    <Avatar
-                      src={auth.user.avatar}
-                      size="medium-avatar"
-                      style={{
-                        borderRadius: '8px',
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: '100%'
-                      }}
-                    />
-                    {/* Indicador de estado en línea */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        bottom: '-2px',
-                        right: '-2px',
-                        width: '12px',
-                        height: '12px',
-                        backgroundColor: '#28a745',
-                        border: '2px solid white',
-                        borderRadius: '50%'
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      width: isMobile ? '38px' : '42px',
-                      height: isMobile ? '38px' : '42px',
-                      borderRadius: '10px',
-                      backgroundColor: settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(102, 126, 234, 0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FaUserCircle size={isMobile ? 22 : 26} style={{ color: '#667eea' }} />
-                  </div>
-                )
-              }
-              id="nav-user-dropdown"
-              className="custom-dropdown"
-              ref={userDropdownRef}
-            >
-              <div className="dropdown-scroll-wrapper">
-                {auth.user ? (
-                  <>
-                    {/* Header del usuario MEJORADO */}
-                    <div className="user-header">
-                      <div className="d-flex align-items-center gap-3">
-                        <div className="user-avatar-wrapper">
-                          <Avatar src={auth.user.avatar} size="medium-avatar" />
-                          <div className="online-indicator"></div>
-                        </div>
-                        <div className="flex-grow-1">
-                          <div className="fw-bold text-white user-name">
-                            {auth.user.username}
-                          </div>
-                          <div className="user-email" style={{
-                            color: 'rgba(255,255,255,0.8)',
-                            fontSize: '0.8rem',
-                            marginBottom: '4px'
-                          }}>
-                            {auth.user.email}
-                          </div>
-                          <div className="user-role-badge">
-                            {userRole === 'admin' ? `👑 ${t('admin')}` :
-                              userRole === 'Moderateur' ? `🛡️ ${t('moderator')}` :
-                                userRole === 'Super-utilisateur' ? `⭐ ${t('superUser')}` :
-                                  `👤 ${t('user')}`}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 🔥 SECCIÓN DE ACCIONES RÁPIDAS */}
-                    <div style={{ 
-                      padding: '8px 12px',
-                      borderBottom: `1px solid ${settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
-                    }}>
-                      <div style={{
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        color: settings.style ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
-                        marginBottom: '6px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        Acciones Rápidas
-                      </div>
-                      <div className="d-flex gap-2">
-                        <Link
-                          to ="/Map" 
-                          className="btn btn-sm"
-                          style={{
-                            flex: 1,
-                            background: 'linear-gradient(135deg, #ea4335 0%, #d33426 100%)',
-                            border: 'none',
-                            color: 'white',
-                            fontSize: '0.75rem',
-                            padding: '6px 8px',
-                            borderRadius: '6px',
-                            textDecoration: 'none',
-                            textAlign: 'center'
-                          }}
-                        >
-                          <FaMapMarkerAlt size={12} className="me-1" />
-                          Mapa
-                        </Link>
-                        <Link
-                          to="/search"
-                          className="btn btn-sm"
-                          style={{
-                            flex: 1,
-                            background: 'linear-gradient(135deg, #667eea 0%, #5a6fd8 100%)',
-                            border: 'none',
-                            color: 'white',
-                            fontSize: '0.75rem',
-                            padding: '6px 8px',
-                            borderRadius: '6px',
-                            textDecoration: 'none',
-                            textAlign: 'center'
-                          }}
-                        >
-                          <FaSearch size={12} className="me-1" />
-                          Buscar
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* Selector de idioma */}
-                    <div style={{ padding: '12px' }}>
-                      <LanguageSelectorandroid isMobile={isMobile} />
-                    </div>
-                    <MenuItem 
-                          icon={FaTools} 
-                          iconColor="#6c757d" 
-                          to="/users/roles"
-                          description="Gestionar roles de usuario"
-                        >
-                          {t('roles')}
-                        </MenuItem>
-                    <MenuItem 
-                      icon={FaUserCircle} 
-                      iconColor="#667eea" 
-                      to={`/profile/${auth.user._id}`}
-                      description="Ver y editar tu perfil"
-                    >
-                      {t('profile')}
-                    </MenuItem>
- 
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
-                      to="/infoaplicacionn"
-                      description="Información sobre la aplicación"
-                    >
-                      {t('appInfo')}
-                    </MenuItem>
-
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
-                      to="/infoaplicacionn3"
-                      description="Más información"
-                    >
-                      {t('appInfo3')}
-                    </MenuItem>
-
-                    <MenuItem 
-                      icon={FaShareAlt} 
-                      iconColor="#ffc107" 
-                      onClick={() => setShowShareModal(true)}
-                      description="Compartir esta aplicación"
-                    >
-                      {t('shareApp')}
-                    </MenuItem>
-
-                    {/* Panel de Admin MEJORADO */}
-                    {userRole === "admin" && (
-                      <>
-                        <NavDropdown.Divider />
-                        <div className="admin-panel-header">
-                          <FaShieldAlt className="me-2" size={16} />
-                          {t('adminPanel')}
-                          <Badge bg="warning" text="dark" className="ms-2">
-                            Admin
-                          </Badge>
-                        </div>
-
-                        <MenuItem 
-                          icon={FaTools} 
-                          iconColor="#6c757d" 
-                          to="/users/roles"
-                          description="Gestionar roles de usuario"
-                        >
-                          {t('roles')}
-                        </MenuItem>
-
-                        <MenuItem 
-                          icon={FaUsers} 
-                          iconColor="#28a745" 
-                          to="/users"
-                          description="Administrar todos los usuarios"
-                        >
-                          {t('users')}
-                        </MenuItem>
-
-                        <MenuItem 
-                          icon={FaUserCog} 
-                          iconColor="#667eea" 
-                          to="/usersactionn"
-                          description="Acciones y logs de usuarios"
-                        >
-                          {t('userActions')}
-                        </MenuItem>
-                      </>
-                    )}
-
-                    <NavDropdown.Divider />
-
-                    <MenuItem
-                      icon={FaSignOutAlt}
-                      iconColor="#dc3545"
-                      onClick={handleLogout}
-                      danger
-                      description="Cerrar tu sesión"
-                    >
-                      <span className="fw-bold">{t('logout')}</span>
-                    </MenuItem>
-                  </>
-                ) : (
-                  <>
-                    {/* Vista para usuarios no autenticados MEJORADA */}
-                    <div className="user-header">
-                      <div className="d-flex align-items-center gap-3">
-                        <div className="user-avatar-wrapper">
-                          <FaUserCircle size={40} style={{ color: 'white' }} />
-                        </div>
-                        <div className="flex-grow-1">
-                          <div className="fw-bold text-white">
-                            Invitado
-                          </div>
-                          <div style={{
-                            color: 'rgba(255,255,255,0.8)',
-                            fontSize: '0.8rem'
-                          }}>
-                            Inicia sesión para más funciones
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <MenuItem 
-                      icon={FaSignInAlt} 
-                      iconColor="#28a745" 
-                      to="/login"
-                      description="Accede a tu cuenta"
-                      badge={{ text: 'Entrar', color: 'success' }}
-                    >
-                      {t('login')}
-                    </MenuItem>
-
-                    <MenuItem 
-                      icon={FaUserPlus} 
-                      iconColor="#667eea" 
-                      to="/register"
-                      description="Crear nueva cuenta"
-                      badge={{ text: 'Nuevo', color: 'primary' }}
-                    >
-                      {t('register')}
-                    </MenuItem>
-
-                    <NavDropdown.Divider />
-
-                    <MenuItem 
-                      icon={FaMapMarkerAlt} 
-                      iconColor="#ea4335" 
-                      to="/map"
-                      description="Explora ubicaciones"
-                    >
-                      {t('mapLocation') || "Mapa"}
-                    </MenuItem>
-
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
-                      to="/infoaplicacionn"
-                      description="Conoce la aplicación"
-                    >
-                      {t('appInfo')}
-                    </MenuItem>
-
-                    <MenuItem 
-                      icon={FaShareAlt} 
-                      iconColor="#ffc107" 
-                      onClick={() => setShowShareModal(true)}
-                      description="Compartir con amigos"
-                    >
-                      {t('shareApp')}
-                    </MenuItem>
-                  </>
-                )}
+            {/* 🔥 DROPDOWN DE USUARIO MEJORADO */}
+<NavDropdown
+  align="end"
+  title={
+    auth.user ? (
+      <div
+        style={{
+          width: isMobile ? '38px' : '42px',
+          height: isMobile ? '38px' : '42px',
+          borderRadius: '10px',
+          padding: '2px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}
+      >
+        <Avatar
+          src={auth.user.avatar}
+          size="medium-avatar"
+          style={{
+            borderRadius: '8px',
+            objectFit: 'cover',
+            width: '100%',
+            height: '100%'
+          }}
+        />
+        {/* Indicador de estado en línea */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-2px',
+            right: '-2px',
+            width: '12px',
+            height: '12px',
+            backgroundColor: '#28a745',
+            border: '2px solid white',
+            borderRadius: '50%'
+          }}
+        />
+      </div>
+    ) : (
+      <div
+        style={{
+          width: isMobile ? '38px' : '42px',
+          height: isMobile ? '38px' : '42px',
+          borderRadius: '10px',
+          backgroundColor: settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(102, 126, 234, 0.1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <FaUserCircle size={isMobile ? 22 : 26} style={{ color: '#667eea' }} />
+      </div>
+    )
+  }
+  id="nav-user-dropdown"
+  className="custom-dropdown"
+  ref={userDropdownRef}
+>
+  <div className="dropdown-scroll-wrapper">
+    {auth.user ? (
+      <>
+        {/* Header del usuario MEJORADO */}
+        <div className="user-header">
+          <div className="d-flex align-items-center gap-3">
+            <div className="user-avatar-wrapper">
+              <Avatar src={auth.user.avatar} size="medium-avatar" />
+              <div className="online-indicator"></div>
+            </div>
+            <div className="flex-grow-1">
+              <div className="fw-bold text-white user-name">
+                {auth.user.username}
               </div>
-            </NavDropdown>
+              <div className="user-email" style={{
+                color: 'rgba(255,255,255,0.8)',
+                fontSize: '0.8rem',
+                marginBottom: '4px'
+              }}>
+                {auth.user.email}
+              </div>
+              <div className="user-role-badge">
+                {userRole === 'admin' ? `👑 ${t('admin')}` :
+                  userRole === 'Moderateur' ? `🛡️ ${t('moderator')}` :
+                    userRole === 'Super-utilisateur' ? `⭐ ${t('superUser')}` :
+                      `👤 ${t('user')}`}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 🔥 SELECTOR DE IDIOMA INTEGRADO */}
+        <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
+
+        {/* 🔥 SECCIÓN DE ACCIONES RÁPIDAS */}
+        <div style={{ 
+          padding: '8px 12px',
+          borderBottom: `1px solid ${settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
+        }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: '600',
+            color: settings.style ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+            marginBottom: '6px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Acciones Rápidas
+          </div>
+          <div className="d-flex gap-2">
+            <Link
+              to="/Map" 
+              className="btn btn-sm"
+              style={{
+                flex: 1,
+                background: 'linear-gradient(135deg, #ea4335 0%, #d33426 100%)',
+                border: 'none',
+                color: 'white',
+                fontSize: '0.75rem',
+                padding: '6px 8px',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                textAlign: 'center'
+              }}
+            >
+              <FaMapMarkerAlt size={12} className="me-1" />
+              Mapa
+            </Link>
+            <Link
+              to="/search"
+              className="btn btn-sm"
+              style={{
+                flex: 1,
+                background: 'linear-gradient(135deg, #667eea 0%, #5a6fd8 100%)',
+                border: 'none',
+                color: 'white',
+                fontSize: '0.75rem',
+                padding: '6px 8px',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                textAlign: 'center'
+              }}
+            >
+              <FaSearch size={12} className="me-1" />
+              Buscar
+            </Link>
+          </div>
+        </div>
+
+        {/* TODOS LOS LINKS ORIGINALES SE MANTIENEN */}
+        <MenuItem 
+          icon={FaUserCircle} 
+          iconColor="#667eea" 
+          to={`/profile/${auth.user._id}`}
+          description="Ver y editar tu perfil"
+        >
+          {t('profile')}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaInfoCircle} 
+          iconColor="#6c757d" 
+          to="/infoaplicacionn"
+          description="Información sobre la aplicación"
+        >
+          {t('appInfo')}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaInfoCircle} 
+          iconColor="#6c757d" 
+          to="/infoaplicacionn3"
+          description="Más información"
+        >
+          {t('appInfo3')}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaShareAlt} 
+          iconColor="#ffc107" 
+          onClick={() => setShowShareModal(true)}
+          description="Compartir esta aplicación"
+        >
+          {t('shareApp')}
+        </MenuItem>
+
+        {/* Panel de Admin - SE MANTIENE IGUAL */}
+        {userRole === "admin" && (
+          <>
+            <NavDropdown.Divider />
+            <div className="admin-panel-header">
+              <FaShieldAlt className="me-2" size={16} />
+              {t('adminPanel')}
+              <Badge bg="warning" text="dark" className="ms-2">
+                Admin
+              </Badge>
+            </div>
+
+            <MenuItem 
+              icon={FaTools} 
+              iconColor="#6c757d" 
+              to="/users/roles"
+              description="Gestionar roles de usuario"
+            >
+              {t('roles')}
+            </MenuItem>
+
+            <MenuItem 
+              icon={FaUsers} 
+              iconColor="#28a745" 
+              to="/users"
+              description="Administrar todos los usuarios"
+            >
+              {t('users')}
+            </MenuItem>
+
+            <MenuItem 
+              icon={FaUserCog} 
+              iconColor="#667eea" 
+              to="/usersactionn"
+              description="Acciones y logs de usuarios"
+            >
+              {t('userActions')}
+            </MenuItem>
+          </>
+        )}
+
+        <NavDropdown.Divider />
+
+        <MenuItem
+          icon={FaSignOutAlt}
+          iconColor="#dc3545"
+          onClick={handleLogout}
+          danger
+          description="Cerrar tu sesión"
+        >
+          <span className="fw-bold">{t('logout')}</span>
+        </MenuItem>
+      </>
+    ) : (
+      <>
+        {/* Vista para usuarios no autenticados - SE MANTIENE IGUAL */}
+        <div className="user-header">
+          <div className="d-flex align-items-center gap-3">
+            <div className="user-avatar-wrapper">
+              <FaUserCircle size={40} style={{ color: 'white' }} />
+            </div>
+            <div className="flex-grow-1">
+              <div className="fw-bold text-white">
+                Invitado
+              </div>
+              <div style={{
+                color: 'rgba(255,255,255,0.8)',
+                fontSize: '0.8rem'
+              }}>
+                Inicia sesión para más funciones
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 🔥 SELECTOR DE IDIOMA TAMBIÉN PARA NO AUTENTICADOS */}
+        <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
+
+        <MenuItem 
+          icon={FaSignInAlt} 
+          iconColor="#28a745" 
+          to="/login"
+          description="Accede a tu cuenta"
+        >
+          {t('login')}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaUserPlus} 
+          iconColor="#667eea" 
+          to="/register"
+          description="Crear nueva cuenta"
+        >
+          {t('register')}
+        </MenuItem>
+
+        <NavDropdown.Divider />
+
+        <MenuItem 
+          icon={FaMapMarkerAlt} 
+          iconColor="#ea4335" 
+          to="/map"
+          description="Explora ubicaciones"
+        >
+          {t('mapLocation') || "Mapa"}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaInfoCircle} 
+          iconColor="#6c757d" 
+          to="/infoaplicacionn"
+          description="Conoce la aplicación"
+        >
+          {t('appInfo')}
+        </MenuItem>
+
+        <MenuItem 
+          icon={FaShareAlt} 
+          iconColor="#ffc107" 
+          onClick={() => setShowShareModal(true)}
+          description="Compartir con amigos"
+        >
+          {t('shareApp')}
+        </MenuItem>
+      </>
+    )}
+  </div>
+</NavDropdown>
           </div>
         </Container>
       </Navbar>

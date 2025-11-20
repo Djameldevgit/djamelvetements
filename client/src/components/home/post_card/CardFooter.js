@@ -97,43 +97,65 @@ const CardFooter = ({ post }) => {
                 duration: 3000
             }
         });
+    };
+
+    // 🎯 NUEVA FUNCIÓN SIMPLIFICADA: VIDEO LLAMADA DIRECTA
+    const handleVideoCall = () => {
+        // 🎯 BUSCAR TELÉFONO EN MÚLTIPLES UBICACIONES
+        const phoneNumber = post.telefono || post.user?.mobile || post.phone;
         
-        // 🎯 FALLBACK: Si no funciona en algunos dispositivos
+        if (!phoneNumber) {
+            dispatch({ 
+                type: GLOBALTYPES.ALERT, 
+                payload: { error: 'Numéro de téléphone non disponible pour la visioconférence' } 
+            });
+            return;
+        }
+
+        // 🎯 VIDEO LLAMADA DIRECTA USANDO PROTOCOLO NATIVO
+        const videoCallUrl = `tel:${phoneNumber}`;
+        
+        // Intentar iniciar video llamada nativa
+        window.location.href = videoCallUrl;
+        
+        // Feedback al usuario
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: { 
+                success: `Lancement de la visioconférence vers ${phoneNumber}`,
+                duration: 3000
+            }
+        });
+
+        // 🎯 FALLBACK: Si no funciona después de 2 segundos, mostrar opción alternativa
         setTimeout(() => {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            if (isMobile && !document.hidden) {
-                // Si estamos en móvil y la página sigue visible, mostrar alternativa
+            // Verificar si estamos aún en la misma página (la llamada no se inició)
+            if (!document.hidden) {
                 dispatch({
                     type: GLOBALTYPES.ALERT,
                     payload: { 
-                        info: `Composez manuellement: ${phoneNumber}`,
+                        info: 'Utilisez votre app de visioconférence habituelle pour appeler ce numéro',
                         duration: 5000
                     }
                 });
             }
-        }, 1000);
+        }, 2000);
     };
 
     const startCamera = async () => {
         try {
-            // Solicitar acceso a la cámara con mejores configuraciones
+            // Solicitar acceso a la cámara
             const mediaStream = await navigator.mediaDevices.getUserMedia({ 
                 video: { 
                     width: { ideal: 1280 },
                     height: { ideal: 720 },
-                    facingMode: "user",
-                    frameRate: { ideal: 30 }
+                    facingMode: "user"
                 }, 
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    sampleRate: 44100
-                }
+                audio: true
             });
             
             setStream(mediaStream);
             
-            // Conectar el stream al elemento de video
             if (videoRef.current) {
                 videoRef.current.srcObject = mediaStream;
                 videoRef.current.play().catch(e => console.log('Video play error:', e));
@@ -141,39 +163,18 @@ const CardFooter = ({ post }) => {
             
             setIsCameraActive(true);
             
-            dispatch({
-                type: GLOBALTYPES.ALERT,
-                payload: { success: 'Caméra activée ! Vous pouvez maintenant tester le streaming.' }
-            });
-
         } catch (error) {
             console.error('Erreur d\'accès à la caméra:', error);
-            let errorMessage = 'Impossible d\'accéder à la caméra. ';
-            
-            if (error.name === 'NotAllowedError') {
-                errorMessage += 'Veuillez autoriser l\'accès à la caméra dans les paramètres de votre navigateur.';
-            } else if (error.name === 'NotFoundError') {
-                errorMessage += 'Aucune caméra trouvée sur cet appareil.';
-            } else if (error.name === 'NotSupportedError') {
-                errorMessage += 'Votre navigateur ne supporte pas la caméra.';
-            } else if (error.name === 'OverconstrainedError') {
-                errorMessage += 'Configuration de caméra non supportée.';
-            } else {
-                errorMessage += 'Erreur technique: ' + error.message;
-            }
-            
             dispatch({
                 type: GLOBALTYPES.ALERT,
-                payload: { error: errorMessage }
+                payload: { error: 'Impossible d\'accéder à la caméra' }
             });
         }
     };
 
     const stopCamera = () => {
         if (stream) {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
+            stream.getTracks().forEach(track => track.stop());
             setStream(null);
         }
         
@@ -182,68 +183,6 @@ const CardFooter = ({ post }) => {
         }
         
         setIsCameraActive(false);
-    };
-
-    const handleVideoCall = () => {
-        // 🎯 VERIFICAR SI HAY INFORMACIÓN DE CONTACTO DEL VENDEDOR
-        const hasContactInfo = post.user && (post.user.mobile || post.user._id);
-        
-        if (!hasContactInfo) {
-            dispatch({ 
-                type: GLOBALTYPES.ALERT, 
-                payload: { error: 'Impossible de démarrer une visioconférence avec ce vendeur' } 
-            });
-            return;
-        }
-
-        // Verificar si el navegador soporta la API de medios
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            dispatch({
-                type: GLOBALTYPES.ALERT,
-                payload: { 
-                    error: 'Votre navigateur ne supporte pas l\'accès à la caméra. Essayez avec Chrome, Firefox ou Safari.' 
-                }
-            });
-            return;
-        }
-
-        // 🎯 OPCIÓN 1: INICIAR STREAMING DIRECTAMENTE
-        startDirectVideoCall();
-    };
-
-    const startDirectVideoCall = () => {
-        // Abrir el modal de prueba de streaming
-        setShowVideoModal(true);
-        
-        // Iniciar la cámara automáticamente al abrir el modal
-        setTimeout(() => {
-            startCamera();
-        }, 300);
-    };
-
-    const initiateVideoConference = () => {
-        // 🎯 CREAR SALA DE VIDEO CONFERENCIA
-        const roomId = `tassili-${post.user?._id || 'store'}-${Date.now()}`;
-        const videoCallUrl = `https://meet.jit.si/${roomId}`;
-        
-        // Abrir en nueva pestaña
-        const newWindow = window.open(videoCallUrl, '_blank', 
-            'width=1000,height=700,scrollbars=yes,resizable=yes');
-        
-        if (newWindow) {
-            dispatch({
-                type: GLOBALTYPES.ALERT,
-                payload: { success: 'Salle de visioconférence ouverte !' }
-            });
-            
-            // Cerrar modal local
-            closeVideoModal();
-        } else {
-            dispatch({
-                type: GLOBALTYPES.ALERT,
-                payload: { error: 'Popup bloqué. Veuillez autoriser les popups pour ce site.' }
-            });
-        }
     };
 
     const closeVideoModal = () => {
@@ -261,7 +200,7 @@ const CardFooter = ({ post }) => {
 
     // 🎯 DETECTAR DISPONIBILIDAD DE FUNCIONES
     const canMakeCall = post.telefono || post.user?.mobile || post.phone;
-    const canVideoCall = post.user && (post.user.mobile || post.user._id);
+    const canVideoCall = post.telefono || post.user?.mobile || post.phone;
     const canChat = auth.user && post.user && post.user._id;
 
     return (
@@ -289,7 +228,7 @@ const CardFooter = ({ post }) => {
                                     className="fw-bold"
                                     style={{ 
                                         fontSize: '16px', 
-                                        color: '#dc3545' // Rojo danger
+                                        color: '#dc3545'
                                     }}
                                 >
                                     {post.price}
@@ -386,8 +325,8 @@ const CardFooter = ({ post }) => {
                                 onClick={canVideoCall ? handleVideoCall : undefined}
                                 title={
                                     canVideoCall 
-                                        ? "Test de streaming vidéo" 
-                                        : "Streaming non disponible"
+                                        ? `Visioconférence avec ${post.telefono || post.user?.mobile || post.phone}` 
+                                        : "Visioconférence non disponible"
                                 }
                                 onMouseEnter={(e) => {
                                     if (canVideoCall) {
@@ -409,7 +348,7 @@ const CardFooter = ({ post }) => {
                 </ListGroup>
             </Card.Footer>
 
-            {/* Modal para prueba de streaming */}
+            {/* Modal para prueba de streaming (se mantiene por si acaso) */}
             <Modal 
                 show={showVideoModal} 
                 onHide={closeVideoModal}
@@ -431,7 +370,6 @@ const CardFooter = ({ post }) => {
                 </Modal.Header>
                 
                 <Modal.Body className="p-0 bg-dark">
-                    {/* Video para el streaming */}
                     <div className="position-relative">
                         <video
                             ref={videoRef}
@@ -446,7 +384,6 @@ const CardFooter = ({ post }) => {
                             }}
                         />
                         
-                        {/* Mensaje cuando la cámara no está activa */}
                         {!isCameraActive && (
                             <div className="position-absolute top-50 start-50 translate-middle text-center text-white">
                                 <FaVideo size={48} className="mb-3 opacity-50" />
@@ -471,15 +408,6 @@ const CardFooter = ({ post }) => {
                                 onClick={toggleCamera}
                             >
                                 {isCameraActive ? '🛑 Arrêter' : '🎥 Démarrer'}
-                            </Button>
-                            
-                            <Button
-                                variant="primary"
-                                size="sm"
-                                onClick={initiateVideoConference}
-                                disabled={!canVideoCall}
-                            >
-                                📞 Lancer la visioconférence
                             </Button>
                             
                             <Button
