@@ -364,7 +364,7 @@ const Navbar2 = () => {
           >
             {/* 🔥 NUEVO: Botón de Localización/Mapa */}
             <Link
-              to="/map"
+              to="/Map"
               className="icon-button"
               style={{
                 width: isMobile ? '38px' : '42px',
@@ -621,7 +621,7 @@ const Navbar2 = () => {
                       </div>
                       <div className="d-flex gap-2">
                         <Link
-                          to="/map"
+                          to ="/Map" 
                           className="btn btn-sm"
                           style={{
                             flex: 1,

@@ -148,7 +148,7 @@ function App() {
             <Route exact path="/edit-post/:id" component={Createpost} />
             <Route exact path="/bloqueos404" component={Bloqueos404} />
             <Route exact path="/video/:obraId" component={Video} />
-            <Route exact path="/map" component={Map} />
+            <Route exact path="/Map" component={Map} />
             <Route exact path="/forgot_password" component={ForgotPassword} />
             <Route exact path="/user/reset/:token" component={ResetPassword} />
             <Route 

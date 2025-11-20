@@ -7,8 +7,7 @@ import LoadMoreBtn from '../LoadMoreBtn'
 import { getDataAPI } from '../../utils/fetchData'
 import { POST_TYPES } from '../../redux/actions/postAction'
 
-
-const Posts = ({ viewMode = 'grid' })  => {
+const Posts = ({ viewMode = 'grid' }) => {
     const { homePosts, auth, theme } = useSelector(state => state)
     const dispatch = useDispatch()
 
@@ -27,10 +26,15 @@ const Posts = ({ viewMode = 'grid' })  => {
     }
 
     return (
-        <div className="post_thumb">
+        <div className={`post_thumb ${viewMode === 'list' ? 'list-view' : 'grid-view'}`}>
             {
                 homePosts.posts.map(post => (
-                    <PostCard key={post._id} post={post} theme={theme} />
+                    <PostCard 
+                        key={post._id} 
+                        post={post} 
+                        theme={theme} 
+                        viewMode={viewMode} // 🔥 PASA EL PROP A CADA PostCard
+                    />
                 ))
             }
 
@@ -39,8 +43,12 @@ const Posts = ({ viewMode = 'grid' })  => {
             }
 
             
-            <LoadMoreBtn result={homePosts.result} page={homePosts.page}
-            load={load} handleLoadMore={handleLoadMore} />
+            <LoadMoreBtn 
+                result={homePosts.result} 
+                page={homePosts.page}
+                load={load} 
+                handleLoadMore={handleLoadMore} 
+            />
         </div>
     )
 }
