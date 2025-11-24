@@ -14,9 +14,6 @@ export const POST_TYPES = {
 
 }
 
-
- 
-  
 export const createPost = ({ 
     postData, 
     images, 
@@ -25,30 +22,24 @@ export const createPost = ({
 }) => async (dispatch) => {
     let media = []
     try {
+        console.log('🔍 DEBUG - Imágenes recibidas:', images);
+        
         dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: true} })
         
-        if(images.length > 0) media = await imageUpload(images)
+        if(images.length > 0) {
+            media = await imageUpload(images);
+        }
 
-        console.log('🔍 createPost - Enviando datos:', {
-            postData: postData,
-            imagesCount: images.length,
-            mediaCount: media.length
-        });
-
-        // ✅ Enviar postData e images en el body
+        console.log('📤 Enviando al backend...');
         const res = await postDataAPI('posts', { 
             postData: {
                 ...postData,
-                content: postData.description || postData.content || '' // Mantener compatibilidad
+                content: postData.description || postData.content
             },
-            images: media 
+            images: media
         }, auth.token)
 
-        console.log('🔍 createPost - Respuesta del servidor:', {
-            newPost: res.data.newPost,
-            user: res.data.newPost?.user,
-            followers: res.data.newPost?.user?.followers
-        });
+        console.log('✅ Respuesta del backend:', res.data);
 
         dispatch({ 
             type: POST_TYPES.CREATE_POST, 
@@ -57,36 +48,37 @@ export const createPost = ({
 
         dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: false} })
 
-        // 🎯 NOTIFY SEGURO - Con verificaciones
+        // ✅ NOTIFY CORREGIDO - CON PROTECCIÓN PARA FOLLOWERS
         const msg = {
             id: res.data.newPost._id,
             text: 'added a new post.',
-            // 🎯 VERIFICACIÓN SEGURA DE FOLLOWERS
-            recipients: Array.isArray(res.data.newPost?.user?.followers) 
-                ? res.data.newPost.user.followers 
-                : [],
+            // ✅ PROTECCIÓN: Si followers es undefined, usar array vacío
+            recipients: res.data.newPost.user?.followers || [],
             url: `/post/${res.data.newPost._id}`,
-            content: postData.description || postData.content || postData.title || '', 
-            image: media[0]?.url || ''
+            content: postData.description || postData.content, 
+            image: media[0]?.url
         }
 
-        console.log('🔍 createPost - Notify msg:', msg);
+        console.log('🔔 Notify message:', msg);
 
-        // 🎯 SOLO CREAR NOTIFY SI HAY RECIPIENTS
+        // ✅ PROTECCIÓN: Solo crear notify si hay recipients
         if (msg.recipients.length > 0) {
             dispatch(createNotify({msg, auth, socket}))
         } else {
-            console.log('⏭️ Notify omitido - No hay recipients');
+            console.log('ℹ️ No hay followers para notificar');
         }
 
     } catch (err) {
         console.error('❌ Error en createPost:', err);
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: {error: err.response?.data?.msg || 'Error creating post'}
+            payload: {
+                error: err.response?.data?.msg || err.message || 'Error creating post'
+            }
         })
     }
 }
+
 export const updatePost = ({
     postData,
     images, 
@@ -94,43 +86,42 @@ export const updatePost = ({
     status
 }) => async (dispatch) => {
     let media = []
-    const imgNewUrl = images.filter(img => !img.url)
-    const imgOldUrl = images.filter(img => img.url)
+    
+    // ✅ CORREGIDO: Filtrar por isExisting en lugar de url
+    const imgNewUrl = images.filter(img => !img.isExisting)  // ← Nuevas imágenes
+    const imgOldUrl = images.filter(img => img.isExisting)   // ← Imágenes existentes
 
     try {
         dispatch({ type: GLOBALTYPES.ALERT, payload: { loading: true } });
         
-        if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
-
-        // ✅ Asegúrate que status._id existe
-        if (!status?._id) {
-            throw new Error('ID del post no disponible');
+        if (imgNewUrl.length > 0) {
+            console.log('🆕 Subiendo nuevas imágenes:', imgNewUrl);
+            media = await imageUpload(imgNewUrl);
         }
 
+        // ✅ Combinar imágenes antiguas + nuevas subidas
+        const allImages = [...imgOldUrl, ...media];
+        console.log('📸 Todas las imágenes para update:', allImages);
+
         const res = await patchDataAPI(`post/${status._id}`, { 
-            ...postData, // ✅ Enviar datos directamente
-            images: [...imgOldUrl, ...media] 
+            postData: {
+                ...postData,
+                content: postData.description || postData.content
+            },
+            images: allImages 
         }, auth.token);
 
         dispatch({ type: POST_TYPES.UPDATE_POST, payload: res.data.newPost });
-        dispatch({ 
-            type: GLOBALTYPES.ALERT, 
-            payload: { 
-                success: res.data.msg,
-                loading: false 
-            } 
-        });
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });
         
     } catch (err) {
         dispatch({
             type: GLOBALTYPES.ALERT,
-            payload: { 
-                error: err.response?.data?.msg || err.message || 'Échec de la mise à jour',
-                loading: false 
-            }
+            payload: { error: err.response?.data?.msg || 'Échec de la mise à jour' }
         });
     }
 }
+
 export const getPosts = () => async (dispatch) => {
     try {
         dispatch({ type: POST_TYPES.LOADING_POST, payload: true })
@@ -149,6 +140,8 @@ export const getPosts = () => async (dispatch) => {
         })
     }
 }
+
+  
 
  
  

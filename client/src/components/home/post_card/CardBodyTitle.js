@@ -318,7 +318,7 @@ const CardBodyTitle = ({ post }) => {
                                 cursor: 'pointer',
                                 fontSize: '12px'
                             }}>
-                                {t('auth.login', 'Connexion')}
+                                {t('auth.loginnnnn', 'Connexion')}
                             </button>
                             <button onClick={() => history.push('/register')} style={{
                                 padding: '8px 16px',

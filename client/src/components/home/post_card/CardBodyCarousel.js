@@ -75,100 +75,83 @@ const CardBodyCarousel = ({ post }) => {
             <div className="card_body">
                 {post.images.length > 0 && (
                     <div className="carousel-container" style={{ position: 'relative' }}>
-                        {/* Botón Save - Más pequeño */}
-                        {/* Botón Save - Color de fondo cambiado */}
-<div
-    style={{
-        position: 'absolute',
-        top: '8px',
-        right: '8px',
-        zIndex: 1,
-        cursor: 'pointer',
-        backgroundColor: 'rgba(255, 235, 205, 0.9)', // Color blanco hueso
-        borderRadius: '50%',
-        padding: '4px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '28px',
-        height: '28px'
-    }}
-    onClick={saved ? handleUnSavePost : handleSavePost}
->
-    <span
-        className="material-icons"
-        style={{
-            fontSize: '18px',
-            color: saved ? '#ff8c00' : '#000',
-        }}
-    >
-        bookmark
-    </span>
-</div>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                right: '10px',
+                                zIndex: 1,
+                                cursor: 'pointer',
+                                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                borderRadius: '50%',
+                                padding: '5px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                            onClick={saved ? handleUnSavePost : handleSavePost}
+                        >
+                            <span
+                                className="material-icons"
+                                style={{
+                                    fontSize: '24px',
+                                    color: saved ? '#ff8c00' : '#000',
+                                }}
+                            >
+                                bookmark
+                            </span>
+                        </div>
 
-{/* Botón Like y contador - Contador sobre el icono */}
-<div
-    style={{
-        position: 'absolute',
-        top: '8px',
-        left: '8px',
-        zIndex: 1,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-    }}
->
-    <div
-        style={{
-            cursor: 'pointer',
-            backgroundColor: 'rgba(173, 216, 230, 0.9)', // Color azul claro
-            borderRadius: '50%',
-            padding: '4px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '28px',
-            height: '28px',
-            position: 'relative'
-        }}
-        onClick={isLike ? handleUnLike : handleLike}
-    >
-        {/* Contador de likes sobre el icono */}
-        <span
-            style={{
-                position: 'absolute',
-                top: '-5px',
-                right: '-5px',
-                fontSize: '10px',
-                fontWeight: 'bold',
-                color: 'red',
-              
-                borderRadius: '50%',
-                padding: '1px 4px',
-                minWidth: '16px',
-                textAlign: 'center',
-                 
-            }}
-        >
-            {post.likes.length}
-        </span>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '10px',
+                                left: '10px',
+                                zIndex: 1,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <span
+                                style={{
+                                    fontSize: '14px',
+                                    fontWeight: 'bold',
+                                    color: 'red',
+                                    marginRight: '5px',
+                                }}
+                            >
+                                {post.likes.length}
+                            </span>
 
-        <span
-            className="material-icons"
-            style={{
-                fontSize: '18px',
-                color: isLike ? 'red' : '#000',
-            }}
-        >
-            favorite
-        </span>
-    </div>
-</div>
+                            <div
+                                style={{
+                                    cursor: 'pointer',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                    borderRadius: '50%',
+                                    padding: '5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                                onClick={isLike ? handleUnLike : handleLike}
+                            >
+                                <span
+                                    className="material-icons"
+                                    style={{
+                                        fontSize: '24px',
+                                        color: isLike ? 'red' : '#000',
+                                    }}
+                                >
+                                    favorite
+                                </span>
+                            </div>
+                        </div>
 
                         <div className="card">
-                            <div className="card__image" onClick={() => history.push(`/post/${post._id}`)}>
-                                <Carousel images={post.images} id={post._id} />
-                            </div>
+                <div className="card__image" onClick={() => history.push(`/post/${post._id}`)}>
+                    <Carousel images={post.images} id={post._id} />
+                </div>
                         </div>
                     </div>
                 )}

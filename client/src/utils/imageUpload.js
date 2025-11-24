@@ -1,43 +1,43 @@
-/*export const checkImage = (file) => {
-    let err = ""
-    if(!file) return err = "File does not exist."
-
-    if(file.size > 1024 * 1024) // 1mb
-    err = "The largest image size is 1mb."
-
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png' )
-    err = "Image format is incorrect."
-    
-    return err;
-}*/
-export const checkImage = (files) => {
+// En utils/imageUpload.js
+export const checkImage = (files, currentImagesCount = 0) => {
   let err = "";
   if (!files || files.length === 0) return err = "No files selected.";
 
-  // Limitar a un máximo de 3 imágenes
-  if (files.length > 3) {
-    err = "You can only upload up to 3 images.";
+  // ✅ Límite de cantidad (2 imágenes máximo por post)
+  const maxImages = 2;
+  if (files.length > maxImages) {
+    err = `Solo puedes subir máximo ${maxImages} imágenes.`;
     return err;
   }
 
-  const allowedExtensions = ['jpeg', 'jpg', 'png'];
-  const blockedExtensions = ['txt', 'pdf']; // Agregar aquí las extensiones bloqueadas
+  // ✅ Límite total considerando imágenes existentes
+  if (currentImagesCount + files.length > maxImages) {
+    err = `Máximo ${maxImages} imágenes permitidas por post.`;
+    return err;
+  }
+
+  const allowedExtensions = ['jpeg', 'jpg', 'png', 'webp'];
+  const blockedExtensions = ['txt', 'pdf', 'doc', 'exe'];
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    if (file.size > 1024 * 1024) {
-      err = "The largest image size is 1mb.";
+    
+    // ✅ Límite de tamaño (2 MB máximo por imagen)
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      err = "Cada imagen debe ser menor a 2MB.";
       return err;
     }
 
+    // ✅ Validación de formato
     const fileExtension = file.name.split('.').pop().toLowerCase();
     if (!allowedExtensions.includes(fileExtension)) {
-      err = "Image format is incorrect.";
+      err = "Formatos permitidos: JPG, PNG, WebP.";
       return err;
     }
 
     if (blockedExtensions.includes(fileExtension)) {
-      err = "File type not allowed.";
+      err = "Tipo de archivo no permitido.";
       return err;
     }
   }
@@ -45,33 +45,86 @@ export const checkImage = (files) => {
   return err;
 };
 
-  
-
+ 
 export const imageUpload = async (images) => {
-    let imgArr = [];
-    for(const item of images){//fpr corre todas las imagenes que se han enviado a la funcion
-        const formData = new FormData()//es como un paquete qui contendra las imagenes o imagen como la informacion
-        //necesaria para cloudinary como informacion propia 
+  console.log('🟡 INICIANDO imageUpload - Total imágenes:', images?.length || 0);
 
-        if(item.camera){
-            formData.append("file", item.camera)//aqui file es la imagen solo que agrega como un campo llamado fule
-        }else{
-            formData.append("file", item)
-        }
-        
-        formData.append("upload_preset", "xl7nhfgx")//clave predefinida por cloudinary  para poder subir las imagenes 
-        formData.append("cloud_name", "arteeeuhgu")// el  nombtre de mi cuenta
-//cuando el form data ha empaquetado los datos necesarios se envian con fetch a cloudinary esperando una respuesta
-        const res = await fetch("https://api.cloudinary.com/v1_1/arteeeuhgu/image/upload", {
-            method: "POST",
-            body: formData
-        })
-        
-        const data = await res.json()//cuando se obtiene la respuesta 
-        imgArr.push({public_id: data.public_id, url: data.secure_url})//se extare la informacion de data y 
-        //se guarda en imgArr, es decir desde data.pblic_id y el secure_ url se extrae desde data en url para poder guardarlos en imgArr
-    }
-    return imgArr;
+  let imgArr = [];
+  let uploadedCount = 0;
+
+  for(const [index, item] of images.entries()){ 
+      console.log(`\n🔄 Procesando imagen ${index + 1}:`, item);
+
+      // ✅ SI ES BLOB URL (IMAGEN NUEVA) - CONVERTIR A FILE
+      if (item.url && item.url.startsWith('blob:') && !item.isExisting) {
+          console.log('🔄 Convirtiendo blob URL a archivo...');
+          
+          try {
+              // 1. Convertir blob URL a File
+              const response = await fetch(item.url);
+              if (!response.ok) throw new Error('No se pudo acceder al blob');
+              
+              const blob = await response.blob();
+              const file = new File([blob], item.name || `image-${Date.now()}.jpg`, { 
+                  type: blob.type || 'image/jpeg' 
+              });
+
+              console.log('📁 Blob convertido a File:', file.name, `${(file.size / 1024).toFixed(2)} KB`);
+
+              // 2. Subir a Cloudinary
+              const formData = new FormData();
+              formData.append("file", file);
+              formData.append("upload_preset", "vetementsdjamel");
+              formData.append("cloud_name", "dfjipgj2o");
+
+              console.log('🌐 Enviando a Cloudinary...');
+              
+              const res = await fetch("https://api.cloudinary.com/v1_1/dfjipgj2o/image/upload", {
+                  method: "POST",
+                  body: formData
+              });
+
+              if (!res.ok) {
+                  const errorText = await res.text();
+                  throw new Error(`Cloudinary error: ${res.status} - ${errorText}`);
+              }
+
+              const data = await res.json();
+              
+              console.log('✅ UPLOAD EXITOSO a Cloudinary:', {
+                  public_id: data.public_id,
+                  url: data.secure_url,
+                  formato: data.format
+              });
+
+              imgArr.push({
+                  public_id: data.public_id, 
+                  url: data.secure_url
+              });
+              uploadedCount++;
+
+          } catch (error) {
+              console.error(`❌ ERROR procesando imagen ${index + 1}:`, error.message);
+              continue;
+          }
+      }
+      // ✅ SI YA ES IMAGEN DE CLOUDINARY
+      else if (item.isExisting && item.url && item.url.includes('cloudinary.com')) {
+          console.log('✅ Imagen ya en Cloudinary:', item.public_id);
+          imgArr.push({
+              public_id: item.public_id,
+              url: item.url
+          });
+          uploadedCount++;
+      }
+      else {
+          console.warn('⚠️ Imagen no procesable, saltando:', item);
+      }
+  }
+
+  console.log('\n📊 RESUMEN FINAL:');
+  console.log('✅ Subidas a Cloudinary:', uploadedCount);
+  console.log('📦 Array resultante:', imgArr);
+  
+  return imgArr;
 }
-
-/*En resumen, el proceso es muy similar a un "paquete" que contiene tanto los archivos (las imágenes) como los datos necesarios para que el servidor de Cloudinary sepa cómo procesarlos correctamente. fetch se encarga de enviar este paquete al servidor, y Cloudinary responde con la información de la imagen subida.*/

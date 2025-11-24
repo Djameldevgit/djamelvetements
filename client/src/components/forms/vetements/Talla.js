@@ -6,7 +6,7 @@ const Talla = ({ postData, handleArrayChange }) => {
   const { t, i18n } = useTranslation('talla');
   const isRTL = i18n.language === 'ar';
 
-  // 🎯 FUNCIONES SEGURAS
+  // 🎯 FUNCIONES SEGURAS MEJORADAS
   const safeArray = (potentialArray) => {
     if (!potentialArray) return [];
     if (Array.isArray(potentialArray)) return potentialArray;
@@ -125,21 +125,18 @@ const Talla = ({ postData, handleArrayChange }) => {
     return allSizes;
   }, [postData?.category, postData?.subCategory, t]);
 
-  // ✅ Manejar cambios en los checkboxes - CORREGIDO
+  // ✅ Manejar cambios en los checkboxes - MEJORADO
   const handleSizeChange = (sizeValue) => {
-    console.log('🔍 Talla - handleSizeChange:', {
-      sizeValue,
-      tallaActual: postData?.talla,
-      tipoTalla: typeof postData?.talla
-    });
-
-    // 🎯 LLAMADA CORRECTA A handleArrayChange
-    if (handleArrayChange) {
-      // handleArrayChange espera (fieldName, value) no un event
-      handleArrayChange('talla', sizeValue);
-    } else {
+    if (!handleArrayChange) {
       console.error('❌ handleArrayChange no está disponible');
+      return;
     }
+
+    const currentSizes = safeArray(postData?.talla);
+    const isCurrentlySelected = safeIncludes(postData?.talla, sizeValue);
+    
+    // 🎯 LLAMADA CORRECTA A handleArrayChange con el estado actual
+    handleArrayChange('talla', sizeValue, !isCurrentlySelected);
   };
 
   // ✅ Verificar si una talla está seleccionada - SEGURO
@@ -194,8 +191,6 @@ const Talla = ({ postData, handleArrayChange }) => {
     
     return translations[sizeKey] || sizeKey.replace(/_/g, ' ');
   };
-
-  
 
   if (!postData?.subCategory) {
     return (

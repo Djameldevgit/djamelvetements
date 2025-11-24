@@ -1,7 +1,14 @@
 const Posts = require('../models/postModel')
 const Comments = require('../models/commentModel')
 const Users = require('../models/userModel')
+const cloudinary = require('cloudinary').v2;
 
+// Configurar Cloudinary
+cloudinary.config({
+    cloud_name: 'dfjipgj2o',
+    api_key: '213981915435275',
+    api_secret: 'wv_IiCM9zzhdiWDNXXo8HZi7wX4'
+});
 class APIfeatures {
     constructor(query, queryString){
         this.query = query;
@@ -62,47 +69,7 @@ const postCtrl = {
         }
     },
   
-    updatePost: async (req, res) => {
-        try {
-            const { postData, images } = req.body
-    
-         
-           
-    
-            // Buscar y actualizar el post
-            const post = await Posts.findOneAndUpdate(
-                { _id: req.params.id },
-                {
-                    $set: {
-                        ...postData, // ✅ TODOS los campos automáticamente
-                        images: images || postData.images,
-                        
-                     
-                        // Arrays
-                        
-                    }
-                },
-                { new: true, runValidators: true }
-            )
-    
-            if (!post) {
-                return res.status(400).json({msg: "Ce post n'existe pas."})
-            }
-    
-            // Populate para obtener datos del usuario
-            await post.populate('user', 'avatar username fullname followers')
-    
-            res.json({
-                msg: 'Post modifié avec succès!',
-                newPost: post
-            })
-    
-        } catch (err) {
-            console.error('Error en updatePost:', err)
-            return res.status(500).json({msg: err.message})
-        }
-    },
- 
+   
     likePost: async (req, res) => {
         try {
             const post = await Posts.find({_id: req.params.id, likes: req.user._id})
@@ -144,12 +111,14 @@ getPosts: async (req, res) => {
     try {
         const { 
             subCategory, 
-            destinacion, 
-            datedeparMin,    // 🆕 Fecha mínima (coincide con campo real)
-            datedeparMax,    // 🆕 Fecha máxima (coincide con campo real)
-            nombreHotel,     // Búsqueda por hotel
-            minPrice,        // 🆕 Precio mínimo
-            maxPrice,        // 🆕 Precio máximo
+            title,           // 🆕 Nombre del producto
+            talla,           // 🆕 Talla
+            genero,          // 🆕 Género
+            color,           // 🆕 Color
+            marca,           // 🆕 Marca
+            estado,          // 🆕 Estado/condición
+            minPrice,        // Precio mínimo
+            maxPrice,        // Precio máximo
             sort
         } = req.query;
 
@@ -161,56 +130,53 @@ getPosts: async (req, res) => {
             query.subCategory = { $regex: subCategory.trim(), $options: "i" };
         }
 
-        // 🔹 Búsqueda mejorada para destino
-        if (destinacion && destinacion.trim() !== "") {
-            const searchDestinacion = destinacion.trim();
-            query.$or = [
-                { destinacion: { $regex: searchDestinacion, $options: "i" } },
-                { destinacionvoyage1: { $regex: searchDestinacion, $options: "i" } },
-                { destinacionomra: { $regex: searchDestinacion, $options: "i" } },
-                { destinacionlocacionvoyage: { $regex: searchDestinacion, $options: "i" } }
-            ];
-        }
-
-        // 🆕 BÚSQUEDA POR NOMBRE DE HOTEL
-        if (nombreHotel && nombreHotel.trim() !== "") {
-            const searchHotel = nombreHotel.trim();
+        // 🆕 BÚSQUEDA POR TÍTULO/NOMBRE DEL PRODUCTO
+        if (title && title.trim() !== "") {
+            const searchTitle = title.trim();
             query.$or = query.$or || [];
             query.$or.push(
-                { nombreHotel: { $regex: searchHotel, $options: "i" } },
-                { hotelMeca: { $regex: searchHotel, $options: "i" } },
-                { hotelMedina: { $regex: searchHotel, $options: "i" } }
+                { title: { $regex: searchTitle, $options: "i" } },
+                { description: { $regex: searchTitle, $options: "i" } },
+                { content: { $regex: searchTitle, $options: "i" } }
             );
         }
 
-        // 🆕 FILTRO POR RANGO DE FECHAS - CORREGIDO (datedeparMin/Max)
-        if (datedeparMin || datedeparMax) {
-            const dateFilter = {};
-            
-            if (datedeparMin) {
-                // Validar fecha inicio
-                const startDate = new Date(datedeparMin);
-                if (!isNaN(startDate.getTime())) {
-                    dateFilter.$gte = startDate;
-                }
-            }
-            
-            if (datedeparMax) {
-                // Validar fecha fin y ajustar a fin del día
-                const endDate = new Date(datedeparMax);
-                if (!isNaN(endDate.getTime())) {
-                    endDate.setHours(23, 59, 59, 999); // Hasta el final del día
-                    dateFilter.$lte = endDate;
-                }
-            }
-            
-            // Solo aplicar filtro si hay fechas válidas
-            if (Object.keys(dateFilter).length > 0) {
-                query.datedepar = dateFilter;
-            }
+        // 🆕 FILTRO POR TALLA
+        if (talla && talla.trim() !== "") {
+            const searchTalla = talla.trim();
+            query.$or = query.$or || [];
+            query.$or.push(
+                { talla: { $regex: searchTalla, $options: "i" } },
+                { tallaSaco: { $regex: searchTalla, $options: "i" } }
+            );
         }
 
-        // 🆕 FILTRO POR RANGO DE PRECIOS - NUEVO
+        // 🆕 FILTRO POR GÉNERO
+        if (genero && genero.trim() !== "") {
+            query.genero = { $regex: genero.trim(), $options: "i" };
+        }
+
+        // 🆕 FILTRO POR COLOR
+        if (color && color.trim() !== "") {
+            const searchColor = color.trim();
+            query.$or = query.$or || [];
+            query.$or.push(
+                { color: { $regex: searchColor, $options: "i" } },
+                { tipocolor: { $regex: searchColor, $options: "i" } }
+            );
+        }
+
+        // 🆕 FILTRO POR MARCA
+        if (marca && marca.trim() !== "") {
+            query.marca = { $regex: marca.trim(), $options: "i" };
+        }
+
+        // 🆕 FILTRO POR ESTADO/CONDICIÓN
+        if (estado && estado.trim() !== "") {
+            query.etat = { $regex: estado.trim(), $options: "i" };
+        }
+
+        // 🆕 FILTRO POR RANGO DE PRECIOS - MEJORADO PARA ROPA
         if (minPrice || maxPrice) {
             const priceFilter = {};
             
@@ -230,14 +196,18 @@ getPosts: async (req, res) => {
             
             // Solo aplicar filtro si hay precios válidos
             if (Object.keys(priceFilter).length > 0) {
-                // Buscar en múltiples campos de precio
+                // Buscar en múltiples campos de precio para ropa
                 query.$or = query.$or || [];
                 query.$or.push(
-                    { precioBase: priceFilter },
                     { price: priceFilter },
-                    { prixAdulte: priceFilter }
+                    { precioBase: priceFilter }
                 );
             }
+        }
+
+        // 🔥 Optimizar consulta si hay múltiples condiciones OR
+        if (query.$or && query.$or.length === 0) {
+            delete query.$or;
         }
 
         // 🔥 Mantener paginación con APIfeatures
@@ -359,36 +329,111 @@ getPosts: async (req, res) => {
             return res.status(500).json({msg: err.message})
         }
     },
+    updatePost: async (req, res) => {
+        try {
+            const { postData, images } = req.body;
+    
+            // 1. Obtener el post actual ANTES de actualizar
+            const oldPost = await Posts.findById(req.params.id);
+            if (!oldPost) {
+                return res.status(400).json({msg: "Ce post n'existe pas."});
+            }
+    
+            console.log('🔄 Actualizando post - Imágenes nuevas:', images);
+            console.log('📸 Imágenes antiguas:', oldPost.images);
+    
+            // 2. Identificar imágenes eliminadas para borrar de Cloudinary
+            const oldImageIds = oldPost.images.map(img => img.public_id).filter(Boolean);
+            const newImageIds = images.map(img => img.public_id).filter(Boolean);
+            
+            const deletedImageIds = oldImageIds.filter(id => !newImageIds.includes(id));
+    
+            console.log('🗑️ Imágenes a borrar de Cloudinary:', deletedImageIds);
+    
+            // 3. Borrar imágenes eliminadas de Cloudinary
+            if (deletedImageIds.length > 0) {
+                for (const publicId of deletedImageIds) {
+                    try {
+                        await cloudinary.uploader.destroy(publicId);
+                        console.log('✅ Imagen borrada de Cloudinary:', publicId);
+                    } catch (cloudinaryErr) {
+                        console.error('❌ Error borrando imagen de Cloudinary:', publicId, cloudinaryErr);
+                        // Continuar aunque falle una imagen
+                    }
+                }
+            }
+    
+            // 4. Actualizar el post en MongoDB
+            const post = await Posts.findOneAndUpdate(
+                { _id: req.params.id },
+                {
+                    $set: {
+                        ...postData,
+                        images: images || postData.images,
+                    }
+                },
+                { new: true, runValidators: true }
+            );
+    
+            // 5. Populate para obtener datos del usuario
+            await post.populate('user', 'avatar username fullname followers');
+    
+            res.json({
+                msg: 'Post modifié avec succès!',
+                newPost: post
+            });
+    
+        } catch (err) {
+            console.error('Error en updatePost:', err);
+            return res.status(500).json({msg: err.message});
+        }
+    },
     deletePost: async (req, res) => {
         try {
             const postId = req.params.id;
             const userId = req.user._id;
     
-            // 🔷 VERIFICAR SI EL USUARIO ES EL DUEÑO O ADMIN
+            // 1. VERIFICAR SI EL USUARIO ES EL DUEÑO O ADMIN
             const post = await Posts.findById(postId);
             
             if (!post) {
                 return res.status(404).json({msg: 'Post not found'});
             }
     
-            // Permitir eliminar si es el dueño O admin
             if (post.user.toString() !== userId.toString() && req.user.role !== 'admin') {
                 return res.status(403).json({msg: 'Not authorized to delete this post'});
             }
     
-            // 🔷 GUARDAR IDs DE COMMENTS Y LIKES ANTES DE ELIMINAR
+            console.log('🗑️ Eliminando post y sus imágenes:', post.images);
+    
+            // 2. BORRAR TODAS LAS IMÁGENES DEL POST DE CLOUDINARY
+            if (post.images && post.images.length > 0) {
+                for (const image of post.images) {
+                    if (image.public_id) {
+                        try {
+                            await cloudinary.uploader.destroy(image.public_id);
+                            console.log('✅ Imagen borrada de Cloudinary:', image.public_id);
+                        } catch (cloudinaryErr) {
+                            console.error('❌ Error borrando imagen de Cloudinary:', image.public_id, cloudinaryErr);
+                            // Continuar aunque falle una imagen
+                        }
+                    }
+                }
+            }
+    
+            // 3. GUARDAR IDs DE COMMENTS Y LIKES ANTES DE ELIMINAR
             const commentsToDelete = post.comments || [];
             const likesToCleanup = post.likes || [];
     
-            // 🔷 ELIMINAR EL POST
+            // 4. ELIMINAR EL POST DE MONGODB
             await Posts.findByIdAndDelete(postId);
     
-            // 🔷 LIMPIAR DATOS RELACIONADOS
+            // 5. LIMPIAR DATOS RELACIONADOS
             if (commentsToDelete.length > 0) {
                 await Comments.deleteMany({_id: {$in: commentsToDelete}});
             }
     
-            // 🔷 OPCIONAL: Limpiar likes de usuarios
+            // 6. OPCIONAL: Limpiar likes de usuarios
             if (likesToCleanup.length > 0) {
                 await Users.updateMany(
                     {_id: {$in: likesToCleanup}},
@@ -396,7 +441,7 @@ getPosts: async (req, res) => {
                 );
             }
     
-            // 🔷 OPCIONAL: Eliminar de posts guardados
+            // 7. OPCIONAL: Eliminar de posts guardados
             await Users.updateMany(
                 {saved: postId},
                 {$pull: {saved: postId}}
@@ -404,7 +449,8 @@ getPosts: async (req, res) => {
     
             res.json({
                 msg: 'Post deleted successfully!',
-                deletedPostId: postId
+                deletedPostId: postId,
+                deletedImagesCount: post.images ? post.images.length : 0
             });
     
         } catch (err) {
@@ -412,6 +458,7 @@ getPosts: async (req, res) => {
             return res.status(500).json({msg: err.message});
         }
     },
+
     savePost: async (req, res) => {
         try {
             const user = await Users.find({_id: req.user._id, saved: req.params.id})

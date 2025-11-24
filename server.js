@@ -10,6 +10,15 @@ const i18n = require('i18n');
 const SocketServer = require('./socketServer');
 const morgan = require('morgan');
 
+// ✅ IMPORTAR Y CONFIGURAR CLOUDINARY
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+    cloud_name: 'dfjipgj2o',
+    api_key: '213981915435275',
+    api_secret: 'wv_IiCM9zzhdiWDNXXo8HZi7wX4'
+});
+console.log('☁️ Cloudinary configurado correctamente');
+
 // ✅ CORS para Express
 const app = express()
 app.use(express.json())
@@ -41,7 +50,6 @@ io.on('connection', socket => {
     SocketServer(socket)
 })
 
-
 // --- Rutas de API ---
 app.get('/api/set-language', (req, res) => {
   const lang = req.query.lang;
@@ -67,15 +75,14 @@ app.use('/api', require('./routes/userActionRouter'));
 app.use('/api', require('./routes/blockUserRouter'));
 app.use('/api', require('./routes/reportRouter'));
 app.use('/api/blog/comments', require('./routes/blogCommentRoutes'));
-app.use("/api/forms", require("./routes/formRouter"));
-app.use("/api", require("./routes/privacysettingsRouter"));
+app.use('/api/forms', require('./routes/formRouter'));
+app.use('/api', require('./routes/privacysettingsRouter'));
 app.use("/api", require("./routes/settingsRouter"));
 
 // --- Auto desbloqueo de usuarios cada 5 min ---
 setInterval(autoUnblockUsers, 5 * 60 * 1000);
 
-
-const URI = process.env.MONGODB_URL
+const URI = process.env.MONGODB_URI
 mongoose.connect(URI, {
     useCreateIndex: true,
     useFindAndModify: false,
@@ -92,7 +99,6 @@ if(process.env.NODE_ENV === 'production'){
         res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
     })
 }
-
 
 const port = process.env.PORT || 5000
 http.listen(port, () => {

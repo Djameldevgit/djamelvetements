@@ -21,47 +21,79 @@ const DescriptionPost = ({ post }) => {
         cardShadow: "0 2px 8px rgba(0, 0, 0, 0.12)"
     };
 
+    // ✅ FUNCIÓN MEJORADA: Obtener valores con nombres alternativos
+    const getFieldValue = (fieldName, altNames = []) => {
+        // Buscar en el campo principal
+        if (post && post[fieldName]) return post[fieldName];
+        
+        // Buscar en nombres alternativos
+        for (const altName of altNames) {
+            if (post && post[altName]) return post[altName];
+        }
+        
+        return null;
+    };
+
+    // ✅ FUNCIÓN MEJORADA: Obtener array con nombres alternativos
+    const getArrayFieldValue = (fieldName, altNames = []) => {
+        // Buscar en el campo principal
+        if (post && post[fieldName] && Array.isArray(post[fieldName])) {
+            return post[fieldName];
+        }
+        
+        // Buscar en nombres alternativos
+        for (const altName of altNames) {
+            if (post && post[altName] && Array.isArray(post[altName])) {
+                return post[altName];
+            }
+        }
+        
+        return [];
+    };
+
+    // ✅ FUNCIÓN NUEVA: Verificar si un campo tiene valor
+    const hasFieldValue = (fieldName, altNames = []) => {
+        const value = getFieldValue(fieldName, altNames);
+        return value && value !== '' && value !== null && value !== undefined;
+    };
+
     // 🎯 FUNCIONES DE CONTACTO MEJORADAS
     const handleCallOwner = () => {
-        const phoneNumber = post.telefono || post.user?.mobile;
+        const phoneNumber = getFieldValue('telefono', ['phone', 'mobile']);
         if (!phoneNumber) {
             alert(isRTL ? 'رقم الهاتف غير متاح' : 'Numéro de téléphone non disponible');
             return;
         }
         
-        // 🎯 LLAMADA DIRECTA SIN CONFIRMACIÓN
         window.location.href = `tel:${phoneNumber}`;
     };
 
     const handleChatWithOwner = () => {
-        if (!post.user || !post.user._id) {
+        const userId = getFieldValue('_id') || post.user?._id;
+        if (!userId) {
             alert(isRTL ? 'لا يمكن بدء محادثة مع هذا البائع' : 'Impossible de démarrer une conversation avec ce vendeur');
             return;
         }
         
-        // 🎯 REDIRIGIR AL CHAT - puedes integrar tu lógica de chat aquí
-        const chatUrl = `/chat/${post.user._id}`;
+        const chatUrl = `/chat/${userId}`;
         window.open(chatUrl, '_blank');
         
-        // Mensaje temporal
         setTimeout(() => {
+            const userName = getFieldValue('username') || post.user?.username || 'Vendeur';
             alert(isRTL ? 
-                `تم فتح الدردشة مع ${post.user.username}` : 
-                `Conversation ouverte avec ${post.user.username}`
+                `تم فتح الدردشة مع ${userName}` : 
+                `Conversation ouverte avec ${userName}`
             );
         }, 500);
     };
 
     const handleVideoCall = () => {
-        // 🎯 INICIAR CÁMARA PARA STREAMING/VIDEO LLAMADA MEJORADO
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            // Primero solicitar permisos de cámara
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then((stream) => {
-                    // Crear URL de video llamada (puedes integrar con tu servicio)
-                    const videoCallUrl = `https://meet.jit.si/tassili-${post.user?._id || 'store'}-${Date.now()}`;
+                    const userId = getFieldValue('_id') || post.user?._id || 'store';
+                    const videoCallUrl = `https://meet.jit.si/tassili-${userId}-${Date.now()}`;
                     
-                    // Abrir ventana de video llamada
                     const videoWindow = window.open(videoCallUrl, '_blank', 
                         'width=800,height=600,scrollbars=yes,resizable=yes');
                     
@@ -77,7 +109,6 @@ const DescriptionPost = ({ post }) => {
                         );
                     }
                     
-                    // Detener el stream después de usar
                     setTimeout(() => {
                         stream.getTracks().forEach(track => track.stop());
                     }, 1000);
@@ -97,7 +128,7 @@ const DescriptionPost = ({ post }) => {
         }
     };
 
-    // 🏷️ Información de categoría para tienda de ropa
+    // 🏷️ Información de categoría actualizada
     const getCategoryInfo = () => {
         const categories = {
             "vetements_homme": {
@@ -174,15 +205,16 @@ const DescriptionPost = ({ post }) => {
             }
         };
 
-        return categories[post.category] || {
+        const category = getFieldValue('category', ['categorie', 'type']);
+        return categories[category] || {
             icon: "🛍️",
-            title: post.category || t('categories.general', 'Produit Mode'),
+            title: category || t('categories.general', 'Produit Mode'),
             color: "#7c3aed",
             description: t('categories.generalDescription', 'Article de mode de qualité')
         };
     };
 
-    // ✨ HIGHLIGHT MEJORADO - SIN COLOR AZUL
+    // ✨ HIGHLIGHT MEJORADO
     const Highlight = ({ children, type = "default" }) => {
         const typeStyles = {
             default: { 
@@ -205,6 +237,11 @@ const DescriptionPost = ({ post }) => {
                 backgroundColor: '#f3f4f6',
                 color: '#1f2937',
                 fontWeight: '800'
+            },
+            special: {
+                backgroundColor: '#e0e7ff',
+                color: '#3730a3',
+                fontWeight: '700'
             }
         };
 
@@ -230,6 +267,8 @@ const DescriptionPost = ({ post }) => {
 
     // 🔹 SECCIÓN 1: ANUNCIO PRINCIPAL
     const generateMainAnnouncement = () => {
+        const title = getFieldValue('title', ['titulo', 'name', 'nom']);
+        
         return (
             <div style={{
                 background: styles.mainGradient,
@@ -246,7 +285,7 @@ const DescriptionPost = ({ post }) => {
                     fontWeight: '800',
                     wordBreak: 'break-word'
                 }}>
-                    {post.title || t('descripcion.noTitle', 'Sans titre')}
+                    {title || t('descripcion.noTitle', 'Sans titre')}
                 </h1>
                 
                 <div style={{
@@ -262,9 +301,9 @@ const DescriptionPost = ({ post }) => {
 
     // 🔹 SECCIÓN 2: DESCRIPCIÓN
     const generateDescriptionSection = () => {
-        if (!post.description && !post.content) return null;
+        const description = getFieldValue('description', ['descripcion', 'content', 'contenu']);
+        if (!description) return null;
 
-        const description = post.description || post.content;
         const shouldTruncate = description.length > 200;
         const displayText = readMore ? description : (shouldTruncate ? description.substring(0, 200) + '...' : description);
 
@@ -322,8 +361,18 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🔹 SECCIÓN 3: INFORMACIÓN BÁSICA
+    // 🔹 SECCIÓN 3: INFORMACIÓN BÁSICA ACTUALIZADA
     const generateBasicInfoSection = () => {
+        const hasBasicInfo = 
+            hasFieldValue('genero') || 
+            hasFieldValue('etat', ['estado', 'condition']) || 
+            hasFieldValue('marca') || 
+            hasFieldValue('material') ||
+            hasFieldValue('estilo') ||
+            hasFieldValue('temporada');
+
+        if (!hasBasicInfo) return null;
+
         return (
             <div style={{
                 backgroundColor: '#f8fafc',
@@ -345,30 +394,57 @@ const DescriptionPost = ({ post }) => {
                 </h2>
                 
                 <div style={{ display: 'grid', gap: '12px' }}>
-                    {post.etat && (
+                    {hasFieldValue('etat', ['estado', 'condition']) && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: '600', color: styles.textDark }}>
                                 {isRTL ? 'الحالة' : t('descripcion.condition', 'État')}:
                             </span>
-                            <Highlight type="feature">{post.etat}</Highlight>
+                            <Highlight type="feature">{getFieldValue('etat', ['estado', 'condition'])}</Highlight>
                         </div>
                     )}
                     
-                    {post.genero && (
+                    {hasFieldValue('genero') && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: '600', color: styles.textDark }}>
                                 {isRTL ? 'الجنس' : t('descripcion.gender', 'Genre')}:
                             </span>
-                            <Highlight>{post.genero}</Highlight>
+                            <Highlight>{getFieldValue('genero')}</Highlight>
                         </div>
                     )}
                     
-                    {post.marca && (
+                    {hasFieldValue('marca') && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: '600', color: styles.textDark }}>
                                 {isRTL ? 'العلامة التجارية' : t('descripcion.brand', 'Marque')}:
                             </span>
-                            <Highlight>{post.marca}</Highlight>
+                            <Highlight>{getFieldValue('marca')}</Highlight>
+                        </div>
+                    )}
+
+                    {hasFieldValue('material') && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'المادة' : 'Matériau'}:
+                            </span>
+                            <Highlight>{getFieldValue('material')}</Highlight>
+                        </div>
+                    )}
+
+                    {hasFieldValue('estilo') && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'النمط' : 'Style'}:
+                            </span>
+                            <Highlight>{getFieldValue('estilo')}</Highlight>
+                        </div>
+                    )}
+
+                    {hasFieldValue('temporada') && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark }}>
+                                {isRTL ? 'الموسم' : 'Saison'}:
+                            </span>
+                            <Highlight>{getFieldValue('temporada')}</Highlight>
                         </div>
                     )}
                 </div>
@@ -378,8 +454,11 @@ const DescriptionPost = ({ post }) => {
 
     // 🔹 SECCIÓN 4: COLORES Y TALLAS
     const generateColorsSizesSection = () => {
-        const hasColors = post.color && post.color.length > 0;
-        const hasSizes = post.talla && post.talla.length > 0;
+        const colors = getArrayFieldValue('color', ['colors', 'couleurs', 'colores']);
+        const sizes = getArrayFieldValue('talla', ['tallas', 'sizes', 'tailles']);
+
+        const hasColors = colors && colors.length > 0;
+        const hasSizes = sizes && sizes.length > 0;
 
         if (!hasColors && !hasSizes) return null;
 
@@ -410,7 +489,7 @@ const DescriptionPost = ({ post }) => {
                                 {isRTL ? 'الألوان المتاحة' : t('descripcion.availableColors', 'Couleurs disponibles')}:
                             </span>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                {post.color.map((color, index) => (
+                                {colors.map((color, index) => (
                                     <Highlight key={index} type="feature">{color}</Highlight>
                                 ))}
                             </div>
@@ -423,7 +502,7 @@ const DescriptionPost = ({ post }) => {
                                 {isRTL ? 'المقاسات المتاحة' : t('descripcion.availableSizes', 'Tailles disponibles')}:
                             </span>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                {post.talla.map((size, index) => (
+                                {sizes.map((size, index) => (
                                     <Highlight key={index}>{size}</Highlight>
                                 ))}
                             </div>
@@ -436,7 +515,11 @@ const DescriptionPost = ({ post }) => {
 
     // 🔹 SECCIÓN 5: PRECIO
     const generatePricingSection = () => {
-        if (!post.price) return null;
+        const price = getFieldValue('price', ['prix', 'precio']);
+        const currency = getFieldValue('tipodemoneda', ['currency', 'moneda', 'devise']);
+        const saleType = getFieldValue('tipoventa', ['saleType', 'typeVente', 'tipo_venta']);
+
+        if (!price) return null;
 
         return (
             <div style={{
@@ -466,18 +549,18 @@ const DescriptionPost = ({ post }) => {
                         marginBottom: '8px'
                     }}>
                         <Highlight type="price">
-                            {post.price} {post.tipodemoneda || 'DZD'}
+                            {price} {currency || 'DZD'}
                         </Highlight>
                     </div>
                     
-                    {post.tipoventa && (
+                    {saleType && (
                         <div style={{ 
                             fontSize: '16px', 
                             color: styles.textLight,
                             fontWeight: '600'
                         }}>
                             {isRTL ? 'نوع البيع' : t('descripcion.saleType', 'Type de vente')}: {' '}
-                            <Highlight>{post.tipoventa}</Highlight>
+                            <Highlight>{saleType}</Highlight>
                         </div>
                     )}
                 </div>
@@ -485,10 +568,181 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🔹 SECCIÓN 6: INFORMACIÓN ESPECÍFICA DE CATEGORÍA
+    // 🔹 SECCIÓN 6: CARACTERÍSTICAS ESPECÍFICAS POR CATEGORÍA
     const generateCategorySpecificSection = () => {
-        const categoryInfo = getCategoryInfo();
-        
+        const categorySpecificFields = [];
+
+        // Bebés
+        if (hasFieldValue('edadBebes', ['edadbebes'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'العمر' : 'Âge Bébé',
+                value: getFieldValue('edadBebes', ['edadbebes']),
+                icon: '👶'
+            });
+        }
+
+        // Bijoux
+        if (hasFieldValue('tipoMaterialBijoux', ['tipomaterialbijoux'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع المعدن' : 'Type de Métal',
+                value: getFieldValue('tipoMaterialBijoux', ['tipomaterialbijoux']),
+                icon: '💎'
+            });
+        }
+
+        if (hasFieldValue('tipoPiedra', ['tipopiedra'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع الحجر' : 'Type de Pierre',
+                value: getFieldValue('tipoPiedra', ['tipopiedra']),
+                icon: '💎'
+            });
+        }
+
+        // Zapatos mujer
+        if (hasFieldValue('alturaTacon', ['alturatacon'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'ارتفاع الكعب' : 'Hauteur du Talon',
+                value: getFieldValue('alturaTacon', ['alturatacon']),
+                icon: '👠'
+            });
+        }
+
+        if (hasFieldValue('tipoDeCierre', ['tipodecierre'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع الإغلاق' : 'Type de Fermeture',
+                value: getFieldValue('tipoDeCierre', ['tipodecierre']),
+                icon: '👠'
+            });
+        }
+
+        if (hasFieldValue('formaDePunta', ['formadepunta'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'شكل المقدمة' : 'Forme de la Pointe',
+                value: getFieldValue('formaDePunta', ['formadepunta']),
+                icon: '👠'
+            });
+        }
+
+        // Zapatos hombre
+        if (hasFieldValue('tipoDeSuela', ['tipodesuela'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع النعل' : 'Type de Semelle',
+                value: getFieldValue('tipoDeSuela', ['tipodesuela']),
+                icon: '👞'
+            });
+        }
+
+        // Gafas
+        if (hasFieldValue('anchoPuente', ['anchopuente'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'عرض الجسر' : 'Largeur du Pont',
+                value: getFieldValue('anchoPuente', ['anchopuente']),
+                icon: '👓'
+            });
+        }
+
+        if (hasFieldValue('longitudPatilla', ['langitudpatilla'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'طول الذراع' : 'Longueur des Branches',
+                value: getFieldValue('longitudPatilla', ['langitudpatilla']),
+                icon: '👓'
+            });
+        }
+
+        // Relojes
+        if (hasFieldValue('tiporeloj')) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع الساعة' : 'Type de Montre',
+                value: getFieldValue('tiporeloj'),
+                icon: '⌚'
+            });
+        }
+
+        if (hasFieldValue('movimientoReloj', ['movimientoreloj'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع الحركة' : 'Type de Mouvement',
+                value: getFieldValue('movimientoReloj', ['movimientoreloj']),
+                icon: '⌚'
+            });
+        }
+
+        if (hasFieldValue('materialCorrea', ['materialcorrea'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'مادة السوار' : 'Matériau du Bracelet',
+                value: getFieldValue('materialCorrea', ['materialcorrea']),
+                icon: '⌚'
+            });
+        }
+
+        if (hasFieldValue('resistenciaAgua', ['resistenciaagua'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'مقاومة الماء' : 'Résistance à l\'Eau',
+                value: getFieldValue('resistenciaAgua', ['resistenciaagua']),
+                icon: '⌚'
+            });
+        }
+
+        // Sacs & Valises
+        if (hasFieldValue('tipoSangle', ['tipodsangle'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع الشريط' : 'Type de Sangle',
+                value: getFieldValue('tipoSangle', ['tipodsangle']),
+                icon: '👜'
+            });
+        }
+
+        if (hasFieldValue('correa')) {
+            categorySpecificFields.push({
+                label: isRTL ? 'الحزام' : 'Correa',
+                value: getFieldValue('correa'),
+                icon: '👜'
+            });
+        }
+
+        if (hasFieldValue('tallaSaco', ['tallasaco'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'مقاس الحقيبة' : 'Taille du Sac',
+                value: getFieldValue('tallaSaco', ['tallasaco']),
+                icon: '👜'
+            });
+        }
+
+        // Profesionales
+        if (hasFieldValue('tipoDeLabata', ['tipodelabata'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع اللباس' : 'Type de Tenue',
+                value: getFieldValue('tipoDeLabata', ['tipodelabata']),
+                icon: '💼'
+            });
+        }
+
+        if (hasFieldValue('sectorDeTrabajo', ['sectordetrabajo'])) {
+            categorySpecificFields.push({
+                label: isRTL ? 'قطاع العمل' : 'Secteur de Travail',
+                value: getFieldValue('sectorDeTrabajo', ['sectordetrabajo']),
+                icon: '💼'
+            });
+        }
+
+        // Color y ocasión adicional
+        if (hasFieldValue('tipocolor')) {
+            categorySpecificFields.push({
+                label: isRTL ? 'نوع اللون' : 'Type de Couleur',
+                value: getFieldValue('tipocolor'),
+                icon: '🎨'
+            });
+        }
+
+        if (hasFieldValue('ocasion')) {
+            categorySpecificFields.push({
+                label: isRTL ? 'المناسبة' : 'Occasion',
+                value: getFieldValue('ocasion'),
+                icon: '🎉'
+            });
+        }
+
+        if (categorySpecificFields.length === 0) return null;
+
         return (
             <div style={{
                 backgroundColor: '#faf5ff',
@@ -506,6 +760,44 @@ const DescriptionPost = ({ post }) => {
                     alignItems: 'center',
                     gap: '8px'
                 }}>
+                    🔧 {isRTL ? 'مواصفات إضافية' : 'Spécifications Additionnelles'}
+                </h2>
+                
+                <div style={{ display: 'grid', gap: '12px' }}>
+                    {categorySpecificFields.map((field, index) => (
+                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: styles.textDark, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                {field.icon} {field.label}:
+                            </span>
+                            <Highlight type="special">{field.value}</Highlight>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
+    // 🔹 SECCIÓN 7: INFORMACIÓN DE CATEGORÍA
+    const generateCategoryInfoSection = () => {
+        const categoryInfo = getCategoryInfo();
+        
+        return (
+            <div style={{
+                backgroundColor: '#f0f9ff',
+                padding: '18px',
+                borderRadius: '10px',
+                marginBottom: '18px',
+                border: '1px solid #bae6fd'
+            }}>
+                <h2 style={{
+                    margin: '0 0 15px 0',
+                    fontSize: '18px',
+                    color: '#0369a1',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                }}>
                     {categoryInfo.icon} {isRTL ? 'معلومات الفئة' : t('descripcion.categoryInfo', 'Informations Catégorie')}
                 </h2>
                 
@@ -513,7 +805,7 @@ const DescriptionPost = ({ post }) => {
                     <div style={{ 
                         fontSize: '20px', 
                         fontWeight: '800', 
-                        color: styles.purpleColor,
+                        color: '#0369a1',
                         marginBottom: '8px'
                     }}>
                         {categoryInfo.title}
@@ -531,10 +823,10 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🔹 SECCIÓN 7: CONTACTO Y COMPRA - COMPLETAMENTE REDISEÑADA
+    // 🔹 SECCIÓN 8: CONTACTO
     const generateContactSection = () => {
-        const ownerName = post.user?.username || 'Propriétaire';
-        const phoneNumber = post.telefono || post.user?.mobile || 'Non disponible';
+        const ownerName = getFieldValue('username') || post.user?.username || 'Propriétaire';
+        const phoneNumber = getFieldValue('telefono', ['phone', 'mobile']) || post.user?.mobile || 'Non disponible';
 
         return (
             <div style={{
@@ -558,7 +850,6 @@ const DescriptionPost = ({ post }) => {
                     👑 {isRTL ? 'معلومات المتجر' : 'Informations du Vendeur'}
                 </h2>
 
-                {/* Información del dueño de la tienda */}
                 <div style={{
                     backgroundColor: 'rgba(255,255,255,0.15)',
                     padding: '16px',
@@ -614,14 +905,13 @@ const DescriptionPost = ({ post }) => {
                     </div>
                 </div>
 
-                {/* Botones de acción principales */}
+                {/* Botones de acción */}
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '12px',
                     marginBottom: '20px'
                 }}>
-                    {/* Llamada telefónica */}
                     <div 
                         style={{
                             backgroundColor: '#10b981',
@@ -640,20 +930,11 @@ const DescriptionPost = ({ post }) => {
                             border: '2px solid rgba(255,255,255,0.2)'
                         }}
                         onClick={handleCallOwner}
-                        onTouchStart={(e) => {
-                            e.currentTarget.style.backgroundColor = '#059669';
-                            e.currentTarget.style.transform = 'scale(0.95)';
-                        }}
-                        onTouchEnd={(e) => {
-                            e.currentTarget.style.backgroundColor = '#10b981';
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
                     >
                         <div style={{ fontSize: '24px' }}>📞</div>
                         <div>{isRTL ? 'اتصال' : 'Appeler'}</div>
                     </div>
 
-                    {/* Chat */}
                     <div 
                         style={{
                             backgroundColor: '#3b82f6',
@@ -672,20 +953,11 @@ const DescriptionPost = ({ post }) => {
                             border: '2px solid rgba(255,255,255,0.2)'
                         }}
                         onClick={handleChatWithOwner}
-                        onTouchStart={(e) => {
-                            e.currentTarget.style.backgroundColor = '#2563eb';
-                            e.currentTarget.style.transform = 'scale(0.95)';
-                        }}
-                        onTouchEnd={(e) => {
-                            e.currentTarget.style.backgroundColor = '#3b82f6';
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
                     >
                         <div style={{ fontSize: '24px' }}>💬</div>
                         <div>{isRTL ? 'دردشة' : 'Chat'}</div>
                     </div>
 
-                    {/* Video llamada */}
                     <div 
                         style={{
                             backgroundColor: '#8b5cf6',
@@ -704,59 +976,12 @@ const DescriptionPost = ({ post }) => {
                             border: '2px solid rgba(255,255,255,0.2)'
                         }}
                         onClick={handleVideoCall}
-                        onTouchStart={(e) => {
-                            e.currentTarget.style.backgroundColor = '#7c3aed';
-                            e.currentTarget.style.transform = 'scale(0.95)';
-                        }}
-                        onTouchEnd={(e) => {
-                            e.currentTarget.style.backgroundColor = '#8b5cf6';
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
                     >
                         <div style={{ fontSize: '24px' }}>📹</div>
                         <div>{isRTL ? 'فيديو' : 'Vidéo'}</div>
                     </div>
                 </div>
 
-                {/* Descripción de las opciones de contacto */}
-                <div style={{
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    padding: '14px',
-                    borderRadius: '8px',
-                    marginTop: '12px'
-                }}>
-                    <div style={{
-                        fontSize: '14px',
-                        fontWeight: '700',
-                        marginBottom: '8px',
-                        opacity: '0.9'
-                    }}>
-                        {isRTL ? 'خيارات التواصل:' : 'Options de contact:'}
-                    </div>
-                    
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        gap: '8px',
-                        fontSize: '11px',
-                        opacity: '0.8'
-                    }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontWeight: '700' }}>📞 {isRTL ? 'اتصال' : 'Appel'}</div>
-                            <div>{isRTL ? 'اتصال فوري' : 'Appel instantané'}</div>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontWeight: '700' }}>💬 {isRTL ? 'دردشة' : 'Chat'}</div>
-                            <div>{isRTL ? 'مراسلة مباشرة' : 'Messagerie directe'}</div>
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontWeight: '700' }}>📹 {isRTL ? 'فيديو' : 'Vidéo'}</div>
-                            <div>{isRTL ? 'مكالمة فيديو' : 'Appel vidéo'}</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mensaje final */}
                 <p style={{ 
                     fontSize: '15px',
                     opacity: '0.9', 
@@ -773,7 +998,10 @@ const DescriptionPost = ({ post }) => {
         );
     };
 
-    // 🎯 RENDER PRINCIPAL MEJORADO - CORRECCIÓN RTL COMPLETA
+    // 🎯 DEBUG: Mostrar estructura completa del post
+    console.log('🔍 DescriptionPost - Datos recibidos:', post);
+
+    // 🎯 RENDER PRINCIPAL MEJORADO
     return (
         <div style={{
             direction: isRTL ? 'rtl' : 'ltr',
@@ -794,6 +1022,7 @@ const DescriptionPost = ({ post }) => {
             {generateColorsSizesSection()}
             {generatePricingSection()}
             {generateCategorySpecificSection()}
+            {generateCategoryInfoSection()}
             {generateContactSection()}
         </div>
     );

@@ -21,7 +21,7 @@ import {
   FaShareAlt,
   FaGlobe,
   FaDownload,
-  FaMapMarkerAlt // 🔥 NUEVO ICONO DE LOCALIZACIÓN
+  FaMapMarkerAlt
 } from 'react-icons/fa';
 
 import { Navbar, Container, NavDropdown, Badge, Dropdown } from 'react-bootstrap';
@@ -206,14 +206,14 @@ const Navbar2 = () => {
       onClick={onClick}
       className={`custom-menu-item ${danger ? 'text-danger' : ''}`}
       style={{
-        padding: description ? '10px 16px' : '12px 16px',
+        padding: description ? '8px 12px' : '10px 12px',
         transition: 'all 0.2s ease',
-        borderRadius: '8px',
-        margin: '4px 8px',
+        borderRadius: '6px',
+        margin: '2px 6px',
         display: 'flex',
         alignItems: 'center',
         fontWeight: '500',
-        width: 'calc(100% - 16px)',
+        width: 'calc(100% - 12px)',
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
@@ -225,9 +225,9 @@ const Navbar2 = () => {
       <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
         <Icon className="me-2" style={{ 
           color: iconColor, 
-          fontSize: '1rem', 
+          fontSize: '0.9rem', 
           flexShrink: 0,
-          minWidth: '20px'
+          minWidth: '18px'
         }} />
         <div style={{ 
           flex: 1,
@@ -239,15 +239,16 @@ const Navbar2 = () => {
           <span style={{ 
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            fontWeight: description ? '600' : '500'
+            fontWeight: description ? '600' : '500',
+            fontSize: '0.9rem'
           }}>
             {children}
           </span>
           {description && (
             <small style={{
               color: settings.style ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)',
-              fontSize: '0.75rem',
-              marginTop: '2px',
+              fontSize: '0.7rem',
+              marginTop: '1px',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -261,8 +262,8 @@ const Navbar2 = () => {
           <Badge 
             bg={badge.color || 'primary'} 
             style={{ 
-              fontSize: '0.7rem',
-              marginLeft: '8px',
+              fontSize: '0.65rem',
+              marginLeft: '6px',
               flexShrink: 0
             }}
           >
@@ -275,7 +276,7 @@ const Navbar2 = () => {
 
   return (
     <>
-      {/* 🔥 NAVBAR FIJO ARRIBA DE TODO */}
+      {/* 🔥 NAVBAR COMPACTO - ALTURA REDUCIDA */}
       <Navbar
         fixed="top"
         expand="lg"
@@ -284,9 +285,9 @@ const Navbar2 = () => {
           background: settings.style
             ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
             : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-          padding: isMobile ? '6px 0' : '8px 0',
-          boxShadow: '0 2px 15px rgba(0,0,0,0.1)',
-          minHeight: isMobile ? '56px' : '64px'
+          padding: isMobile ? '4px 0' : '6px 0', // 🔥 REDUCIDO
+          boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+          minHeight: isMobile ? '48px' : '56px' // 🔥 REDUCIDO
         }}
         className={settings.style ? "navbar-dark" : "navbar-light"}
       >
@@ -294,13 +295,12 @@ const Navbar2 = () => {
           fluid 
           className="align-items-center justify-content-between" 
           style={{ 
-            padding: isMobile ? '0 12px' : '0 20px',
+            padding: isMobile ? '0 4px' : '0 8px', // 🔥 REDUCIDO
             maxWidth: '100%'
           }}
         >
-          {/* Logo y Brand */}
-      
-<div className="d-flex align-items-center" style={{ minWidth: 0, flex: '0 1 auto' }}>
+          {/* Logo y Brand - COMPACTO */}
+          <div className="d-flex align-items-center" style={{ minWidth: 0, flex: '0 1 auto' }}>
   <Link
     to="/"
     onDoubleClick={(e) => {
@@ -312,12 +312,12 @@ const Navbar2 = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: isMobile ? '38px' : '50px',
-      height: isMobile ? '38px' : '50px',
-      marginRight: isMobile ? '8px' : '12px',
+      width: isMobile ? '32px' : '40px',
+      height: isMobile ? '32px' : '40px',
+      marginRight: isMobile ? '6px' : '10px',
       background: 'transparent',
       border: 'none',
-      borderRadius: '10px',
+      borderRadius: '8px',
       overflow: 'hidden',
       flexShrink: 0
     }}
@@ -330,7 +330,7 @@ const Navbar2 = () => {
         width: '100%',
         height: '100%',
         objectFit: 'contain',
-        borderRadius: '8px'
+        borderRadius: '6px'
       }}
       onError={(e) => {
         e.target.style.display = 'none';
@@ -349,11 +349,21 @@ const Navbar2 = () => {
         background: 'none',
         border: 'none',
         padding: 0,
-        textDecoration: 'none'
+        textDecoration: 'none',
+        display: 'flex', // 🔥 NUEVO: Para alinear verticalmente
+        alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
       }}
       title="Click para ir al inicio - Doble click para recargar"
     >
-      <Navbar.Brand className="py-2 mb-0" style={{ flexShrink: 0 }}>
+      <Navbar.Brand 
+        className="py-0 mb-0" // 🔥 CAMBIADO: py-1 a py-0
+        style={{ 
+          flexShrink: 0,
+          display: 'flex', // 🔥 NUEVO
+          alignItems: 'center', // 🔥 NUEVO
+          height: '100%' // 🔥 NUEVO: Ocupar toda la altura disponible
+        }}
+      >
         <Card.Title
           className="mb-0"
           style={{
@@ -362,9 +372,13 @@ const Navbar2 = () => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             fontWeight: 'bold',
-            fontSize: '1.4rem',
-            letterSpacing: '0.5px',
-            whiteSpace: 'nowrap'
+            fontSize: '1.2rem',
+            letterSpacing: '0.3px',
+            margin: 0, // 🔥 NUEVO: Eliminar todos los márgenes
+            padding: 0, // 🔥 NUEVO: Eliminar padding
+            lineHeight: '1.2', // 🔥 NUEVO: Controlar altura de línea
+            display: 'flex', // 🔥 NUEVO
+            alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
           }}
         >
           {t('appName')}
@@ -374,23 +388,23 @@ const Navbar2 = () => {
   )}
 </div>
 
-          {/* Iconos de acción */}
+          {/* Iconos de acción - COMPACTOS */}
           <div 
             className="d-flex align-items-center" 
             style={{ 
-              gap: isMobile ? '6px' : '10px',
+              gap: isMobile ? '4px' : '8px', // 🔥 REDUCIDO
               flexShrink: 0,
               marginLeft: 'auto'
             }}
           >
-            {/* 🔥 NUEVO: Botón de Localización/Mapa */}
+            {/* Botón de Localización/Mapa */}
             <Link
               to="/Map"
               className="icon-button"
               style={{
-                width: isMobile ? '38px' : '42px',
-                height: isMobile ? '38px' : '42px',
-                borderRadius: '10px',
+                width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -402,7 +416,7 @@ const Navbar2 = () => {
               title={t('mapLocation') || "Ubicación en Mapa"}
             >
               <FaMapMarkerAlt
-                size={isMobile ? 16 : 18}
+                size={isMobile ? 14 : 16} // 🔥 REDUCIDO
                 style={{ color: '#ea4335' }}
               />
             </Link>
@@ -412,9 +426,9 @@ const Navbar2 = () => {
               to="/search"
               className="icon-button"
               style={{
-                width: isMobile ? '38px' : '42px',
-                height: isMobile ? '38px' : '42px',
-                borderRadius: '10px',
+                width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -424,7 +438,7 @@ const Navbar2 = () => {
               }}
             >
               <FaSearch
-                size={isMobile ? 16 : 18}
+                size={isMobile ? 14 : 16} // 🔥 REDUCIDO
                 style={{ color: '#667eea' }}
                 title={t('search')}
               />
@@ -436,14 +450,14 @@ const Navbar2 = () => {
                 className="icon-button"
                 onClick={handleInstallPWA}
                 style={{
-                  width: isMobile ? '38px' : '42px',
-                  height: isMobile ? '38px' : '42px',
-                  borderRadius: '10px',
+                  width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(40, 167, 69, 0.1)',
-                  border: '2px solid #28a745',
+                  border: '1px solid #28a745', // 🔥 REDUCIDO
                   transition: 'all 0.3s ease',
                   animation: 'pulse 2s infinite',
                   cursor: 'pointer'
@@ -451,7 +465,7 @@ const Navbar2 = () => {
                 title={t('installPWA')}
               >
                 <FaDownload
-                  size={isMobile ? 16 : 18}
+                  size={isMobile ? 14 : 16} // 🔥 REDUCIDO
                   style={{ color: '#28a745' }}
                 />
               </button>
@@ -463,21 +477,21 @@ const Navbar2 = () => {
                 to="/create-post"
                 className="icon-button"
                 style={{
-                  width: isMobile ? '38px' : '42px',
-                  height: isMobile ? '38px' : '42px',
-                  borderRadius: '10px',
+                  width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
+                  boxShadow: '0 3px 10px rgba(102, 126, 234, 0.25)', // 🔥 REDUCIDO
                   textDecoration: 'none'
                 }}
                 title={t('addPost')}
               >
                 <FaPlus
-                  size={isMobile ? 14 : 16}
+                  size={isMobile ? 12 : 14} // 🔥 REDUCIDO
                   style={{ color: 'white' }}
                 />
               </Link>
@@ -489,9 +503,9 @@ const Navbar2 = () => {
                 className="position-relative icon-button"
                 ref={notifyDropdownRef}
                 style={{
-                  width: isMobile ? '38px' : '42px',
-                  height: isMobile ? '38px' : '42px',
-                  borderRadius: '10px',
+                  width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                  borderRadius: '8px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -501,7 +515,7 @@ const Navbar2 = () => {
               >
                 <Link to={'/notify'} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <FaBell
-                    size={isMobile ? 18 : 20}
+                    size={isMobile ? 16 : 18} // 🔥 REDUCIDO
                     style={{ color: unreadNotifications > 0 ? '#f5576c' : '#667eea' }}
                   />
                 </Link>
@@ -510,16 +524,16 @@ const Navbar2 = () => {
                   <Badge
                     pill
                     style={{
-                      fontSize: isMobile ? '0.6rem' : '0.65rem',
+                      fontSize: isMobile ? '0.55rem' : '0.6rem', // 🔥 REDUCIDO
                       position: 'absolute',
-                      top: '-4px',
-                      right: '-4px',
-                      padding: isMobile ? '3px 6px' : '4px 7px',
+                      top: '-3px', // 🔥 REDUCIDO
+                      right: '-3px', // 🔥 REDUCIDO
+                      padding: isMobile ? '2px 4px' : '3px 5px', // 🔥 REDUCIDO
                       background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                      border: '2px solid white',
-                      boxShadow: '0 2px 8px rgba(245, 87, 108, 0.4)',
-                      minWidth: isMobile ? '18px' : '20px',
-                      height: isMobile ? '18px' : '20px',
+                      border: '1px solid white', // 🔥 REDUCIDO
+                      boxShadow: '0 1px 6px rgba(245, 87, 108, 0.4)', // 🔥 REDUCIDO
+                      minWidth: isMobile ? '16px' : '18px', // 🔥 REDUCIDO
+                      height: isMobile ? '16px' : '18px', // 🔥 REDUCIDO
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -531,340 +545,347 @@ const Navbar2 = () => {
               </div>
             )}
 
-            {/* 🔥 DROPDOWN DE USUARIO MEJORADO */}
-            {/* 🔥 DROPDOWN DE USUARIO MEJORADO */}
-<NavDropdown
-  align="end"
-  title={
-    auth.user ? (
-      <div
-        style={{
-          width: isMobile ? '38px' : '42px',
-          height: isMobile ? '38px' : '42px',
-          borderRadius: '10px',
-          padding: '2px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.25)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative'
-        }}
-      >
-        <Avatar
-          src={auth.user.avatar}
-          size="medium-avatar"
-          style={{
-            borderRadius: '8px',
-            objectFit: 'cover',
-            width: '100%',
-            height: '100%'
-          }}
-        />
-        {/* Indicador de estado en línea */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-2px',
-            right: '-2px',
-            width: '12px',
-            height: '12px',
-            backgroundColor: '#28a745',
-            border: '2px solid white',
-            borderRadius: '50%'
-          }}
-        />
-      </div>
-    ) : (
-      <div
-        style={{
-          width: isMobile ? '38px' : '42px',
-          height: isMobile ? '38px' : '42px',
-          borderRadius: '10px',
-          backgroundColor: settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(102, 126, 234, 0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <FaUserCircle size={isMobile ? 22 : 26} style={{ color: '#667eea' }} />
-      </div>
-    )
-  }
-  id="nav-user-dropdown"
-  className="custom-dropdown"
-  ref={userDropdownRef}
->
-  <div className="dropdown-scroll-wrapper">
-    {auth.user ? (
-      <>
-        {/* Header del usuario MEJORADO */}
-        <div className="user-header">
-          <div className="d-flex align-items-center gap-3">
-            <div className="user-avatar-wrapper">
-              <Avatar src={auth.user.avatar} size="medium-avatar" />
-              <div className="online-indicator"></div>
-            </div>
-            <div className="flex-grow-1">
-              <div className="fw-bold text-white user-name">
-                {auth.user.username}
-              </div>
-              <div className="user-email" style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '0.8rem',
-                marginBottom: '4px'
-              }}>
-                {auth.user.email}
-              </div>
-              <div className="user-role-badge">
-                {userRole === 'admin' ? `👑 ${t('admin')}` :
-                  userRole === 'Moderateur' ? `🛡️ ${t('moderator')}` :
-                    userRole === 'Super-utilisateur' ? `⭐ ${t('superUser')}` :
-                      `👤 ${t('user')}`}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 🔥 SELECTOR DE IDIOMA INTEGRADO */}
-        <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
-
-        {/* 🔥 SECCIÓN DE ACCIONES RÁPIDAS */}
-        <div style={{ 
-          padding: '8px 12px',
-          borderBottom: `1px solid ${settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
-        }}>
-          <div style={{
-            fontSize: '0.75rem',
-            fontWeight: '600',
-            color: settings.style ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
-            marginBottom: '6px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}>
-            Acciones Rápidas
-          </div>
-          <div className="d-flex gap-2">
-            <Link
-              to="/Map" 
-              className="btn btn-sm"
-              style={{
-                flex: 1,
-                background: 'linear-gradient(135deg, #ea4335 0%, #d33426 100%)',
-                border: 'none',
-                color: 'white',
-                fontSize: '0.75rem',
-                padding: '6px 8px',
-                borderRadius: '6px',
-                textDecoration: 'none',
-                textAlign: 'center'
-              }}
+            {/* 🔥 DROPDOWN DE USUARIO COMPACTO */}
+            <NavDropdown
+              align="end"
+              title={
+                auth.user ? (
+                  <div
+                    style={{
+                      width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                      height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                      borderRadius: '8px',
+                      padding: '1px', // 🔥 REDUCIDO
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      boxShadow: '0 3px 10px rgba(102, 126, 234, 0.25)', // 🔥 REDUCIDO
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative'
+                    }}
+                  >
+                    <Avatar
+                      src={auth.user.avatar}
+                      size="medium-avatar"
+                      style={{
+                        borderRadius: '6px', // 🔥 REDUCIDO
+                        objectFit: 'cover',
+                        width: '100%',
+                        height: '100%'
+                      }}
+                    />
+                    {/* Indicador de estado en línea */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '-1px', // 🔥 REDUCIDO
+                        right: '-1px', // 🔥 REDUCIDO
+                        width: '10px', // 🔥 REDUCIDO
+                        height: '10px', // 🔥 REDUCIDO
+                        backgroundColor: '#28a745',
+                        border: '1px solid white', // 🔥 REDUCIDO
+                        borderRadius: '50%'
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                      height: isMobile ? '34px' : '38px', // 🔥 REDUCIDO
+                      borderRadius: '8px',
+                      backgroundColor: settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(102, 126, 234, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <FaUserCircle size={isMobile ? 18 : 22} style={{ color: '#667eea' }} /> {/* 🔥 REDUCIDO */}
+                  </div>
+                )
+              }
+              id="nav-user-dropdown"
+              className="custom-dropdown"
+              ref={userDropdownRef}
             >
-              <FaMapMarkerAlt size={12} className="me-1" />
-              Mapa
-            </Link>
-            <Link
-              to="/search"
-              className="btn btn-sm"
-              style={{
-                flex: 1,
-                background: 'linear-gradient(135deg, #667eea 0%, #5a6fd8 100%)',
-                border: 'none',
-                color: 'white',
-                fontSize: '0.75rem',
-                padding: '6px 8px',
-                borderRadius: '6px',
-                textDecoration: 'none',
-                textAlign: 'center'
-              }}
-            >
-              <FaSearch size={12} className="me-1" />
-              Buscar
-            </Link>
-          </div>
-        </div>
+              <div className="dropdown-scroll-wrapper">
+                {auth.user ? (
+                  <>
+                    {/* Header del usuario COMPACTO */}
+                    <div className="user-header">
+                      <div className="d-flex align-items-center gap-2"> {/* 🔥 REDUCIDO */}
+                        <div className="user-avatar-wrapper">
+                          <Avatar src={auth.user.avatar} size="medium-avatar" />
+                          <div className="online-indicator"></div>
+                        </div>
+                        <div className="flex-grow-1">
+                          <div className="fw-bold text-white user-name">
+                            {auth.user.username}
+                          </div>
+                          <div className="user-email" style={{
+                            color: 'rgba(255,255,255,0.8)',
+                            fontSize: '0.75rem', // 🔥 REDUCIDO
+                            marginBottom: '2px' // 🔥 REDUCIDO
+                          }}>
+                            {auth.user.email}
+                          </div>
+                          <div className="user-role-badge">
+                            {userRole === 'admin' ? `👑 ${t('admin')}` :
+                              userRole === 'Moderateur' ? `🛡️ ${t('moderator')}` :
+                                userRole === 'Super-utilisateur' ? `⭐ ${t('superUser')}` :
+                                  `👤 ${t('user')}`}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-        {/* TODOS LOS LINKS ORIGINALES SE MANTIENEN */}
-        <MenuItem 
-          icon={FaUserCircle} 
-          iconColor="#667eea" 
-          to={`/profile/${auth.user._id}`}
-          description="Ver y editar tu perfil"
-        >
-          {t('profile')}
-        </MenuItem>
+                    {/* SELECTOR DE IDIOMA INTEGRADO */}
+                    <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
 
-        <MenuItem 
-          icon={FaInfoCircle} 
-          iconColor="#6c757d" 
-          to="/infoaplicacionn"
-          description="Información sobre la aplicación"
-        >
-          {t('appInfo')}
-        </MenuItem>
+                    {/* SECCIÓN DE ACCIONES RÁPIDAS COMPACTA */}
+                    <div style={{ 
+                      padding: '6px 10px', // 🔥 REDUCIDO
+                      borderBottom: `1px solid ${settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
+                    }}>
+                      <div style={{
+                        fontSize: '0.7rem', // 🔥 REDUCIDO
+                        fontWeight: '600',
+                        color: settings.style ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+                        marginBottom: '4px', // 🔥 REDUCIDO
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.3px' // 🔥 REDUCIDO
+                      }}>
+                        Acciones Rápidas
+                      </div>
+                      <div className="d-flex gap-1"> {/* 🔥 REDUCIDO */}
+                        <Link
+                          to="/Map" 
+                          className="btn btn-sm"
+                          style={{
+                            flex: 1,
+                            background: 'linear-gradient(135deg, #ea4335 0%, #d33426 100%)',
+                            border: 'none',
+                            color: 'white',
+                            fontSize: '0.7rem', // 🔥 REDUCIDO
+                            padding: '4px 6px', // 🔥 REDUCIDO
+                            borderRadius: '4px', // 🔥 REDUCIDO
+                            textDecoration: 'none',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <FaMapMarkerAlt size={10} className="me-1" />  
+                          Mapa
+                        </Link>
+                        <Link
+                          to="/search"
+                          className="btn btn-sm"
+                          style={{
+                            flex: 1,
+                            background: 'linear-gradient(135deg, #667eea 0%, #5a6fd8 100%)',
+                            border: 'none',
+                            color: 'white',
+                            fontSize: '0.7rem', // 🔥 REDUCIDO
+                            padding: '4px 6px', // 🔥 REDUCIDO
+                            borderRadius: '4px', // 🔥 REDUCIDO
+                            textDecoration: 'none',
+                            textAlign: 'center'
+                          }}
+                        >
+                          <FaSearch size={10} className="me-1" />  
+                          Buscar
+                        </Link>
+                      </div>
+                    </div>
 
-        <MenuItem 
-          icon={FaInfoCircle} 
-          iconColor="#6c757d" 
-          to="/infoaplicacionn3"
-          description="Más información"
-        >
-          {t('appInfo3')}
-        </MenuItem>
+                    {/* TODOS LOS LINKS ORIGINALES SE MANTIENEN (ya compactos por el MenuItem) */}
+                    <MenuItem 
+                      icon={FaUserCircle} 
+                      iconColor="#667eea" 
+                      to={`/profile/${auth.user._id}`}
+                      description="Ver y editar tu perfil"
+                    >
+                      {t('profile')}
+                    </MenuItem>
 
-        <MenuItem 
-          icon={FaShareAlt} 
-          iconColor="#ffc107" 
-          onClick={() => setShowShareModal(true)}
-          description="Compartir esta aplicación"
-        >
-          {t('shareApp')}
-        </MenuItem>
+                    <MenuItem 
+                      icon={FaInfoCircle} 
+                      iconColor="#6c757d" 
+                      to="/infoaplicacionn"
+                      description="Información sobre la aplicación"
+                    >
+                      {t('appInfo')}
+                    </MenuItem>
 
-        {/* Panel de Admin - SE MANTIENE IGUAL */}
-        {userRole === "admin" && (
-          <>
-            <NavDropdown.Divider />
-            <div className="admin-panel-header">
-              <FaShieldAlt className="me-2" size={16} />
-              {t('adminPanel')}
-              <Badge bg="warning" text="dark" className="ms-2">
-                Admin
-              </Badge>
-            </div>
+                    <MenuItem 
+                          icon={FaTools} 
+                          iconColor="#6c757d" 
+                          to="/users/roles"
+                          description="Gestionar roles de usuario"
+                        >
+                          {t('roles')}
+                        </MenuItem>
+                    <MenuItem 
+                      icon={FaInfoCircle} 
+                      iconColor="#6c757d" 
+                      to="/infoaplicacionn3"
+                      description="Más información"
+                    >
+                      {t('appInfo3')}
+                    </MenuItem>
 
-            <MenuItem 
-              icon={FaTools} 
-              iconColor="#6c757d" 
-              to="/users/roles"
-              description="Gestionar roles de usuario"
-            >
-              {t('roles')}
-            </MenuItem>
+                    <MenuItem 
+                      icon={FaShareAlt} 
+                      iconColor="#ffc107" 
+                      onClick={() => setShowShareModal(true)}
+                      description="Compartir esta aplicación"
+                    >
+                      {t('shareApp')}
+                    </MenuItem>
 
-            <MenuItem 
-              icon={FaUsers} 
-              iconColor="#28a745" 
-              to="/users"
-              description="Administrar todos los usuarios"
-            >
-              {t('users')}
-            </MenuItem>
+                  
+                    {userRole === "admin" && (
+                      <>
+                        <NavDropdown.Divider />
+                        <div className="admin-panel-header">
+                          <FaShieldAlt className="me-2" size={14} />  
+                          {t('adminPanel')}
+                          <Badge bg="warning" text="dark" className="ms-1" style={{ fontSize: '0.65rem' }}>  
+                            Admin
+                          </Badge>
+                        </div>
 
-            <MenuItem 
-              icon={FaUserCog} 
-              iconColor="#667eea" 
-              to="/usersactionn"
-              description="Acciones y logs de usuarios"
-            >
-              {t('userActions')}
-            </MenuItem>
-          </>
-        )}
+                        <MenuItem 
+                          icon={FaTools} 
+                          iconColor="#6c757d" 
+                          to="/users/roles"
+                          description="Gestionar roles de usuario"
+                        >
+                          {t('roles')}
+                        </MenuItem>
 
-        <NavDropdown.Divider />
+                        <MenuItem 
+                          icon={FaUsers} 
+                          iconColor="#28a745" 
+                          to="/users"
+                          description="Administrar todos los usuarios"
+                        >
+                          {t('users')}
+                        </MenuItem>
 
-        <MenuItem
-          icon={FaSignOutAlt}
-          iconColor="#dc3545"
-          onClick={handleLogout}
-          danger
-          description="Cerrar tu sesión"
-        >
-          <span className="fw-bold">{t('logout')}</span>
-        </MenuItem>
-      </>
-    ) : (
-      <>
-        {/* Vista para usuarios no autenticados - SE MANTIENE IGUAL */}
-        <div className="user-header">
-          <div className="d-flex align-items-center gap-3">
-            <div className="user-avatar-wrapper">
-              <FaUserCircle size={40} style={{ color: 'white' }} />
-            </div>
-            <div className="flex-grow-1">
-              <div className="fw-bold text-white">
-                Invitado
+                        <MenuItem 
+                          icon={FaUserCog} 
+                          iconColor="#667eea" 
+                          to="/usersactionn"
+                          description="Acciones y logs de usuarios"
+                        >
+                          {t('userActions')}
+                        </MenuItem>
+                      </>
+                    )}
+
+                    <NavDropdown.Divider />
+
+                    <MenuItem
+                      icon={FaSignOutAlt}
+                      iconColor="#dc3545"
+                      onClick={handleLogout}
+                      danger
+                      description="Cerrar tu sesión"
+                    >
+                      <span className="fw-bold">{t('logout')}</span>
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                 
+                    <div className="user-header">
+                      <div className="d-flex align-items-center gap-2">  
+                        <div className="user-avatar-wrapper">
+                          <FaUserCircle size={32} style={{ color: 'white' }} />  
+                        </div>
+                        <div className="flex-grow-1">
+                          <div className="fw-bold text-white">
+                            Invitado
+                          </div>
+                          <div style={{
+                            color: 'rgba(255,255,255,0.8)',
+                            fontSize: '0.75rem' // 🔥 REDUCIDO
+                          }}>
+                            Inicia sesión para más funciones
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SELECTOR DE IDIOMA TAMBIÉN PARA NO AUTENTICADOS */}
+                    <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
+
+                    <MenuItem 
+                      icon={FaSignInAlt} 
+                      iconColor="#28a745" 
+                      to="/login"
+                      description="Accede a tu cuenta"
+                    >
+                      {t('login')}
+                    </MenuItem>
+
+                    <MenuItem 
+                      icon={FaUserPlus} 
+                      iconColor="#667eea" 
+                      to="/register"
+                      description="Crear nueva cuenta"
+                    >
+                      {t('register')}
+                    </MenuItem>
+
+                    <NavDropdown.Divider />
+
+                    <MenuItem 
+                      icon={FaMapMarkerAlt} 
+                      iconColor="#ea4335" 
+                      to="/map"
+                      description="Explora ubicaciones"
+                    >
+                      {t('mapLocation') || "Mapa"}
+                    </MenuItem>
+
+                    <MenuItem 
+                      icon={FaInfoCircle} 
+                      iconColor="#6c757d" 
+                      to="/infoaplicacionn"
+                      description="Conoce la aplicación"
+                    >
+                      {t('appInfo')}
+                    </MenuItem>
+
+                    <MenuItem 
+                      icon={FaShareAlt} 
+                      iconColor="#ffc107" 
+                      onClick={() => setShowShareModal(true)}
+                      description="Compartir con amigos"
+                    >
+                      {t('shareApp')}
+                    </MenuItem>
+                  </>
+                )}
               </div>
-              <div style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '0.8rem'
-              }}>
-                Inicia sesión para más funciones
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 🔥 SELECTOR DE IDIOMA TAMBIÉN PARA NO AUTENTICADOS */}
-        <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
-
-        <MenuItem 
-          icon={FaSignInAlt} 
-          iconColor="#28a745" 
-          to="/login"
-          description="Accede a tu cuenta"
-        >
-          {t('login')}
-        </MenuItem>
-
-        <MenuItem 
-          icon={FaUserPlus} 
-          iconColor="#667eea" 
-          to="/register"
-          description="Crear nueva cuenta"
-        >
-          {t('register')}
-        </MenuItem>
-
-        <NavDropdown.Divider />
-
-        <MenuItem 
-          icon={FaMapMarkerAlt} 
-          iconColor="#ea4335" 
-          to="/map"
-          description="Explora ubicaciones"
-        >
-          {t('mapLocation') || "Mapa"}
-        </MenuItem>
-
-        <MenuItem 
-          icon={FaInfoCircle} 
-          iconColor="#6c757d" 
-          to="/infoaplicacionn"
-          description="Conoce la aplicación"
-        >
-          {t('appInfo')}
-        </MenuItem>
-
-        <MenuItem 
-          icon={FaShareAlt} 
-          iconColor="#ffc107" 
-          onClick={() => setShowShareModal(true)}
-          description="Compartir con amigos"
-        >
-          {t('shareApp')}
-        </MenuItem>
-      </>
-    )}
-  </div>
-</NavDropdown>
+            </NavDropdown>
           </div>
         </Container>
       </Navbar>
 
-      {/* 🔥 ESPACIO PARA COMPENSAR EL NAVBAR FIJO */}
+      {/* 🔥 ESPACIO COMPACTO PARA COMPENSAR EL NAVBAR FIJO */}
       <div style={{ 
-        height: isMobile ? '56px' : '64px',
-        minHeight: isMobile ? '56px' : '64px'
+        height: isMobile ? '48px' : '56px', // 🔥 REDUCIDO
+        minHeight: isMobile ? '48px' : '56px' // 🔥 REDUCIDO
       }} />
 
-      {/* Estilos optimizados MEJORADOS */}
+      {/* Estilos optimizados COMPACTOS */}
       <style>{`
         /* Animación PWA */
         @keyframes pulse {
           0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
+          50% { transform: scale(1.03); } /* 🔥 REDUCIDO */
         }
         
         /* Iconos interactivos */
@@ -876,11 +897,11 @@ const Navbar2 = () => {
 
         .icon-button:hover,
         .icon-button:active {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25) !important;
+          transform: translateY(-1px); /* 🔥 REDUCIDO */
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25) !important; /* 🔥 REDUCIDO */
         }
 
-        /* Items del menú MEJORADOS */
+        /* Items del menú COMPACTOS */
         .custom-menu-item {
           color: ${settings.style ? '#ffffff' : '#333333'} !important;
           cursor: pointer;
@@ -892,7 +913,7 @@ const Navbar2 = () => {
         .custom-menu-item:active,
         .custom-menu-item:focus {
           background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%) !important;
-          transform: translateX(4px);
+          transform: translateX(3px); /* 🔥 REDUCIDO */
           color: ${settings.style ? '#ffffff' : '#333333'} !important;
         }
 
@@ -903,7 +924,7 @@ const Navbar2 = () => {
 
         /* Dropdown scroll */
         .dropdown-scroll-wrapper {
-          max-height: 75vh;
+          max-height: 70vh; /* 🔥 REDUCIDO */
           overflow-y: auto;
           overflow-x: hidden;
           padding: 0;
@@ -912,32 +933,32 @@ const Navbar2 = () => {
         }
 
         .dropdown-scroll-wrapper::-webkit-scrollbar {
-          width: 4px;
+          width: 3px; /* 🔥 REDUCIDO */
         }
 
         .dropdown-scroll-wrapper::-webkit-scrollbar-track {
           background: ${settings.style ? 'rgba(255,255,255,0.05)' : '#f1f1f1'};
-          border-radius: 10px;
+          border-radius: 8px; /* 🔥 REDUCIDO */
         }
 
         .dropdown-scroll-wrapper::-webkit-scrollbar-thumb {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 10px;
+          border-radius: 8px; /* 🔥 REDUCIDO */
         }
 
-        /* Header del usuario MEJORADO */
+        /* Header del usuario COMPACTO */
         .user-header {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          padding: 20px;
+          padding: 16px; /* 🔥 REDUCIDO */
           margin: 0;
           border-radius: 0;
         }
 
         .user-avatar-wrapper {
-          width: 60px;
-          height: 60px;
+          width: 50px; /* 🔥 REDUCIDO */
+          height: 50px; /* 🔥 REDUCIDO */
           border-radius: 50%;
-          border: 3px solid white;
+          border: 2px solid white; /* 🔥 REDUCIDO */
           padding: 2px;
           background: white;
           flex-shrink: 0;
@@ -946,60 +967,60 @@ const Navbar2 = () => {
 
         .online-indicator {
           position: absolute;
-          bottom: 4px;
-          right: 4px;
-          width: 14px;
-          height: 14px;
+          bottom: 3px; /* 🔥 REDUCIDO */
+          right: 3px; /* 🔥 REDUCIDO */
+          width: 12px; /* 🔥 REDUCIDO */
+          height: 12px; /* 🔥 REDUCIDO */
           background-color: #28a745;
           border: 2px solid white;
           border-radius: 50%;
         }
 
         .user-name {
-          font-size: 1.1rem;
+          font-size: 1rem; /* 🔥 REDUCIDO */
           word-break: break-word;
         }
 
         .user-role-badge {
-          font-size: 0.75rem;
+          font-size: 0.7rem; /* 🔥 REDUCIDO */
           background-color: rgba(255,255,255,0.2);
-          padding: 4px 12px;
-          border-radius: 20px;
+          padding: 3px 10px; /* 🔥 REDUCIDO */
+          border-radius: 16px; /* 🔥 REDUCIDO */
           display: inline-block;
-          margin-top: 4px;
+          margin-top: 2px; /* 🔥 REDUCIDO */
           color: white;
           font-weight: 600;
           backdrop-filter: blur(10px);
         }
 
-        /* Admin panel header MEJORADO */
+        /* Admin panel header COMPACTO */
         .admin-panel-header {
           background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-          padding: 12px 16px;
+          padding: 10px 14px; /* 🔥 REDUCIDO */
           margin: 0;
           border-radius: 0;
           color: white;
           font-weight: 700;
-          font-size: 0.9rem;
+          font-size: 0.85rem; /* 🔥 REDUCIDO */
           display: flex;
           align-items: center;
-          box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+          box-shadow: 0 1px 6px rgba(255, 107, 107, 0.3); /* 🔥 REDUCIDO */
         }
 
-        /* Dropdown posicionamiento MEJORADO */
+        /* Dropdown posicionamiento COMPACTO */
         #nav-user-dropdown + .dropdown-menu {
           position: absolute !important;
           right: 0 !important;
           left: auto !important;
           top: 100% !important;
-          margin-top: 8px !important;
-          width: 320px !important;
-          min-width: 320px !important;
-          max-width: 320px !important;
+          margin-top: 6px !important; /* 🔥 REDUCIDO */
+          width: 300px !important; /* 🔥 REDUCIDO */
+          min-width: 300px !important; /* 🔥 REDUCIDO */
+          max-width: 300px !important; /* 🔥 REDUCIDO */
           transform: none !important;
           border: none !important;
-          border-radius: 16px !important;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+          border-radius: 14px !important; /* 🔥 REDUCIDO */
+          box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important; /* 🔥 REDUCIDO */
           background: ${settings.style ? '#2d3748' : '#ffffff'} !important;
           padding: 0 !important;
           overflow: hidden !important;
@@ -1012,50 +1033,50 @@ const Navbar2 = () => {
           margin: 0 !important;
         }
 
-        /* Optimización para móviles MEJORADA */
+        /* Optimización para móviles COMPACTA */
         @media (max-width: 700px) {
           #nav-user-dropdown + .dropdown-menu {
-            right: 8px !important;
-            width: 300px !important;
-            min-width: 300px !important;
-            max-width: 300px !important;
+            right: 6px !important; /* 🔥 REDUCIDO */
+            width: 280px !important; /* 🔥 REDUCIDO */
+            min-width: 280px !important; /* 🔥 REDUCIDO */
+            max-width: 280px !important; /* 🔥 REDUCIDO */
           }
 
           .user-header {
-            padding: 16px;
+            padding: 12px; /* 🔥 REDUCIDO */
           }
 
           .user-avatar-wrapper {
-            width: 50px;
-            height: 50px;
+            width: 42px; /* 🔥 REDUCIDO */
+            height: 42px; /* 🔥 REDUCIDO */
           }
 
           .user-name {
-            font-size: 1rem;
+            font-size: 0.9rem; /* 🔥 REDUCIDO */
           }
 
           .user-email {
-            font-size: 0.75rem !important;
+            font-size: 0.7rem !important; /* 🔥 REDUCIDO */
           }
 
           .user-role-badge {
-            font-size: 0.7rem;
-            padding: 3px 10px;
+            font-size: 0.65rem; /* 🔥 REDUCIDO */
+            padding: 2px 8px; /* 🔥 REDUCIDO */
           }
 
           .custom-menu-item {
-            padding: 10px 14px !important;
-            margin: 3px 6px !important;
-            width: calc(100% - 12px) !important;
+            padding: 8px 12px !important; /* 🔥 REDUCIDO */
+            margin: 2px 6px !important; /* 🔥 REDUCIDO */
+            width: calc(100% - 12px) !important; /* 🔥 REDUCIDO */
           }
 
           .admin-panel-header {
-            padding: 10px 14px;
-            font-size: 0.85rem;
+            padding: 8px 12px; /* 🔥 REDUCIDO */
+            font-size: 0.8rem; /* 🔥 REDUCIDO */
           }
         }
 
-        /* Fix para touch en móviles MEJORADO */
+        /* Fix para touch en móviles */
         @media (hover: none) and (pointer: coarse) {
           .icon-button:hover {
             transform: none;

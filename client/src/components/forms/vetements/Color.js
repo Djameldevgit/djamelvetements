@@ -6,7 +6,7 @@ const Color = ({ postData = {}, handleArrayChange }) => {
     const { t, i18n } = useTranslation('color')
     const isRTL = i18n.language === 'ar' || i18n.language === 'he'
 
-    // 🎯 FUNCIONES SEGURAS
+    // 🎯 FUNCIONES SEGURAS MEJORADAS
     const safeArray = (potentialArray) => {
         if (!potentialArray) return [];
         if (Array.isArray(potentialArray)) return potentialArray;
@@ -136,12 +136,15 @@ const Color = ({ postData = {}, handleArrayChange }) => {
         return allColors;
     }, [postData?.category, postData?.subCategory, t]);
 
-    // ✅ Manejar cambios en los checkboxes - CORREGIDO
+    // ✅ Manejar cambios en los checkboxes - MEJORADO
     const handleColorToggle = (colorValue) => {
-        // 🎯 LLAMADA CORRECTA A handleArrayChange
-        if (handleArrayChange) {
-            handleArrayChange('color', colorValue);
-        }
+        if (!handleArrayChange) return;
+        
+        const currentColors = safeArray(postData?.color);
+        const isCurrentlySelected = safeIncludes(postData?.color, colorValue);
+        
+        // 🎯 LLAMADA CORRECTA A handleArrayChange con el estado actual
+        handleArrayChange('color', colorValue, !isCurrentlySelected);
     }
 
     // ✅ Verificar si un color está seleccionado - SEGURO
@@ -187,7 +190,7 @@ const Color = ({ postData = {}, handleArrayChange }) => {
                                 id={`color-${color.value}`}
                                 name="color"
                                 value={color.value}
-                                checked={isColorSelected(color.value)} // 🎯 USAR FUNCIÓN SEGURA
+                                checked={isColorSelected(color.value)}
                                 onChange={() => handleColorToggle(color.value)}
                                 className={`flex-shrink-0 ${isRTL ? 'ms-2' : 'me-2'}`}
                             />

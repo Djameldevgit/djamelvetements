@@ -1,97 +1,47 @@
-import React from 'react'
-import { Form, Card } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
+import React, { useEffect } from 'react';
+import { Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
-const Title = ({ postData = {}, handleChangeInput, theme }) => {
-    const { t, i18n } = useTranslation('title')
-    const isRTL = i18n.language === 'ar'
-    const isFrench = i18n.language === 'fr'
+const Title = ({ postData, handleChangeInput }) => {
+  const { t } = useTranslation('categories');
+  
+  // DEBUG adicional
+  useEffect(() => {
+    console.log('🔤 Title Component Mounted/Updated:', {
+      title: postData.title,
+      hasHandleChangeInput: !!handleChangeInput
+    });
+  }, [postData.title, handleChangeInput]);
 
-    const safePostData = {
-        title: postData?.title || "",
-        ...postData
-    }
+  const handleLocalChange = (e) => {
+    console.log('📍 Title input change:', e.target.value);
+    handleChangeInput(e);
+  };
 
-    // 🎯 ESTILOS RTL MEJORADOS
-    const rtlStyles = {
-        direction: isRTL ? 'rtl' : 'ltr',
-        textAlign: isRTL ? 'right' : 'left',
-        card: {
-            border: 'none',
-            borderRadius: '12px',
-            backgroundColor: theme ? '#1a1a1a' : 'white',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        },
-        formLabel: {
-            fontWeight: '700',
-            marginBottom: '12px',
-            display: 'block',
-            textAlign: isRTL ? 'right' : 'left',
-            color: theme ? 'white' : '#1f2937',
-            fontSize: '18px'
-        },
-        formControl: {
-            border: 'none',
-            backgroundColor: theme ? '#2d3748' : '#f8f9fa',
-            padding: '16px',
-            borderRadius: '12px',
-            color: theme ? 'white' : '#111',
-            fontSize: '16px',
-            fontWeight: '500',
-            textAlign: isRTL ? 'right' : 'left',
-            // 🚨 IMPORTANTE: Dirección del texto
-            direction: isRTL ? 'rtl' : 'ltr'
-        },
-        characterCount: {
-            color: theme ? '#9ca3af' : '#6b7280',
-            fontSize: '14px',
-            textAlign: isRTL ? 'left' : 'right', // Invertido en RTL
-            marginTop: '8px',
-            direction: 'ltr' // Mantener dirección ltr para números
-        }
-    }
+  return (
+    <Form.Group className="mb-3">
+      <Form.Label className="fw-bold">
+        {t('title', 'Título')} *
+        <small className="text-muted ms-2">
+          (Actual: "{postData.title || 'vacío'}")
+        </small>
+      </Form.Label>
+      <Form.Control
+        type="text"
+        name="title"
+        value={postData.title || ''}
+        onChange={handleLocalChange}
+        placeholder={t('enter_title', 'Ingresa el título del producto')}
+        required
+        maxLength={100}
+        className="border-0 border-bottom rounded-0 shadow-none"
+        id="title-input-debug" // ID para debugging
+      />
+      <Form.Text className="text-muted">
+        {postData.title ? `${postData.title.length}/100 caracteres` : 'Máximo 100 caracteres'}
+      </Form.Text>
+    </Form.Group>
+  );
+};
 
-    // 🌍 PLACEHOLDERS POR IDIOMA
-    const getPlaceholder = () => {
-        if (isRTL) {
-            return "مثال: قميص قطني عادي للرجال..."
-        } else if (isFrench) {
-            return "Ex: Chemise décontractée en coton pour homme..."
-        } else {
-            return "Ej: Camisa casual de algodón para hombre..."
-        }
-    }
-
-    return (
-        <Card style={rtlStyles.card}>
-            <Card.Body className="p-4" style={{ direction: rtlStyles.direction }}>
-                <Form.Group>
-                    {/* 📝 TÍTULO CON EMOJI Y TRADUCCIÓN */}
-                    <Form.Label style={rtlStyles.formLabel}>
-                        📝 {t('product_title', 'Título del Producto')}
-                    </Form.Label>
-                    
-                    <Form.Control
-                        type="text"
-                        name="title"
-                        placeholder={getPlaceholder()}
-                        value={safePostData.title}
-                        onChange={handleChangeInput}
-                        style={rtlStyles.formControl}
-                        dir={isRTL ? 'rtl' : 'ltr'} // 🚨 Control importante
-                        maxLength={100}
-                    />
-                    
-                    {/* 🔢 CONTADOR DE CARACTERES - DIRECCIÓN FIJA PARA NÚMEROS */}
-                    <Form.Text style={rtlStyles.characterCount}>
-                        {safePostData.title.length}/100 {t('characters', 'caracteres')}
-                    </Form.Text>
-                </Form.Group>
-
-               
-            </Card.Body>
-        </Card>
-    )
-}
-
-export default Title
+export default Title;

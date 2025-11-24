@@ -1,0 +1,130 @@
+/*export const checkImage = (file) => {
+    let err = ""
+    if(!file) return err = "File does not exist."
+
+    if(file.size > 1024 * 1024) // 1mb
+    err = "The largest image size is 1mb."
+
+    if(file.type !== 'image/jpeg' && file.type !== 'image/png' )
+    err = "Image format is incorrect."
+    
+    return err;
+}*/
+export const checkImage = (files) => {
+  let err = "";
+  if (!files || files.length === 0) return err = "No files selected.";
+
+  // Limitar a un máximo de 3 imágenes
+  if (files.length > 3) {
+    err = "You can only upload up to 3 images.";
+    return err;
+  }
+
+  const allowedExtensions = ['jpeg', 'jpg', 'png'];
+  const blockedExtensions = ['txt', 'pdf']; // Agregar aquí las extensiones bloqueadas
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.size > 1024 * 1024) {
+      err = "The largest image size is 1mb.";
+      return err;
+    }
+
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      err = "Image format is incorrect.";
+      return err;
+    }
+
+    if (blockedExtensions.includes(fileExtension)) {
+      err = "File type not allowed.";
+      return err;
+    }
+  }
+
+  return err;
+};
+
+  
+export const imageUpload = async (images) => {
+  console.log('🟡 INICIANDO imageUpload - Total imágenes:', images?.length || 0);
+
+  let imgArr = [];
+  let uploadedCount = 0;
+
+  for(const [index, item] of images.entries()){ 
+      console.log(`\n🔄 Procesando imagen ${index + 1}:`, item);
+
+      // ✅ SI ES BLOB URL (IMAGEN NUEVA) - CONVERTIR A FILE
+      if (item.url && item.url.startsWith('blob:') && !item.isExisting) {
+          console.log('🔄 Convirtiendo blob URL a archivo...');
+          
+          try {
+              // 1. Convertir blob URL a File
+              const response = await fetch(item.url);
+              if (!response.ok) throw new Error('No se pudo acceder al blob');
+              
+              const blob = await response.blob();
+              const file = new File([blob], item.name || `image-${Date.now()}.jpg`, { 
+                  type: blob.type || 'image/jpeg' 
+              });
+
+              console.log('📁 Blob convertido a File:', file.name, `${(file.size / 1024).toFixed(2)} KB`);
+
+              // 2. Subir a Cloudinary
+              const formData = new FormData();
+              formData.append("file", file);
+              formData.append("upload_preset", "vetementsdjamel");
+              formData.append("cloud_name", "dfjipgj2o");
+
+              console.log('🌐 Enviando a Cloudinary...');
+              
+              const res = await fetch("https://api.cloudinary.com/v1_1/dfjipgj2o/image/upload", {
+                  method: "POST",
+                  body: formData
+              });
+
+              if (!res.ok) {
+                  const errorText = await res.text();
+                  throw new Error(`Cloudinary error: ${res.status} - ${errorText}`);
+              }
+
+              const data = await res.json();
+              
+              console.log('✅ UPLOAD EXITOSO a Cloudinary:', {
+                  public_id: data.public_id,
+                  url: data.secure_url,
+                  formato: data.format
+              });
+
+              imgArr.push({
+                  public_id: data.public_id, 
+                  url: data.secure_url
+              });
+              uploadedCount++;
+
+          } catch (error) {
+              console.error(`❌ ERROR procesando imagen ${index + 1}:`, error.message);
+              continue;
+          }
+      }
+      // ✅ SI YA ES IMAGEN DE CLOUDINARY
+      else if (item.isExisting && item.url && item.url.includes('cloudinary.com')) {
+          console.log('✅ Imagen ya en Cloudinary:', item.public_id);
+          imgArr.push({
+              public_id: item.public_id,
+              url: item.url
+          });
+          uploadedCount++;
+      }
+      else {
+          console.warn('⚠️ Imagen no procesable, saltando:', item);
+      }
+  }
+
+  console.log('\n📊 RESUMEN FINAL:');
+  console.log('✅ Subidas a Cloudinary:', uploadedCount);
+  console.log('📦 Array resultante:', imgArr);
+  
+  return imgArr;
+}

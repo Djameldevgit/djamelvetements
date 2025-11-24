@@ -8,39 +8,50 @@ const Carousel = ({images, id}) => {
 
     const { theme } = useSelector(state => state)
 
+    // ✅ VALIDACIÓN: Filtrar imágenes válidas
+    const validImages = images ? images.filter(img => img && img.url) : [];
+
+    // ✅ Si no hay imágenes válidas, mostrar mensaje
+    if (validImages.length === 0) {
+        return (
+            <div className="text-center p-3 border rounded">
+                <i className="fas fa-image me-2"></i>
+                No hay imágenes para mostrar
+            </div>
+        );
+    }
+
     return (
         <div id={`image${id}`} className="carousel slide" data-ride="carousel">
             <ol className="carousel-indicators" style={{zIndex: 1}}>
                 {
-                    images.map((img, index) => (
+                    validImages.map((img, index) => (
                         <li key={index} data-target={`#image${id}`} 
                         data-slide-to={index} className={isActive(index)} />
                     ))
                 }
-                
             </ol>
 
             <div className="carousel-inner">
                 {
-                    images.map((img, index) => (
+                    validImages.map((img, index) => (
                         <div key={index} className={`carousel-item ${isActive(index)}`}>
                             {
-                                img.url.match(/video/i)
+                                // ✅ VALIDACIÓN: Asegurar que img.url existe antes de usar match()
+                                img.url && typeof img.url === 'string' && img.url.match(/video/i)
                                 ? <video controls src={img.url} className="d-block w-100" alt={img.url}
-                                style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+                                    style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
 
                                 : <img src={img.url} className="d-block w-100" alt={img.url}
-                                style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+                                    style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
                             }
-                           
                         </div>
                     ))
                 }
-                
             </div>
             
             {
-                images.length > 1 &&
+                validImages.length > 1 &&
                 <>
                     <a className="carousel-control-prev" href={`#image${id}`} role="button" data-slide="prev"
                     style={{width: '5%'}}>
@@ -55,7 +66,6 @@ const Carousel = ({images, id}) => {
                     </a>
                 </>
             }
-            
         </div>
     )
 }

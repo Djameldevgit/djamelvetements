@@ -18,40 +18,44 @@ const authCtrl = {
     register: async (req, res) => {
         try {
             const { username, email, password } = req.body
-
-
+            
+            // Validaciones básicas
+            if (!username || !email || !password) {
+                return res.status(400).json({msg: "Please fill in all fields."})
+            }
+    
             let newUserName = username.toLowerCase().replace(/ /g, '')
-
-            const user_name = await Users.findOne({ username: newUserName })
-            if (user_name)
-                return res.status(400).json({ msg: req.__('auth.username_exists') })
-
-            const user_email = await Users.findOne({ email })
-            if (user_email)
-                return res.status(400).json({ msg: req.__('auth.email_exists') })
-
-            if (password.length < 6)
-                return res.status(400).json({ msg: req.__('auth.password_too_short') })
-
+    
+            const user_name = await Users.findOne({username: newUserName})
+            if(user_name) return res.status(400).json({msg: "This username already exists."})
+    
+            const user_email = await Users.findOne({email})
+            if(user_email) return res.status(400).json({msg: "This email already exists."})
+    
+            if(password.length < 6)
+            return res.status(400).json({msg: "Password must be at least 6 characters."})
+    
             const passwordHash = await bcrypt.hash(password, 12)
-
+    
             const newUser = new Users({
-                username: newUserName, email, password: passwordHash
+                username: newUserName, 
+                email, 
+                password: passwordHash
             })
-
-            const access_token = createAccessToken({ id: newUser._id })
-            const refresh_token = createRefreshToken({ id: newUser._id })
-
+    
+            const access_token = createAccessToken({id: newUser._id})
+            const refresh_token = createRefreshToken({id: newUser._id})
+    
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
                 path: '/api/refresh_token',
-                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 días
+                maxAge: 30*24*60*60*1000 // 30 days
             })
-
+    
             await newUser.save()
-
+    
             res.json({
-                msg: req.__('auth.register_success'),
+                msg: 'Register Success!',
                 access_token,
                 user: {
                     ...newUser._doc,
@@ -59,7 +63,7 @@ const authCtrl = {
                 }
             })
         } catch (err) {
-            return res.status(500).json({ msg: req.__('auth.server_error') })
+            return res.status(500).json({msg: err.message})
         }
     },
     login: async (req, res) => {
