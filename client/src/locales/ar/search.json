@@ -1,18 +1,34 @@
 {
-  "labels": {
-    "subCategory": "الفئة الفرعية",
-    "subSubCategory": "النوع المحدد",
-    "brand": "الماركة",
-    "condition": "الحالة",
-    "gender": "الجنس",
-    "size": "المقاس",
-    "color": "اللون",
-    "material": "المادة",
-    "season": "الموسم",
-    "location": "الموقع",
-    "minPrice": "أقل سعر",
-    "maxPrice": "أعلى سعر"
-  },
+ 
+    "labels": {
+      "mainCategory": "الفئة الرئيسية",
+      "subCategory": "الفئة الفرعية",
+      "gender": "الجنس",
+      "size": "المقاس",
+      "color": "اللون",
+      "brand": "العلامة التجارية",
+      "condition": "الحالة",
+      "minPrice": "أقل سعر",
+      "maxPrice": "أعلى سعر",
+      "filtersActive": "فلاتر نشطة",
+   
+      "subSubCategory": "النوع المحدد",
+     
+      "material": "المادة",
+      "season": "الموسم",
+      "location": "الموقع"
+     
+
+
+
+    },
+   
+   
+    "results": {
+      "resultsFound": "منتج تم العثور عليه"
+    },
+    
+  
   "placeholders": {
     "allSubCategories": "جميع الفئات الفرعية",
     "allTypes": "جميع الأنواع",
@@ -33,7 +49,13 @@
     "search": "بحث",
     "searching": "جاري البحث...",
     "latestProducts": "أحدث المنتجات",
-    "clearAll": "مسح الكل"
+    "clearAll": "مسح الكل",
+ 
+ 
+    "filters": "فلاتر",
+    "clear": "مسح"
+  
+
   },
   "states": {
     "searching": "جاري البحث",

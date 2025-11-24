@@ -8,10 +8,12 @@ const VetementsHomme = ({ postData, handleChangeInput }) => {
 
   return (
     <Card className="border-0 rounded-0 mb-3 shadow-sm" dir={isRTL ? "rtl" : "ltr"}>
-      <Card className="pr-4">
+      <Card.Body className="p-4">
         {/* TIPO PRINCIPAL DE ROPA MASCULINA */}
         <Form.Group className="mb-4 w-100">
-       
+          <Form.Label className="fw-bold text-dark mb-3 fs-6" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+            👔 {t('mens_clothing')}
+          </Form.Label>
           <Form.Select
             name="subCategory"
             value={postData.subCategory}
@@ -153,7 +155,7 @@ const VetementsHomme = ({ postData, handleChangeInput }) => {
         </Form.Group>
 
       
-      </Card >
+      </Card.Body>
     </Card>
   );
 };

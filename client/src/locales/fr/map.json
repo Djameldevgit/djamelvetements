@@ -1,4 +1,52 @@
   {
+
+   
+      "distanceToShop": "Distance à la boutique",
+      "calculate": "Calculer",
+      "recalculate": "Recalculer",
+      "meters": "m",
+      "kilometers": "km",
+      "distanceDescription": "Distance en ligne droite depuis votre position actuelle",
+      "getDistance": "Cliquez sur \"Calculer\" pour connaître la distance depuis votre position actuelle",
+      "yourLocation": "Votre position actuelle",
+      "distanceCalculationError": "Erreur de calcul de distance",
+      "street": "Rue",
+      "satellite": "Satellite",
+      "terrain": "Terrain",
+      "location": "Localisation sur la Carte",
+      "searching": "Recherche de localisation...",
+      "locationUnavailable": "Localisation non disponible",
+      "reload": "Actualiser",
+      "usingData": "Utilisation des données officielles de la boutique",
+      "officialInfo": "Informations officielles de notre boutique",
+      "loginForFeatures": "Connectez-vous pour accéder à toutes les fonctionnalités",
+      "clothingShop": "Boutique de vêtements et mode",
+      "owner": "Propriétaire",
+      "saleTypes": "Types de vente",
+      "phone": "Téléphone",
+      "call": "Appeler",
+      "video": "Vidéo",
+      "presentation": "Présentation",
+      "contactWhatsApp": "Contacter par WhatsApp",
+      "phoneNotAvailable": "Numéro de téléphone non disponible",
+      "videoCallSoon": "Fonction d'appel vidéo sera bientôt disponible!",
+      "whatsappMessage": "Bonjour {{username}}, j'ai vu votre boutique dans l'application et je suis intéressé par vos produits.",
+      "locationSearchWarning": "Avertissement lors de la recherche de localisation",
+      "locationNotFound": "Localisation non trouvée pour les données fournies",
+      "locationError": "Erreur de localisation",
+      "generalError": "Erreur lors du chargement de la localisation",
+  
+
+
+
+
+
+
+
+
+
+
+
   "shop": {
     "officialInfo": "Informations officielles de notre boutique",
     "boutiqueName": "Boutique"
@@ -15,11 +63,10 @@
     "whatsapp": "WhatsApp",
     "contactWhatsApp": "Contacter par WhatsApp"
   },
-  "location": {
-    "wilaya": "Wilaya",
-    "commune": "Commune",
-    "address": "Adresse"
-  },
+ 
+ 
+    "shopPresentation": "Plus de 10 ans à habiller la femme moderne. Spécialistes en tenues traditionnelles, robes de soirée et vêtements décontractés de haute qualité. Tissus importés et designs exclusifs.",
+ 
   "profile": {
     "presentation": "Présentation"
   },

@@ -1,18 +1,41 @@
 {
-  "labels": {
-    "subCategory": "Sous-catégorie",
-    "subSubCategory": "Type spécifique",
-    "brand": "Marque",
-    "condition": "État",
-    "gender": "Genre",
-    "size": "Taille",
-    "color": "Couleur",
-    "material": "Matière",
-    "season": "Saison",
-    "location": "Localisation",
-    "minPrice": "Prix min",
-    "maxPrice": "Prix max"
-  },
+
+
+ 
+    "labels": {
+      "mainCategory": "Catégorie Principale",
+      "subCategory": "Sous-catégorie",
+      "gender": "Genre",
+      "size": "Taille",
+      "color": "Couleur",
+      "brand": "Marque",
+      "condition": "État",
+      "minPrice": "Prix Min",
+      "maxPrice": "Prix Max",
+      "filtersActive": "filtres actifs",
+ 
+      "subSubCategory": "Type spécifique",
+ 
+      "material": "Matière",
+      "season": "Saison",
+      "location": "Localisation"
+ 
+
+
+    },
+   
+   
+    "results": {
+      "resultsFound": "produits trouvés"
+    },
+ 
+ 
+ 
+
+
+
+
+ 
   "placeholders": {
     "allSubCategories": "Toutes les sous-catégories",
     "allTypes": "Tous les types",
@@ -33,7 +56,13 @@
     "search": "Rechercher",
     "searching": "Recherche...",
     "latestProducts": "Derniers produits",
-    "clearAll": "Effacer tout"
+    "clearAll": "Effacer tout",
+ 
+    "filters": "Filtres",
+    "clear": "Effacer"
+  
+
+
   },
   "states": {
     "searching": "Recherche en cours",

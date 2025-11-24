@@ -144,10 +144,8 @@ const Posts = ({ filters = {} }) => {
                 {(filters && Object.keys(filters).length > 0 && postsToDisplay.length === 0) && (
                     <div className="text-center py-5">
                         <div className="text-muted">
-                            <i className="fas fa-tshirt fa-2x mb-3"></i>
-                            <p className="mb-1">Aucun produit trouvé qui correspond à votre recherche.</p>
-                            <small>Essayez d'ajuster les filtres de recherche</small>
-                        </div>
+                                 <p className="mb-1">Aucun produit trouvé qui correspond à votre recherche.</p>
+                            </div>
                     </div>
                 )}
 

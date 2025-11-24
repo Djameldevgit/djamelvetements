@@ -179,13 +179,11 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
 
   return (
     <Card style={rtlStyles.card}>
-      <Card className=" " style={{ direction: rtlStyles.direction }}>
+      <Card className="p-4" style={{ direction: rtlStyles.direction }}>
         
         {/* 📂 CATEGORÍA PRINCIPAL - COMPLETA */}
-        <div className=" ">
-          <Form.Label style={rtlStyles.formLabel}>
-            📂 {t('category:select_category', 'Catégorie Principale')} *
-          </Form.Label>
+        <div className="mb-4">
+          
           <Form.Select
             name="category"
             value={safePostData.category}
@@ -194,9 +192,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
             dir={isRTL ? 'rtl' : 'ltr'}
             required
           >
-            <option value="">
-              {t('category:select_category_placeholder', '🔍 Sélectionnez une catégorie')}
-            </option>
+           
             
             {/* 👔 VÊTEMENTS - AHORA COMPLETO */}
             <optgroup label={categoryGroups.clothing} style={rtlStyles.optgroup}>
@@ -233,8 +229,8 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
         </div>
 
         {/* 📋 SUBCATEGORÍA - MEJORADA */}
-        <div className=" ">
-     
+        <div className="mb-3">
+       
           
           {selectedCategory && SubCategoryComponent ? (
             <div style={{ width: '100%', direction: rtlStyles.direction }}>
@@ -272,7 +268,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
           )}
         </div>
  
-      </Card >
+      </Card>
     </Card>
   );
 };

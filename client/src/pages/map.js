@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
-  ButtonGroup, 
-  Alert, 
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  ButtonGroup,
+  Alert,
   Spinner,
   Badge,
   Carousel
@@ -24,12 +24,12 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
 
 // Íconos
-import { 
-  FaStore, 
-  FaUser, 
-  FaMapMarkerAlt, 
-  FaPhone, 
-  FaEnvelope, 
+import {
+  FaStore,
+  FaUser,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaEnvelope,
   FaSyncAlt,
   FaGlobe,
   FaCity,
@@ -50,13 +50,12 @@ const SHOP_DATA = {
   nombretienda: 'Vêtements Djamel',
   role: 'admin',
   wilaya: 'alger',
-  commune: 'reghaia', 
+  commune: 'reghaia',
   address: 'Cite Soumam, Alger',
   mobile: '+213 661 23 45 67',
   email: 'djamelart@fmail.com',
-  presentacion: 'Más de 10 años vistiendo a la femme moderne. Spécialistes en tenues traditionnelles, robes de soirée et vêtements décontractés de haute qualité. Tissus importés et designs exclusifs.',
+  presentacion: 'shop_presentation', // 🔥 CAMBIADO PARA USAR TRADUCCIÓN
   avatar: '/images/boutique-logo.png',
-  // 🆕 NUEVOS CAMPOS
   typesVente: 'Vente en détail et en gros',
   proprietaire: 'Djamel'
 };
@@ -66,11 +65,11 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
   return distance;
 };
@@ -133,19 +132,19 @@ const useUserLocation = () => {
 
 // 🆕 COMPONENTE DE CÁLCULO DE DISTANCIA
 const DistanceCalculator = ({ shopPosition }) => {
-  const { t } = useTranslation('map');
+  const { t } = useTranslation(['map', 'common']);
   const { userLocation, locationError, isGettingLocation, getUserLocation } = useUserLocation();
   const [distance, setDistance] = useState(null);
   const [calculating, setCalculating] = useState(false);
 
   const calculateDistanceToShop = async () => {
     if (!shopPosition) return;
-    
+
     try {
       setCalculating(true);
-      
+
       const currentLocation = await getUserLocation();
-      
+
       if (currentLocation && shopPosition.lat && shopPosition.lng) {
         const calculatedDistance = calculateDistance(
           currentLocation.lat,
@@ -153,11 +152,11 @@ const DistanceCalculator = ({ shopPosition }) => {
           shopPosition.lat,
           shopPosition.lng
         );
-        
+
         setDistance(calculatedDistance);
       }
     } catch (error) {
-      console.error(t('map.distanceCalculationError', 'Erreur de calcul de distance:'), error);
+      console.error(t('map:distanceCalculationError', 'Erreur de calcul de distance:'), error);
     } finally {
       setCalculating(false);
     }
@@ -165,11 +164,11 @@ const DistanceCalculator = ({ shopPosition }) => {
 
   const formatDistance = (km) => {
     if (km < 1) {
-      return `${Math.round(km * 1000)} ${t('map.meters', 'm')}`;
+      return `${Math.round(km * 1000)} ${t('map:meters', 'm')}`;
     } else if (km < 1000) {
-      return `${km.toFixed(1)} ${t('map.kilometers', 'km')}`;
+      return `${km.toFixed(1)} ${t('map:kilometers', 'km')}`;
     } else {
-      return `${Math.round(km)} ${t('map.kilometers', 'km')}`;
+      return `${Math.round(km)} ${t('map:kilometers', 'km')}`;
     }
   };
 
@@ -182,9 +181,9 @@ const DistanceCalculator = ({ shopPosition }) => {
       <div className="d-flex align-items-center justify-content-between mb-2">
         <div className="d-flex align-items-center">
           <FaRuler className="text-primary me-2" size={20} />
-          <h6 className="mb-0 fw-bold">{t('map.distanceToShop', 'Distance à la boutique')}</h6>
+          <h6 className="mb-0 fw-bold">{t('map:distanceToShop', 'Distance à la boutique')}</h6>
         </div>
-        
+
         <Button
           variant={distance ? "outline-success" : "primary"}
           size="sm"
@@ -199,18 +198,18 @@ const DistanceCalculator = ({ shopPosition }) => {
             <FaLocationArrow />
           )}
           <span className="ms-2">
-            {distance ? t('map.recalculate', 'Recalculer') : t('map.calculate', 'Calculer')}
+            {distance ? t('map:recalculate', 'Recalculer') : t('map:calculate', 'Calculer')}
           </span>
         </Button>
       </div>
-      
+
       {distance !== null ? (
         <div className="text-center">
           <Badge bg="success" className="fs-6 p-2">
             <h4 className="mb-0">{formatDistance(distance)}</h4>
           </Badge>
           <p className="text-muted small mb-0 mt-1">
-            {t('map.distanceDescription', 'Distance en ligne droite depuis votre position actuelle')}
+            {t('map:distanceDescription', 'Distance en ligne droite depuis votre position actuelle')}
           </p>
         </div>
       ) : locationError ? (
@@ -219,13 +218,13 @@ const DistanceCalculator = ({ shopPosition }) => {
         </Alert>
       ) : (
         <p className="text-muted small mb-0">
-          {t('map.getDistance', 'Cliquez sur "Calculer" pour connaître la distance depuis votre position actuelle')}
+          {t('map:getDistance', 'Cliquez sur "Calculer" pour connaître la distance depuis votre position actuelle')}
         </p>
       )}
-      
+
       {userLocation && (
         <small className="text-muted d-block mt-2">
-          {t('map.yourLocation', 'Votre position actuelle')}: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+          {t('map:yourLocation', 'Votre position actuelle')}: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
         </small>
       )}
     </div>
@@ -234,6 +233,8 @@ const DistanceCalculator = ({ shopPosition }) => {
 
 // Avatar component
 const Avatar = ({ user, size = 60 }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div
       className="rounded-circle bg-gradient-primary d-flex align-items-center justify-content-center text-white shadow"
@@ -245,7 +246,7 @@ const Avatar = ({ user, size = 60 }) => {
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
       }}
     >
-      {user?.username?.charAt(0)?.toUpperCase() || t('common.initial', 'T')}
+      {user?.username?.charAt(0)?.toUpperCase() || t('common:initial', 'T')}
     </div>
   );
 };
@@ -278,13 +279,13 @@ const ChangeView = ({ center, zoom }) => {
 
 // ✅ COMPONENTE DE CAROUSEL
 const ImageCarousel = ({ images }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'map']);
 
   if (!images || images.length === 0) {
     return (
       <div className="text-center py-4 bg-light rounded">
         <FaStore size={32} className="text-muted mb-2" />
-        <p className="text-muted mb-0">{t('common.noImages', 'Aucune image disponible')}</p>
+        <p className="text-muted mb-0">{t('common:noImages', 'Aucune image disponible')}</p>
       </div>
     );
   }
@@ -293,14 +294,14 @@ const ImageCarousel = ({ images }) => {
     <Carousel fade interval={3000} controls={images.length > 1} indicators={images.length > 1}>
       {images.map((image, index) => (
         <Carousel.Item key={index}>
-          <div 
+          <div
             className="d-flex justify-content-center align-items-center"
             style={{ height: '250px', overflow: 'hidden' }}
           >
             <img
               className="d-block w-100 h-100 object-fit-cover"
               src={image}
-              alt={t('common.shopImage', 'Image de la boutique') + ` ${index + 1}`}
+              alt={t('common:shopImage', 'Image de la boutique') + ` ${index + 1}`}
               style={{ objectFit: 'cover' }}
               onError={(e) => {
                 e.target.style.display = 'none';
@@ -311,7 +312,7 @@ const ImageCarousel = ({ images }) => {
             />
             <div className="position-absolute text-center" style={{ display: 'none' }}>
               <FaStore size={48} className="text-muted mb-2" />
-              <p className="text-muted">{t('common.imageNotAvailable', 'Image non disponible')}</p>
+              <p className="text-muted">{t('common:imageNotAvailable', 'Image non disponible')}</p>
             </div>
           </div>
         </Carousel.Item>
@@ -322,11 +323,11 @@ const ImageCarousel = ({ images }) => {
 
 const Map = () => {
   const history = useHistory();
-  const { t, i18n } = useTranslation('map');
-  
+  const { t, i18n } = useTranslation(['map', 'common', 'location']);
+
   // 🎯 SIMPLIFICADO: No necesitamos homeUsers ni auth para los datos
   const { auth } = useSelector((state) => state);
-  
+
   const [mapCenter, setMapCenter] = useState([36.5, 3.5]);
   const [markerPosition, setMarkerPosition] = useState([36.5, 3.5]);
   const [shopPosition, setShopPosition] = useState(null);
@@ -334,7 +335,7 @@ const Map = () => {
   const [error, setError] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(10);
   const [mapStyle, setMapStyle] = useState("street");
-  
+
   // 🎯 SIEMPRE usar los datos estáticos
   const selectedUser = SHOP_DATA;
   const isUserAuthenticated = !!auth.user;
@@ -343,7 +344,7 @@ const Map = () => {
   // Imágenes del carousel
   const carouselImages = [
     '/images/shop1.jpg',
-    '/images/shop2.jpg', 
+    '/images/shop2.jpg',
     '/images/shop3.jpg',
     '/images/shop4.jpg'
   ].filter(img => img);
@@ -351,17 +352,17 @@ const Map = () => {
   // Proveedores de mapas
   const mapProviders = {
     street: {
-      name: t('map.street', 'Rue'),
+      name: t('map:street', 'Rue'),
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: '© OpenStreetMap'
     },
     satellite: {
-      name: t('map.satellite', 'Satellite'),
+      name: t('map:satellite', 'Satellite'),
       url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       attribution: '© Esri'
     },
     terrain: {
-      name: t('map.terrain', 'Terrain'),
+      name: t('map:terrain', 'Terrain'),
       url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
       attribution: '© OpenTopoMap'
     }
@@ -371,25 +372,23 @@ const Map = () => {
   const handleCallOwner = () => {
     const phoneNumber = selectedUser.mobile;
     if (!phoneNumber) {
-      alert('Numéro de téléphone non disponible');
+      alert(t('map:phoneNotAvailable', 'Numéro de téléphone non disponible'));
       return;
     }
-    
+
     // 🎯 LLAMADA DIRECTA
     window.location.href = `tel:${phoneNumber}`;
   };
 
   const handleVideoCall = () => {
     // 🎯 INICIAR VIDEO LLAMADA (puedes integrar con tu servicio)
-    alert('Fonction d\'appel vidéo sera bientôt disponible!');
-    
-    // Ejemplo de integración con servicio de video
-    // const videoCallUrl = `https://meet.jit.si/tassili-${selectedUser._id}-${Date.now()}`;
-    // window.open(videoCallUrl, '_blank');
+    alert(t('map:videoCallSoon', 'Fonction d\'appel vidéo sera bientôt disponible!'));
   };
 
   const contactViaWhatsApp = () => {
-    const message = `Bonjour ${selectedUser.username}, j'ai vu votre boutique dans l'application et je suis intéressé par vos produits.`;
+    const message = t('map:whatsappMessage', `Bonjour {{username}}, j'ai vu votre boutique dans l'application et je suis intéressé par vos produits.`, {
+      username: selectedUser.username
+    });
     const whatsappUrl = `https://wa.me/${selectedUser.mobile.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -400,32 +399,32 @@ const Map = () => {
       setLoading(true);
       setError(null);
       setShopPosition(null);
-      
+
       const locationFields = [];
-      
+
       // Usar los datos ESTÁTICOS de la tienda
       if (selectedUser.wilaya) {
         let query = selectedUser.wilaya;
         if (selectedUser.commune) query += `, ${selectedUser.commune}`;
         if (selectedUser.address) query += `, ${selectedUser.address}`;
         query += ', Algeria';
-        
+
         locationFields.push({ value: query, zoom: 14, priority: 1 });
       }
-      
+
       if (selectedUser.wilaya && selectedUser.commune) {
-        locationFields.push({ 
-          value: `${selectedUser.wilaya}, ${selectedUser.commune}, Algeria`, 
-          zoom: 12, 
-          priority: 2 
+        locationFields.push({
+          value: `${selectedUser.wilaya}, ${selectedUser.commune}, Algeria`,
+          zoom: 12,
+          priority: 2
         });
       }
-      
+
       if (selectedUser.wilaya) {
-        locationFields.push({ 
-          value: `${selectedUser.wilaya}, Algeria`, 
-          zoom: 10, 
-          priority: 3 
+        locationFields.push({
+          value: `${selectedUser.wilaya}, Algeria`,
+          zoom: 10,
+          priority: 3
         });
       }
 
@@ -435,19 +434,19 @@ const Map = () => {
       for (const field of locationFields) {
         try {
           const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(field.value)}&format=json&limit=1`;
-          const response = await fetch(url, { 
-            headers: { 
+          const response = await fetch(url, {
+            headers: {
               'User-Agent': 'ShopApp/1.0',
               'Accept-Language': i18n.language || 'fr'
-            } 
+            }
           });
-          
+
           if (response.ok) {
             const data = await response.json();
             if (data && data.length > 0) {
               const lat = parseFloat(data[0].lat);
               const lon = parseFloat(data[0].lon);
-              
+
               setMapCenter([lat, lon]);
               setMarkerPosition([lat, lon]);
               setShopPosition({ lat, lng: lon });
@@ -457,17 +456,17 @@ const Map = () => {
             }
           }
         } catch (error) {
-          console.warn(t('map.locationSearchWarning', 'Avertissement lors de la recherche de localisation:'), error);
+          console.warn(t('map:locationSearchWarning', 'Avertissement lors de la recherche de localisation:'), error);
           continue;
         }
       }
-      
+
       // Si no se encontró ninguna ubicación
-      setError(t('map.locationNotFound', 'Localisation non trouvée pour les données fournies'));
-      
+      setError(t('map:locationNotFound', 'Localisation non trouvée pour les données fournies'));
+
     } catch (error) {
-      console.error(t('map.locationError', 'Erreur de localisation:'), error);
-      setError(t('map.generalError', 'Erreur lors du chargement de la localisation'));
+      console.error(t('map:locationError', 'Erreur de localisation:'), error);
+      setError(t('map:generalError', 'Erreur lors du chargement de la localisation'));
     } finally {
       setLoading(false);
     }
@@ -490,21 +489,21 @@ const Map = () => {
     <Container fluid className="py-4" dir={isRTL ? "rtl" : "ltr"}>
       <Row className="justify-content-center">
         <Col lg={10} xl={8}>
-          
+
           {/* 🎯 HEADER SIMPLIFICADO */}
           <Card className="shadow-sm mb-3 border-0 bg-light">
             <Card.Body className="text-center">
               <h4 className="text-primary mb-2">
-                <FaStore className="me-2" />
+                <FaStore className={isRTL ? "ms-2" : "me-2"} />
                 {selectedUser.nombretienda}
               </h4>
               <p className="mb-0">
-                <strong>Informations officielles de notre boutique</strong>
+                <strong>{t('map:officialInfo', 'Informations officielles de notre boutique')}</strong>
                 <br />
                 <small className="text-muted">
                   {!isUserAuthenticated && (
                     <Link to="/login" className="text-decoration-none">
-                      Connectez-vous pour accéder à toutes les fonctionnalités
+                      {t('map:loginForFeatures', 'Connectez-vous pour accéder à toutes les fonctionnalités')}
                     </Link>
                   )}
                 </small>
@@ -523,14 +522,14 @@ const Map = () => {
           <Card className="shadow-sm mb-3 border-0">
             <Card.Body>
               <Row className={`g-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                
+
                 {/* 01 - Nombre de la tienda con icono */}
                 <Col xs={12}>
                   <div className="d-flex align-items-center p-2 bg-primary bg-opacity-10 rounded">
-                    <FaStore className="text-primary me-3" size={24} />
+                    <FaStore className={isRTL ? "ms-3" : "me-3"} size={24} />
                     <div>
                       <h5 className="mb-0 text-primary fw-bold">{selectedUser.nombretienda}</h5>
-                      <small className="text-muted">Boutique de vêtements et mode</small>
+                      <small className="text-muted">{t('map:clothingShop', 'Boutique de vêtements et mode')}</small>
                     </div>
                   </div>
                 </Col>
@@ -538,9 +537,9 @@ const Map = () => {
                 {/* 02 - Propriétaire */}
                 <Col xs={12}>
                   <div className="d-flex align-items-center p-2 border-bottom">
-                    <FaUser className="text-secondary me-3" size={20} />
+                    <FaUser className={isRTL ? "ms-3" : "me-3"} size={20} />
                     <div className="d-flex align-items-center w-100">
-                      <strong className="text-dark me-2">Propriétaire:</strong>
+                      <strong className="text-dark me-2">{t('map:owner', 'Propriétaire')}:</strong>
                       <span className="text-primary fw-bold fs-6">{selectedUser.proprietaire}</span>
                     </div>
                   </div>
@@ -549,9 +548,9 @@ const Map = () => {
                 {/* 03 - Types de vente */}
                 <Col xs={12}>
                   <div className="d-flex align-items-center p-2 border-bottom">
-                    <FaShoppingCart className="text-success me-3" size={20} />
+                    <FaShoppingCart className={isRTL ? "ms-3" : "me-3"} size={20} />
                     <div className="d-flex align-items-center w-100">
-                      <strong className="text-dark me-2">Types de vente:</strong>
+                      <strong className="text-dark me-2">{t('map:saleTypes', 'Types de vente')}:</strong>
                       <span className="text-success fw-bold fs-6">{selectedUser.typesVente}</span>
                     </div>
                   </div>
@@ -560,9 +559,9 @@ const Map = () => {
                 {/* 04 - Adresse complète */}
                 <Col xs={12}>
                   <div className="d-flex align-items-center p-2 border-bottom">
-                    <FaMapMarkerAlt className="text-danger me-3" size={20} />
+                    <FaMapMarkerAlt className={isRTL ? "ms-3" : "me-3"} size={20} />
                     <div className="d-flex align-items-center w-100">
-                      <strong className="text-dark me-2">Adresse:</strong>
+                      <strong className="text-dark me-2">{t('location:address', 'Adresse')}:</strong>
                       <span className="fw-bold fs-6">{selectedUser.address}</span>
                     </div>
                   </div>
@@ -572,43 +571,43 @@ const Map = () => {
                 <Col xs={12}>
                   <div className="p-3 bg-light rounded">
                     <div className="d-flex align-items-center mb-2">
-                      <FaPhone className="text-success me-3" size={20} />
+                      <FaPhone className={isRTL ? "ms-3" : "me-3"} size={20} />
                       <div className="d-flex align-items-center">
-                        <strong className="text-dark me-2">Téléphone:</strong>
+                        <strong className="text-dark me-2">{t('map:phone', 'Téléphone')}:</strong>
                         <span className="fw-bold fs-6">{selectedUser.mobile}</span>
                       </div>
                     </div>
-                    
+
                     {/* Botones de acción para teléfono */}
-                    <div className="d-flex gap-2 mt-2">
-                      <Button 
-                        variant="success" 
+                    <div className={`d-flex gap-2 mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Button
+                        variant="success"
                         size="sm"
                         onClick={handleCallOwner}
                         className="d-flex align-items-center"
                       >
-                        <FaPhone className="me-1" />
-                        Appeler
+                        <FaPhone className={isRTL ? "ms-1" : "me-1"} />
+                        {t('map:call', 'Appeler')}
                       </Button>
-                      
-                      <Button 
-                        variant="info" 
+
+                      <Button
+                        variant="info"
                         size="sm"
                         onClick={handleVideoCall}
                         className="d-flex align-items-center"
                       >
-                        <FaVideo className="me-1" />
-                        Vidéo
+                        <FaVideo className={isRTL ? "ms-1" : "me-1"} />
+                        {t('map:video', 'Vidéo')}
                       </Button>
-                      
-                      <Button 
-                        variant="success" 
+
+                      <Button
+                        variant="success"
                         size="sm"
                         onClick={contactViaWhatsApp}
                         className="d-flex align-items-center"
-                        style={{backgroundColor: '#25D366', borderColor: '#25D366'}}
+                        style={{ backgroundColor: '#25D366', borderColor: '#25D366' }}
                       >
-                        <FaWhatsapp className="me-1" />
+                        <FaWhatsapp className={isRTL ? "ms-1" : "me-1"} />
                         WhatsApp
                       </Button>
                     </div>
@@ -616,12 +615,15 @@ const Map = () => {
                 </Col>
 
                 {/* Información adicional */}
+                {/* Información adicional */}
                 <Col xs={12}>
                   <div className="d-flex align-items-start p-2 mt-2">
-                    <FaIdCard className="text-primary me-3 mt-1" size={18} />
+                    <FaIdCard className={isRTL ? "ms-3 mt-1" : "me-3 mt-1"} size={18} />
                     <div>
-                      <strong className="text-dark me-2">Présentation:</strong>
-                      <p className="mb-0 text-muted">{selectedUser.presentacion}</p>
+                      <strong className="text-dark me-2">{t('map:presentation', 'Présentation')}:</strong>
+                      <p className="mb-0 text-muted">
+                        {t('map:shopPresentation', 'Más de 10 años vistiendo a la femme moderne. Spécialistes en tenues traditionnelles, robes de soirée et vêtements décontractés de haute qualité. Tissus importés et designs exclusifs.')}
+                      </p>
                     </div>
                   </div>
                 </Col>
@@ -637,7 +639,7 @@ const Map = () => {
                 <Col>
                   <h5 className="mb-0">
                     <FaGlobe className={isRTL ? "ms-2" : "me-2"} />
-                    {t('map.location', 'Localisation sur la Carte')}
+                    {t('map:location', 'Localisation sur la Carte')}
                   </h5>
                   <small className="text-muted">
                     {selectedUser.wilaya && `${selectedUser.wilaya}`}
@@ -660,21 +662,21 @@ const Map = () => {
                 </Col>
               </Row>
             </Card.Header>
-            
+
             <Card.Body className="p-0">
               {loading && (
                 <div className="text-center py-5">
                   <Spinner animation="border" variant="primary" size="lg" />
-                  <p className="mt-3 fs-5">{t('map.searching', 'Recherche de localisation...')}</p>
+                  <p className="mt-3 fs-5">{t('map:searching', 'Recherche de localisation...')}</p>
                 </div>
               )}
-              
+
               {error && !loading && (
                 <Alert variant="warning" className="m-4">
                   <div className="d-flex align-items-center">
                     <i className={`fas fa-exclamation-triangle ${isRTL ? "ms-2" : "me-2"}`}></i>
                     <div>
-                      <strong>Localisation non disponible</strong>
+                      <strong>{t('map:locationUnavailable', 'Localisation non disponible')}</strong>
                       <p className="mb-0">{error}</p>
                     </div>
                   </div>
@@ -684,9 +686,9 @@ const Map = () => {
               {!loading && !error && (
                 <>
                   <div style={{ height: '400px', width: '100%' }}>
-                    <MapContainer 
-                      center={mapCenter} 
-                      zoom={zoomLevel} 
+                    <MapContainer
+                      center={mapCenter}
+                      zoom={zoomLevel}
                       style={{ height: '100%', width: '100%' }}
                       scrollWheelZoom={true}
                       key={`${mapStyle}-${mapCenter[0]}-${mapCenter[1]}`}
@@ -696,25 +698,25 @@ const Map = () => {
                         url={mapProviders[mapStyle].url}
                         attribution={mapProviders[mapStyle].attribution}
                       />
-                      
+
                       <Marker position={markerPosition} icon={ShopIcon}>
                         <Popup>
                           <div style={{ minWidth: '250px', textAlign: isRTL ? 'right' : 'left' }}>
                             <h6 className="fw-bold text-primary mb-2">
                               {selectedUser.nombretienda}
                             </h6>
-                            {selectedUser.wilaya && <div className="mb-1"><strong>📍 {t('location.wilaya', 'Wilaya')}:</strong> {selectedUser.wilaya}</div>}
-                            {selectedUser.commune && <div className="mb-1"><strong>🏘️ {t('location.commune', 'Commune')}:</strong> {selectedUser.commune}</div>}
-                            {selectedUser.address && <div className="mb-1"><strong>🏠 {t('location.address', 'Adresse')}:</strong> {selectedUser.address}</div>}
+                            {selectedUser.wilaya && <div className="mb-1"><strong>📍 {t('location:wilaya', 'Wilaya')}:</strong> {selectedUser.wilaya}</div>}
+                            {selectedUser.commune && <div className="mb-1"><strong>🏘️ {t('location:commune', 'Commune')}:</strong> {selectedUser.commune}</div>}
+                            {selectedUser.address && <div className="mb-1"><strong>🏠 {t('location:address', 'Adresse')}:</strong> {selectedUser.address}</div>}
                             {selectedUser.mobile && (
-                              <Button 
-                                variant="success" 
-                                size="sm" 
+                              <Button
+                                variant="success"
+                                size="sm"
                                 className="w-100 mt-2"
                                 onClick={contactViaWhatsApp}
                               >
-                                <FaWhatsapp className="me-1" />
-                                Contacter par WhatsApp
+                                <FaWhatsapp className={isRTL ? "ms-1" : "me-1"} />
+                                {t('map:contactWhatsApp', 'Contacter par WhatsApp')}
                               </Button>
                             )}
                           </div>
@@ -722,22 +724,22 @@ const Map = () => {
                       </Marker>
                     </MapContainer>
                   </div>
-                  
+
                   {/* COMPONENTE DE CÁLCULO DE DISTANCIA */}
                   <DistanceCalculator shopPosition={shopPosition} />
                 </>
               )}
             </Card.Body>
-            
+
             <Card.Footer className="bg-white">
               <Row className={`align-items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Col>
                   <small className="text-muted">
-                    {t('map.usingData', 'Utilisation des données officielles de la boutique')}
+                    {t('map:usingData', 'Utilisation des données officielles de la boutique')}
                   </small>
                 </Col>
                 <Col xs="auto">
-                  <div className="d-flex gap-2">
+                  <div className={`d-flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Button
                       variant="outline-secondary"
                       size="sm"
@@ -745,14 +747,14 @@ const Map = () => {
                       disabled={loading}
                     >
                       <FaSyncAlt className={isRTL ? "ms-1" : "me-1"} />
-                      {t('map.reload', 'Actualiser')}
+                      {t('map:reload', 'Actualiser')}
                     </Button>
                     <Button
                       variant="outline-primary"
                       size="sm"
                       onClick={handleGoBack}
                     >
-                      {t('common.back', 'Retour')}
+                      {t('common:back', 'Retour')}
                     </Button>
                   </div>
                 </Col>

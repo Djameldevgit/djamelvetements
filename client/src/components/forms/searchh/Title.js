@@ -3,8 +3,8 @@ import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 const Title = ({ postData, handleChangeInput }) => {
-  const { t } = useTranslation('title');
-
+  const { t } = useTranslation('categories');
+  
   // DEBUG adicional
   useEffect(() => {
     console.log('🔤 Title Component Mounted/Updated:', {
@@ -20,12 +20,12 @@ const Title = ({ postData, handleChangeInput }) => {
 
   return (
     <Form.Group className="mb-3">
-
-
-      <Form.Label  >
-        {t('title', 'Título')}
+      <Form.Label className="fw-bold">
+        {t('title', 'Título')} *
+        <small className="text-muted ms-2">
+          (Actual: "{postData.title || 'vacío'}")
+        </small>
       </Form.Label>
-
       <Form.Control
         type="text"
         name="title"
@@ -37,7 +37,9 @@ const Title = ({ postData, handleChangeInput }) => {
         className="border-0 border-bottom rounded-0 shadow-none"
         id="title-input-debug" // ID para debugging
       />
-
+      <Form.Text className="text-muted">
+        {postData.title ? `${postData.title.length}/100 caracteres` : 'Máximo 100 caracteres'}
+      </Form.Text>
     </Form.Group>
   );
 };
