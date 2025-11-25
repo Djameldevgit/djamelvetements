@@ -3,7 +3,7 @@ import { Form, InputGroup } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 const Contact = ({ postData = {}, handleChangeInput }) => {
-    const { t, i18n } = useTranslation('contact')
+    const { t, i18n } = useTranslation('telefono')
     const isRTL = i18n.language === 'ar' || i18n.language === 'he'
 
     // Número por defecto

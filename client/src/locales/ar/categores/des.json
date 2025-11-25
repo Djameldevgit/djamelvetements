@@ -1,0 +1,10 @@
+{
+  "title": {
+    "label": "عنوان المنتج",
+    "placeholder": "اسم المنتج..."
+  },
+  "description": {
+    "title": "الوصف",
+    "placeholder": "صف منتجك..."
+  }
+}

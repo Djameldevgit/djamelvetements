@@ -1,0 +1,10 @@
+{
+  "title": {
+    "label": "Titre du Produit",
+    "placeholder": "Nom du produit..."
+  },
+  "description": {
+    "title": "Description",
+    "placeholder": "Décrivez votre produit..."
+  }
+}

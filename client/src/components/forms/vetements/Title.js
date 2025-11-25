@@ -3,15 +3,20 @@ import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 const Title = ({ postData, handleChangeInput }) => {
-  const { t } = useTranslation('title');
+  const { t, i18n } = useTranslation('title');
+  
+  // 🆕 DETECCIÓN RTL
+  const isRTL = i18n.language === 'ar';
 
   // DEBUG adicional
   useEffect(() => {
     console.log('🔤 Title Component Mounted/Updated:', {
       title: postData.title,
-      hasHandleChangeInput: !!handleChangeInput
+      hasHandleChangeInput: !!handleChangeInput,
+      language: i18n.language,
+      isRTL: isRTL
     });
-  }, [postData.title, handleChangeInput]);
+  }, [postData.title, handleChangeInput, i18n.language, isRTL]);
 
   const handleLocalChange = (e) => {
     console.log('📍 Title input change:', e.target.value);
@@ -19,11 +24,21 @@ const Title = ({ postData, handleChangeInput }) => {
   };
 
   return (
-    <Form.Group className="mb-3">
+    <Form.Group className="mb-3" dir={isRTL ? "rtl" : "ltr"}>
 
-
-      <Form.Label  >
-        {t('title', 'Título')}
+      <Form.Label className={isRTL ? "text-end d-block" : ""}>
+        {/* 🆕 ICONO DIRECCIONAL */}
+        {isRTL ? (
+          <span>
+            {t('title', 'العنوان')} 
+            <i className="fas fa-heading ms-2 text-primary"></i>
+          </span>
+        ) : (
+          <span>
+            <i className="fas fa-heading me-2 text-primary"></i>
+            {t('title', 'Título')}
+          </span>
+        )}
       </Form.Label>
 
       <Form.Control
@@ -34,9 +49,19 @@ const Title = ({ postData, handleChangeInput }) => {
         placeholder={t('enter_title', 'Ingresa el título del producto')}
         required
         maxLength={100}
-        className="border-0 border-bottom rounded-0 shadow-none"
-        id="title-input-debug" // ID para debugging
+        className={`border-0 border-bottom rounded-0 shadow-none ${isRTL ? 'text-end' : ''}`}
+        id="title-input-debug"
+        dir={isRTL ? "rtl" : "ltr"} // 🆕 DIRECCIÓN DEL TEXTO
+        style={{ 
+          textAlign: isRTL ? 'right' : 'left',
+          fontSize: isRTL ? '16px' : '14px' // 🆕 TAMAÑO FUENTE PARA ÁRABE
+        }}
       />
+
+      {/* 🆕 MENSAJE DE VALIDACIÓN TRADUCIDO */}
+      <Form.Text className={`text-muted small ${isRTL ? 'text-end d-block' : ''}`}>
+        {t('title_max_length', 'Máximo 100 caracteres')}
+      </Form.Text>
 
     </Form.Group>
   );

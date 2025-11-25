@@ -502,11 +502,7 @@ const handleArrayChange = useCallback((fieldName, value, isChecked) => {
                                         </p>
                                     )}
                                 </Col>
-                                <Col xs="auto">
-                                    <Badge bg={isEdit ? "dark" : "light"} text={isEdit ? "light" : "dark"}>
-                                        {isEdit ? "EDITANDO" : "NUEVO"}
-                                    </Badge>
-                                </Col>
+                               
                             </Row>
                         </Card.Header>
                     </Card>

@@ -195,7 +195,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
             required
           >
             <option value="">
-              {t('category:select_category_placeholder', '🔍 Sélectionnez une catégorie')}
+              {t('Selectionnezcatégorie')}
             </option>
             
             {/* 👔 VÊTEMENTS - AHORA COMPLETO */}
@@ -256,7 +256,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
             >
               <option value="">
                 {safePostData.category 
-                  ? t('category:select_subcategory_required', '📋 Choisissez une sous-catégorie')
+                  ? t('Choisissezsouscatégorie')
                   : t('category:select_subcategory_placeholder', '📝 Sélectionnez d\'abord une catégorie')
                 }
               </option>

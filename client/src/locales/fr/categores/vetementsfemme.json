@@ -1,4 +1,10 @@
 {
+  "title": "Titre",
+  "enter_title": "Entrez le titre du produit", 
+  "title_required": "Le titre est requis",
+  "title_max_length": "Maximum 100 caractères",
+
+
     "womens_clothing": "Vêtements Femme",
     "select_subcategory": "Sélectionnez la sous-catégorie",
     "tops_blouses": "Hauts et Blouses",

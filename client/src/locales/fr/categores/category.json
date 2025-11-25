@@ -1,5 +1,7 @@
 {
-   
+  "Choisissezsouscatégorie":"Choisissez une sous-catégorie",
+
+  "Selectionnezcatégorie":"Sélectionnez une catégorie",
       "main_category": "Catégorie Principale",
       "sub_category": "Sous-catégorie",
       "select_category": "Sélectionnez une catégorie",

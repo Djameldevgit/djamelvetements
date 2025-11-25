@@ -9,7 +9,7 @@ const EditProfile = ({setOnEdit}) => {
          mobile: '', address: '', website: '', story: '' 
     }
     const [userData, setUserData] = useState(initState)
-    const {  mobile, address, website, story  } = userData
+    const {   mobile, address, website, story } = userData
 
     const [avatar, setAvatar] = useState('')
 
@@ -61,7 +61,7 @@ const EditProfile = ({setOnEdit}) => {
                     </span>
                 </div>
 
-             
+               
 
                 <div className="form-group">
                     <label htmlFor="mobile">Mobile</label>
@@ -91,7 +91,7 @@ const EditProfile = ({setOnEdit}) => {
                     </small>
                 </div>
 
-               
+              
 
                 <button className="btn btn-info w-100" type="submit">Save</button>
             </form>

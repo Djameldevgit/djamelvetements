@@ -1,7 +1,7 @@
 {
-  "currency_type": "نوع العملة",
-  "select_currency": "اختر العملة",
-  "us_dollar": "الدولار الأمريكي (USD)",
-  "euro": "اليورو (EUR)",
-  "algerian_dinar": "الدينار الجزائري (DZD)"
+  "currency_type": "Type de Devise",
+  "select_currency": "Sélectionner la Devise", 
+  "us_dollar": "Dollar Américain (USD)",
+  "euro": "Euro (EUR)",
+  "algerian_dinar": "Dinar Algérien (DZD)"
 }
