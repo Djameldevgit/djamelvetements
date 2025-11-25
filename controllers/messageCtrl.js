@@ -56,7 +56,7 @@ const messageCtrl = {
             }), req.query).paginating()
 
             const conversations = await features.query.sort('-updatedAt')
-            .populate('recipients', 'avatar username fullname')
+            .populate('recipients', 'avatar username')
 
             res.json({
                 conversations,

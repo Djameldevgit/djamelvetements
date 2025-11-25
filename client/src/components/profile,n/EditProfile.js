@@ -6,10 +6,10 @@ import { updateProfileUser } from '../../redux/actions/profileAction'
 
 const EditProfile = ({setOnEdit}) => {
     const initState = {
-        fullname: '', mobile: '', address: '', website: '', story: '', gender: ''
+         mobile: '', address: '', website: '', story: '' 
     }
     const [userData, setUserData] = useState(initState)
-    const { fullname, mobile, address, website, story, gender } = userData
+    const {  mobile, address, website, story  } = userData
 
     const [avatar, setAvatar] = useState('')
 
@@ -61,17 +61,7 @@ const EditProfile = ({setOnEdit}) => {
                     </span>
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="fullname">Full Name</label>
-                    <div className="position-relative">
-                        <input type="text" className="form-control" id="fullname"
-                        name="fullname" value={fullname} onChange={handleInput} />
-                        <small className="text-danger position-absolute"
-                        style={{top: '50%', right: '5px', transform: 'translateY(-50%)'}}>
-                            {fullname.length}/25
-                        </small>
-                    </div>
-                </div>
+             
 
                 <div className="form-group">
                     <label htmlFor="mobile">Mobile</label>
@@ -101,16 +91,7 @@ const EditProfile = ({setOnEdit}) => {
                     </small>
                 </div>
 
-                <label htmlFor="gender">Gender</label>
-                <div className="input-group-prepend px-0 mb-4">
-                    <select name="gender" id="gender" value={gender}
-                    className="custom-select text-capitalize"
-                    onChange={handleInput}>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
+               
 
                 <button className="btn btn-info w-100" type="submit">Save</button>
             </form>

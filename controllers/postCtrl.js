@@ -56,12 +56,15 @@ const postCtrl = {
             await newPost.save()
     
             // 🔥 POPULATE OPTIMIZADO
-            await newPost.populate('user', 'avatar username fullname followers')
-    
+            await newPost.populate('user', 'avatar username   followers')
             res.json({
                 msg: 'Post créé avec succès!',
-                newPost
+                newPost: {
+                    ...newPost._doc,
+                    user: req.user
+                }
             })
+          
     
         } catch (err) {
             console.error('Error en createPost:', err)
@@ -221,7 +224,7 @@ getPosts: async (req, res) => {
 
         const posts = await features.query
             .sort(sortOption)
-            .populate("user likes", "avatar username fullname mobile presentacion story:website address followers")
+            .populate("user likes", "avatar username  mobile presentacion story:website address followers")
             .populate({
                 path: "comments",
                 populate: {
@@ -376,7 +379,7 @@ getPosts: async (req, res) => {
             );
     
             // 5. Populate para obtener datos del usuario
-            await post.populate('user', 'avatar username fullname followers');
+            await post.populate('user', 'avatar username   followers');
     
             res.json({
                 msg: 'Post modifié avec succès!',

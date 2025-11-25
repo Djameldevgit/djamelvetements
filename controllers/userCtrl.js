@@ -219,7 +219,7 @@ const userCtrl = {
     try {
       // ✅ INCLUIR todos los campos que necesitas
       const {
-        fullname,
+     
         presentacion,
         username,
         mobile,
@@ -230,13 +230,10 @@ const userCtrl = {
         avatar
       } = req.body
 
-      // ✅ Validar fullname (que es requerido)
-      if (!fullname)
-        return res.status(400).json({ msg: "Please add your full name." })
-
+    
       // ✅ Actualizar TODOS los campos
       await Users.findOneAndUpdate({ _id: req.user._id }, {
-        fullname,
+       
         presentacion,
         username,
         mobile,
@@ -598,8 +595,8 @@ const userCtrl = {
       // 🎯 CORREGIDO: Agregar populate para followers y following
       var query = Users.find()
         .select('-password')
-        .populate('followers', 'username fullname avatar')
-        .populate('following', 'username fullname avatar')
+        .populate('followers', 'username   avatar')
+        .populate('following', 'username   avatar')
         .lean();
 
       var features = new APIfeatures(query, req.query).paginating();

@@ -24,7 +24,7 @@
     "description": "الوصف",
     "price": "السعر",
     "condition": "الحالة",
-    "gender": "الجنس",
+    
     "season": "الموسم",
     "main_material": "المادة الرئيسية",
     "wilaya": "الولاية",
@@ -112,14 +112,7 @@
       "good": "حالة جيدة",
       "satisfactory": "حالة مقبولة"
     },
-    "genders": {
-      "man": "رجل",
-      "woman": "امرأة",
-      "unisex": "للجنسين",
-      "boy": "ولد",
-      "girl": "بنت",
-      "baby": "رضيع"
-    },
+ 
     "seasons": {
       "spring": "الربيع",
       "summer": "الصيف",

@@ -182,7 +182,7 @@ const BloqueModalUser = ({ show, handleClose, user, closeOnOverlayClick = true }
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap'
                 }}>
-                  {user?.username || user?.name || user?.fullname || 'N/A'}
+                  {user?.username || user?.name  || 'N/A'}
                 </span>
               </div>
 

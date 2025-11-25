@@ -127,7 +127,7 @@ const UserCard = ({children, user, border, handleClose, setShowFollowers, setSho
                             textOverflow: 'ellipsis',
                             maxWidth: '200px'
                         }}>
-                            {user.fullname}
+                            
                         </small>
                     </div>
                 </Link>

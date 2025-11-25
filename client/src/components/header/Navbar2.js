@@ -120,27 +120,27 @@ const Navbar2 = () => {
   // Verificación PWA mejorada
   useEffect(() => {
     const checkPWAInstallation = () => {
-      const isInstalled = 
+      const isInstalled =
         window.matchMedia('(display-mode: standalone)').matches ||
         window.navigator.standalone ||
         localStorage.getItem('pwaInstalled') === 'true';
-      
+
       setIsPWAInstalled(isInstalled);
       return isInstalled;
     };
-  
+
     const installed = checkPWAInstallation();
-    
+
     if (!installed) {
       const handleInstallAvailable = () => setShowInstallButton(true);
       const handleInstalled = () => {
         setIsPWAInstalled(true);
         setShowInstallButton(false);
       };
-  
+
       window.addEventListener('pwaInstallAvailable', handleInstallAvailable);
       window.addEventListener('pwaInstalled', handleInstalled);
-  
+
       const installCheckInterval = setInterval(() => {
         if (checkPWAInstallation()) {
           clearInterval(installCheckInterval);
@@ -148,7 +148,7 @@ const Navbar2 = () => {
           setShowInstallButton(true);
         }
       }, 2000);
-  
+
       return () => {
         window.removeEventListener('pwaInstallAvailable', handleInstallAvailable);
         window.removeEventListener('pwaInstalled', handleInstalled);
@@ -156,7 +156,7 @@ const Navbar2 = () => {
       };
     }
   }, [showInstallButton]);
-  
+
   // Manejador de instalación PWA
   const handleInstallPWA = async () => {
     try {
@@ -190,15 +190,15 @@ const Navbar2 = () => {
   const unreadNotifications = notify.data.filter(n => !n.isRead).length;
 
   // 🔥 COMPONENTE MEJORADO MenuItem
-  const MenuItem = ({ 
-    icon: Icon, 
-    iconColor, 
-    to, 
-    onClick, 
-    children, 
-    danger = false, 
+  const MenuItem = ({
+    icon: Icon,
+    iconColor,
+    to,
+    onClick,
+    children,
+    danger = false,
     badge = null,
-    description = null 
+    description = null
   }) => (
     <NavDropdown.Item
       as={to ? Link : 'button'}
@@ -223,20 +223,20 @@ const Navbar2 = () => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <Icon className="me-2" style={{ 
-          color: iconColor, 
-          fontSize: '0.9rem', 
+        <Icon className="me-2" style={{
+          color: iconColor,
+          fontSize: '0.9rem',
           flexShrink: 0,
           minWidth: '18px'
         }} />
-        <div style={{ 
+        <div style={{
           flex: 1,
           display: 'flex',
           flexDirection: description ? 'column' : 'row',
           alignItems: description ? 'flex-start' : 'center',
           minWidth: 0
         }}>
-          <span style={{ 
+          <span style={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontWeight: description ? '600' : '500',
@@ -259,9 +259,9 @@ const Navbar2 = () => {
           )}
         </div>
         {badge && (
-          <Badge 
-            bg={badge.color || 'primary'} 
-            style={{ 
+          <Badge
+            bg={badge.color || 'primary'}
+            style={{
               fontSize: '0.65rem',
               marginLeft: '6px',
               flexShrink: 0
@@ -291,107 +291,107 @@ const Navbar2 = () => {
         }}
         className={settings.style ? "navbar-dark" : "navbar-light"}
       >
-        <Container 
-          fluid 
-          className="align-items-center justify-content-between" 
-          style={{ 
+        <Container
+          fluid
+          className="align-items-center justify-content-between"
+          style={{
             padding: isMobile ? '0 4px' : '0 8px', // 🔥 REDUCIDO
             maxWidth: '100%'
           }}
         >
           {/* Logo y Brand - COMPACTO */}
           <div className="d-flex align-items-center" style={{ minWidth: 0, flex: '0 1 auto' }}>
-  <Link
-    to="/"
-    onDoubleClick={(e) => {
-      e.preventDefault();
-      window.location.reload();
-    }}
-    className="btn p-0"
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: isMobile ? '32px' : '40px',
-      height: isMobile ? '32px' : '40px',
-      marginRight: isMobile ? '6px' : '10px',
-      background: 'transparent',
-      border: 'none',
-      borderRadius: '8px',
-      overflow: 'hidden',
-      flexShrink: 0
-    }}
-    title="Click para ir al inicio - Doble click para recargar"
-  >
-    <img
-      src="/images/logo.png"
-      alt="Logo"
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'contain',
-        borderRadius: '6px'
-      }}
-      onError={(e) => {
-        e.target.style.display = 'none';
-      }}
-    />
-  </Link>
+            <Link
+              to="/"
+              onDoubleClick={(e) => {
+                e.preventDefault();
+                window.location.reload();
+              }}
+              className="btn p-0"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: isMobile ? '32px' : '40px',
+                height: isMobile ? '32px' : '40px',
+                marginRight: isMobile ? '6px' : '10px',
+                background: 'transparent',
+                border: 'none',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                flexShrink: 0
+              }}
+              title="Click para ir al inicio - Doble click para recargar"
+            >
+              <img
+                src="/images/logo.png"
+                alt="Logo"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  borderRadius: '6px'
+                }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </Link>
 
-  {!isMobile && (
-    <Link
-      to="/"
-      onDoubleClick={(e) => {
-        e.preventDefault();
-        window.location.reload();
-      }}
-      style={{
-        background: 'none',
-        border: 'none',
-        padding: 0,
-        textDecoration: 'none',
-        display: 'flex', // 🔥 NUEVO: Para alinear verticalmente
-        alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
-      }}
-      title="Click para ir al inicio - Doble click para recargar"
-    >
-      <Navbar.Brand 
-        className="py-0 mb-0" // 🔥 CAMBIADO: py-1 a py-0
-        style={{ 
-          flexShrink: 0,
-          display: 'flex', // 🔥 NUEVO
-          alignItems: 'center', // 🔥 NUEVO
-          height: '100%' // 🔥 NUEVO: Ocupar toda la altura disponible
-        }}
-      >
-        <Card.Title
-          className="mb-0"
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-            letterSpacing: '0.3px',
-            margin: 0, // 🔥 NUEVO: Eliminar todos los márgenes
-            padding: 0, // 🔥 NUEVO: Eliminar padding
-            lineHeight: '1.2', // 🔥 NUEVO: Controlar altura de línea
-            display: 'flex', // 🔥 NUEVO
-            alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
-          }}
-        >
-          {t('appName')}
-        </Card.Title>
-      </Navbar.Brand>
-    </Link>
-  )}
-</div>
+            {!isMobile && (
+              <Link
+                to="/"
+                onDoubleClick={(e) => {
+                  e.preventDefault();
+                  window.location.reload();
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  textDecoration: 'none',
+                  display: 'flex', // 🔥 NUEVO: Para alinear verticalmente
+                  alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
+                }}
+                title="Click para ir al inicio - Doble click para recargar"
+              >
+                <Navbar.Brand
+                  className="py-0 mb-0" // 🔥 CAMBIADO: py-1 a py-0
+                  style={{
+                    flexShrink: 0,
+                    display: 'flex', // 🔥 NUEVO
+                    alignItems: 'center', // 🔥 NUEVO
+                    height: '100%' // 🔥 NUEVO: Ocupar toda la altura disponible
+                  }}
+                >
+                  <Card.Title
+                    className="mb-0"
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      fontWeight: 'bold',
+                      fontSize: '1.2rem',
+                      letterSpacing: '0.3px',
+                      margin: 0, // 🔥 NUEVO: Eliminar todos los márgenes
+                      padding: 0, // 🔥 NUEVO: Eliminar padding
+                      lineHeight: '1.2', // 🔥 NUEVO: Controlar altura de línea
+                      display: 'flex', // 🔥 NUEVO
+                      alignItems: 'center' // 🔥 NUEVO: Centrar verticalmente
+                    }}
+                  >
+                    {t('appName')}
+                  </Card.Title>
+                </Navbar.Brand>
+              </Link>
+            )}
+          </div>
 
           {/* Iconos de acción - COMPACTOS */}
-          <div 
-            className="d-flex align-items-center" 
-            style={{ 
+          <div
+            className="d-flex align-items-center"
+            style={{
               gap: isMobile ? '4px' : '8px', // 🔥 REDUCIDO
               flexShrink: 0,
               marginLeft: 'auto'
@@ -643,7 +643,7 @@ const Navbar2 = () => {
                     <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
 
                     {/* SECCIÓN DE ACCIONES RÁPIDAS COMPACTA */}
-                    <div style={{ 
+                    <div style={{
                       padding: '6px 10px', // 🔥 REDUCIDO
                       borderBottom: `1px solid ${settings.style ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`
                     }}>
@@ -659,7 +659,7 @@ const Navbar2 = () => {
                       </div>
                       <div className="d-flex gap-1"> {/* 🔥 REDUCIDO */}
                         <Link
-                          to="/Map" 
+                          to="/Map"
                           className="btn btn-sm"
                           style={{
                             flex: 1,
@@ -673,7 +673,7 @@ const Navbar2 = () => {
                             textAlign: 'center'
                           }}
                         >
-                          <FaMapMarkerAlt size={10} className="me-1" />  
+                          <FaMapMarkerAlt size={10} className="me-1" />
                           Mapa
                         </Link>
                         <Link
@@ -691,90 +691,107 @@ const Navbar2 = () => {
                             textAlign: 'center'
                           }}
                         >
-                          <FaSearch size={10} className="me-1" />  
+                          <FaSearch size={10} className="me-1" />
                           Buscar
                         </Link>
                       </div>
                     </div>
 
                     {/* TODOS LOS LINKS ORIGINALES SE MANTIENEN (ya compactos por el MenuItem) */}
-                    <MenuItem 
-                      icon={FaUserCircle} 
-                      iconColor="#667eea" 
+                    <MenuItem
+                      icon={FaUserCircle}
+                      iconColor="#667eea"
                       to={`/profile/${auth.user._id}`}
                       description="Ver y editar tu perfil"
                     >
                       {t('profile')}
                     </MenuItem>
 
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
+                    <MenuItem
+                      icon={FaInfoCircle}
+                      iconColor="#6c757d"
                       to="/infoaplicacionn"
                       description="Información sobre la aplicación"
                     >
                       {t('appInfo')}
                     </MenuItem>
+                    <MenuItem
+                      icon={FaInfoCircle}
+                      iconColor="#6c757d"
+                      to="/message"
 
-                    <MenuItem 
-                          icon={FaTools} 
-                          iconColor="#6c757d" 
-                          to="/users/roles"
-                          description="Gestionar roles de usuario"
-                        >
-                          {t('roles')}
-                        </MenuItem>
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
+                    >
+                      conversation
+                    </MenuItem>
+
+                    <MenuItem
+                      icon={FaTools}
+                      iconColor="#6c757d"
+                      to="/users/roles"
+                      description="Gestionar roles de usuario"
+                    >
+                      {t('roles')}
+                    </MenuItem>
+                    <MenuItem
+                      icon={FaInfoCircle}
+                      iconColor="#6c757d"
                       to="/infoaplicacionn3"
                       description="Más información"
                     >
                       {t('appInfo3')}
                     </MenuItem>
 
-                    <MenuItem 
-                      icon={FaShareAlt} 
-                      iconColor="#ffc107" 
+                    <MenuItem
+                      icon={FaShareAlt}
+                      iconColor="#ffc107"
                       onClick={() => setShowShareModal(true)}
                       description="Compartir esta aplicación"
                     >
                       {t('shareApp')}
                     </MenuItem>
 
-                  
+
                     {userRole === "admin" && (
                       <>
                         <NavDropdown.Divider />
                         <div className="admin-panel-header">
-                          <FaShieldAlt className="me-2" size={14} />  
+                          <FaShieldAlt className="me-2" size={14} />
                           {t('adminPanel')}
-                          <Badge bg="warning" text="dark" className="ms-1" style={{ fontSize: '0.65rem' }}>  
+                          <Badge bg="warning" text="dark" className="ms-1" style={{ fontSize: '0.65rem' }}>
                             Admin
                           </Badge>
                         </div>
+                        <MenuItem
+                          icon={FaInfoCircle}
+                          iconColor="#6c757d"
+                          to="/message"
 
-                        <MenuItem 
-                          icon={FaTools} 
-                          iconColor="#6c757d" 
+                        >
+                            Conversation
+                        </MenuItem>
+                      
+
+                        <MenuItem
+                          icon={FaTools}
+                          iconColor="#6c757d"
                           to="/users/roles"
                           description="Gestionar roles de usuario"
                         >
                           {t('roles')}
                         </MenuItem>
 
-                        <MenuItem 
-                          icon={FaUsers} 
-                          iconColor="#28a745" 
+                        <MenuItem
+                          icon={FaUsers}
+                          iconColor="#28a745"
                           to="/users"
                           description="Administrar todos los usuarios"
                         >
                           {t('users')}
                         </MenuItem>
 
-                        <MenuItem 
-                          icon={FaUserCog} 
-                          iconColor="#667eea" 
+                        <MenuItem
+                          icon={FaUserCog}
+                          iconColor="#667eea"
                           to="/usersactionn"
                           description="Acciones y logs de usuarios"
                         >
@@ -797,11 +814,11 @@ const Navbar2 = () => {
                   </>
                 ) : (
                   <>
-                 
+
                     <div className="user-header">
-                      <div className="d-flex align-items-center gap-2">  
+                      <div className="d-flex align-items-center gap-2">
                         <div className="user-avatar-wrapper">
-                          <FaUserCircle size={32} style={{ color: 'white' }} />  
+                          <FaUserCircle size={32} style={{ color: 'white' }} />
                         </div>
                         <div className="flex-grow-1">
                           <div className="fw-bold text-white">
@@ -820,18 +837,18 @@ const Navbar2 = () => {
                     {/* SELECTOR DE IDIOMA TAMBIÉN PARA NO AUTENTICADOS */}
                     <LanguageSelectorandroid isMobile={isMobile} inDropdown={true} />
 
-                    <MenuItem 
-                      icon={FaSignInAlt} 
-                      iconColor="#28a745" 
+                    <MenuItem
+                      icon={FaSignInAlt}
+                      iconColor="#28a745"
                       to="/login"
                       description="Accede a tu cuenta"
                     >
                       {t('login')}
                     </MenuItem>
 
-                    <MenuItem 
-                      icon={FaUserPlus} 
-                      iconColor="#667eea" 
+                    <MenuItem
+                      icon={FaUserPlus}
+                      iconColor="#667eea"
                       to="/register"
                       description="Crear nueva cuenta"
                     >
@@ -840,27 +857,27 @@ const Navbar2 = () => {
 
                     <NavDropdown.Divider />
 
-                    <MenuItem 
-                      icon={FaMapMarkerAlt} 
-                      iconColor="#ea4335" 
+                    <MenuItem
+                      icon={FaMapMarkerAlt}
+                      iconColor="#ea4335"
                       to="/map"
                       description="Explora ubicaciones"
                     >
                       {t('mapLocation') || "Mapa"}
                     </MenuItem>
 
-                    <MenuItem 
-                      icon={FaInfoCircle} 
-                      iconColor="#6c757d" 
+                    <MenuItem
+                      icon={FaInfoCircle}
+                      iconColor="#6c757d"
                       to="/infoaplicacionn"
                       description="Conoce la aplicación"
                     >
                       {t('appInfo')}
                     </MenuItem>
 
-                    <MenuItem 
-                      icon={FaShareAlt} 
-                      iconColor="#ffc107" 
+                    <MenuItem
+                      icon={FaShareAlt}
+                      iconColor="#ffc107"
                       onClick={() => setShowShareModal(true)}
                       description="Compartir con amigos"
                     >
@@ -875,7 +892,7 @@ const Navbar2 = () => {
       </Navbar>
 
       {/* 🔥 ESPACIO COMPACTO PARA COMPENSAR EL NAVBAR FIJO */}
-      <div style={{ 
+      <div style={{
         height: isMobile ? '48px' : '56px', // 🔥 REDUCIDO
         minHeight: isMobile ? '48px' : '56px' // 🔥 REDUCIDO
       }} />

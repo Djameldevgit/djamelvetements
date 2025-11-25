@@ -403,15 +403,7 @@ const DescriptionPost = ({ post }) => {
                         </div>
                     )}
                     
-                    {hasFieldValue('genero') && (
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: '600', color: styles.textDark }}>
-                                {isRTL ? 'الجنس' : t('descripcion.gender', 'Genre')}:
-                            </span>
-                            <Highlight>{getFieldValue('genero')}</Highlight>
-                        </div>
-                    )}
-                    
+                  
                     {hasFieldValue('marca') && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: '600', color: styles.textDark }}>

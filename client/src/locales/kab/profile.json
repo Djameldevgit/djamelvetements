@@ -129,7 +129,7 @@
   "title": "ⵜⵉⵏⴼⵓⵔⵎⴰⵙⵉⵏ ⵏ ⵓⵙⵔⴷⵓⵏ",
   
   "story": "ⵜⴰⵎⵙⵓⵏⵜ-ⵉⵏⵓ",
-  "gender": "ⵜⴰⵥⵥⵓⵔⵜ",
+ 
   "male": "ⴰⵣⵡⵊ",
   "female": "ⵜⴰⵎⵜⵜⵓⵜ",
   "other": "ⵢⴰⵏⵏ",
@@ -151,7 +151,7 @@
   "changeAvatarHint": "ⵙⵉⵜ ⵖⵔ ⵜⴰⴽⴰⵎⵉⵔⴰ ⴰⴷ ⵜⴱⴷⴷⵍⴷ ⵜⴰⵡⵍⴰ ⵏ ⵓⵎⵓⵏⵜⵉ",
   "presentacion": "ⴰⵙⵓⵖⵏ",
   "presentacionPlaceholder": "ⴰⵔⵢ ⴰⵙⵓⵖⵏ ⵎⵥⵉⵢⵏ ⵖⴼ ⵎⵎⵉⴽ...",
-  "fullname": "ⵉⵙⵎ ⵎⵕⵕⴰ",
+ 
   "fullnamePlaceholder": "ⵙⵙⵏⵙⵔⵎ ⵉⵙⵎ-ⵏⵏⵉⵎ ⵎⵕⵕⴰ",
   "fullnameRequired": "ⵉⵙⵎ ⵎⵕⵕⴰ ⵢⵄⵜⵜⵢ",
   "email": "ⵉⵎⴰⵢⵍ",

@@ -71,7 +71,7 @@ const authCtrl = {
             const { email, password } = req.body
 
             const user = await Users.findOne({email})
-            .populate("followers following", "avatar username fullname followers following")
+            .populate("followers following", "avatar username   followers following")
 
             if(!user) return res.status(400).json({msg: "This email does not exist."})
 
@@ -103,7 +103,7 @@ const authCtrl = {
             const { email, password } = req.body
 
             const user = await Users.findOne({email})
-            .populate("followers following", "avatar username fullname followers following")
+            .populate("followers following", "avatar username  followers following")
 
             if(!user) return res.status(400).json({msg: "This email does not exist."})
 

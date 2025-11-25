@@ -47,7 +47,7 @@ export const createPost = ({
         })
 
         dispatch({ type: GLOBALTYPES.ALERT, payload: {loading: false} })
-
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });
         // ✅ NOTIFY CORREGIDO - CON PROTECCIÓN PARA FOLLOWERS
         const msg = {
             id: res.data.newPost._id,

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
- import Info from '../../components/profile,n/Info'
-import Posts from '../../components/profile,n/Posts'
- 
- import Saved from '../../components/profile,n/Saved'
+import Info from '../../components/profile/Info'
+import Posts from '../../components/profile/Posts'
+import Saved from '../../components/profile/Saved'
 
- 
 import { useSelector, useDispatch } from 'react-redux'
 import LoadIcon from '../../images/loading.gif'
 import { getProfileUsers } from '../../redux/actions/profileAction'
