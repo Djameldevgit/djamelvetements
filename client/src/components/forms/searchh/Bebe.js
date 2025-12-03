@@ -106,8 +106,8 @@ const Bebe = ({ postData, handleChangeInput }) => {
               {t('age_range', 'Rango de edad')}
             </Form.Label>
             <Form.Select
-              name="edadbebes"
-              value={postData.edadbebes}
+              name="edadBebes"
+              value={postData.edadBebes}
               onChange={handleChangeInput}
               className="form-control border-0 shadow-sm"
             >

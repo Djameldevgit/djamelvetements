@@ -8,21 +8,22 @@ const Bebe = ({ postData, handleChangeInput }) => {
 
   return (
     <div>
-      {/* TIPO PRINCIPAL DE ARTÍCULOS PARA BEBÉ */}
+   
       <Form.Group className="mb-3 w-100">
         <Form.Label className={`fw-bold text-dark mb-3 fs-6 ${isRTL ? 'text-end d-block' : ''}`}>
           👶 {t('baby_products', 'Artículos para bebé')}
         </Form.Label>
         <Form.Select
-          name="subCategory"
-          value={postData.subCategory}
+          name="tipoArticulo" 
+          value={postData.tipoArticulo || ""}   
           onChange={handleChangeInput}
           className="form-control border-0 shadow-sm"
+          required
         >
-          <option value="">{t('select_subcategory', 'Selecciona la subcategoría')}</option>
+          <option value="">{t('select_subcategory', 'Selecciona el tipo de artículo')}</option>
           
-          {/* ROPA DE BEBÉ */}
-          <optgroup label={t('baby_clothing', 'Ropa de bebé')}>
+     
+          <optgroup label={t('baby_clothing', '👕 Ropa de bebé')}>
             <option value="bodys">{t('bodysuits', 'Bodies')}</option>
             <option value="pyjamas">{t('pajamas', 'Pijamas')}</option>
             <option value="combinaisons">{t('rompers', 'Mono bodies')}</option>
@@ -36,7 +37,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* CALZADO DE BEBÉ */}
-          <optgroup label={t('baby_footwear', 'Calzado de bebé')}>
+          <optgroup label={t('baby_footwear', '👟 Calzado de bebé')}>
             <option value="chaussons">{t('booties', 'Patucos')}</option>
             <option value="sandales">{t('sandals', 'Sandalias')}</option>
             <option value="baskets">{t('sneakers', 'Zapatillas')}</option>
@@ -45,7 +46,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* ACCESORIOS PARA BEBÉ */}
-          <optgroup label={t('baby_accessories', 'Accesorios para bebé')}>
+          <optgroup label={t('baby_accessories', '💎 Accesorios para bebé')}>
             <option value="bavoirs">{t('bibs', 'Babis')}</option>
             <option value="couches">{t('diapers', 'Pañales')}</option>
             <option value="doudous">{t('comforters', 'Peluches')}</option>
@@ -54,7 +55,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* EQUIPAMIENTO PARA BEBÉ */}
-          <optgroup label={t('baby_equipment', 'Equipamiento para bebé')}>
+          <optgroup label={t('baby_equipment', '🛏️ Equipamiento para bebé')}>
             <option value="poussettes">{t('strollers', 'Coches')}</option>
             <option value="sieges_auto">{t('car_seats', 'Sillas de coche')}</option>
             <option value="lits">{t('cribs', 'Cunas')}</option>
@@ -64,7 +65,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* HIGIENE Y CUIDADO */}
-          <optgroup label={t('hygiene_care', 'Higiene y cuidado')}>
+          <optgroup label={t('hygiene_care', '🧴 Higiene y cuidado')}>
             <option value="soins_peau">{t('skin_care', 'Cuidado de la piel')}</option>
             <option value="produits_bain">{t('bath_products', 'Productos de baño')}</option>
             <option value="cosmetiques">{t('cosmetics', 'Cosméticos')}</option>
@@ -72,7 +73,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* JUGUETES Y EDUCACIÓN */}
-          <optgroup label={t('toys_education', 'Juguetes y educación')}>
+          <optgroup label={t('toys_education', '🧸 Juguetes y educación')}>
             <option value="jouets_eveil">{t('developmental_toys', 'Juguetes de desarrollo')}</option>
             <option value="peluches">{t('stuffed_toys', 'Juguetes de peluche')}</option>
             <option value="livres">{t('books', 'Libros')}</option>
@@ -81,7 +82,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* ALIMENTACIÓN */}
-          <optgroup label={t('feeding', 'Alimentación')}>
+          <optgroup label={t('feeding', '🍼 Alimentación')}>
             <option value="vaisselle">{t('dishware', 'Vajilla')}</option>
             <option value="ustensiles">{t('utensils', 'Utensilios')}</option>
             <option value="chaise_haute">{t('high_chairs', 'Tronas')}</option>
@@ -89,7 +90,7 @@ const Bebe = ({ postData, handleChangeInput }) => {
           </optgroup>
           
           {/* SEGURIDAD */}
-          <optgroup label={t('safety', 'Seguridad')}>
+          <optgroup label={t('safety', '🛡️ Seguridad')}>
             <option value="securite_maison">{t('home_safety', 'Seguridad en casa')}</option>
             <option value="moniteurs">{t('monitors', 'Monitores')}</option>
             <option value="barrieres">{t('gates', 'Barreras')}</option>
@@ -98,16 +99,16 @@ const Bebe = ({ postData, handleChangeInput }) => {
         </Form.Select>
       </Form.Group>
 
-      {/* EDAD Y TAMAÑO */}
+      {/* EDAD Y TAMAÑO - CORREGIDO */}
       <Row className="g-3">
         <Col md={6}>
           <Form.Group className="mb-3 w-100">
             <Form.Label className={`fw-semibold ${isRTL ? 'text-end d-block' : ''}`}>
-              {t('age_range', 'Rango de edad')}
+              {t('age_range', '👶 Rango de edad')}
             </Form.Label>
             <Form.Select
-              name="edadbebes"
-              value={postData.edadbebes}
+              name="edadBebes"  
+              value={postData.edadBebes || ""}  
               onChange={handleChangeInput}
               className="form-control border-0 shadow-sm"
             >
@@ -122,14 +123,13 @@ const Bebe = ({ postData, handleChangeInput }) => {
             </Form.Select>
           </Form.Group>
         </Col>
-
+        
+     
         
       </Row>
-  
-
-      <Form.Text className={`text-muted ${isRTL ? 'text-end d-block' : ''}`}>
-        {t('choose_baby_product', 'Elige el tipo de artículo para bebé y especifica sus características')}
-      </Form.Text>
+ 
+   
+     
     </div>
   );
 };

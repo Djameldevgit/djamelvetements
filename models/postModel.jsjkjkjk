@@ -1,0 +1,26 @@
+// models/Post.js
+const mongoose = require("mongoose");
+
+const postSchema = new mongoose.Schema({
+
+    // Usuario que publica
+    user: { 
+        type: mongoose.Types.ObjectId, 
+        ref: "user", 
+        required: true 
+    },
+
+    // Aquí va TODO el contenido enviado por el cliente
+    postData: { 
+        type: mongoose.Schema.Types.Mixed, 
+        required: true 
+    },
+
+    // Referencias dinámicas según la categoría
+    vetement: { type: mongoose.Types.ObjectId, ref: "vetement" },
+    telefono: { type: mongoose.Types.ObjectId, ref: "Telefono" },
+    vehiculo: { type: mongoose.Types.ObjectId, ref: "Vehiculo" }
+
+}, { timestamps: true });
+
+module.exports = mongoose.model("post", postSchema);

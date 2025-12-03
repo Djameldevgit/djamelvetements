@@ -178,7 +178,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
   };
 
   return (
-    <Card style={rtlStyles.card}>
+    <div style={rtlStyles.card}>
       <Card className="p-4" style={{ direction: rtlStyles.direction }}>
         
         {/* 📂 CATEGORÍA PRINCIPAL - COMPLETA */}
@@ -269,7 +269,7 @@ const CategorySelector = ({ postData = {}, handleChangeInput, theme }) => {
         </div>
  
       </Card>
-    </Card>
+    </div>
   );
 };
 

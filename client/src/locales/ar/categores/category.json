@@ -1,40 +1,28 @@
 {
-"Choisissezsouscatégorie":"اختر الفئة الفرعية",
-
-     "Selectionnezcatégorie":"اختر الفئة",
-      "main_category": "الفئة الرئيسية",
-      "sub_category": "الفئة الفرعية",
-      "select_category": "اختر الفئة",
-      "select_subcategory": "اختر الفئة الفرعية",
-      "select_first_category": "اختر الفئة أولاً",
-      "choose_main_category": "اختر الفئة الرئيسية لمنتجك",
-      "choose_appropriate_subcategory": "اختر الفئة الفرعية المناسبة",
-      "subcategory_available_after_category": "ستكون الفئة الفرعية متاحة بعد اختيار الفئة الرئيسية",
-      
-      "clothing": "👕 الملابس",
-      "mens_clothing": "👔 ملابس الرجال",
-      "womens_clothing": "👗 ملابس النساء",
-      
-      "footwear": "👟 الأحذية",
-      "mens_shoes": "👞 أحذية الرجال",
-      "womens_shoes": "👠 أحذية النساء",
-      
-      "jewelry_accessories": "💎 المجوهرات والإكسسوارات",
-      "watches": "⌚ الساعات",
-      "glasses": "👓 النظارات",
-      "jewelry": "💎 المجوهرات",
-      "bags_luggage": "👜 الحقائب والمتعلقات",
-      
-      "children": "👶 الأطفال",
-      "boys": "👦 الأولاد",
-      "girls": "👧 البنات",
-      "baby": "👶 الرضع",
-      
-      "professional": "💼 المحترفين",
-      "professional_clothing": "💼 الملابس المهنية",
-      
-      "standard": "🔄 عادي",
-      "premium": "⭐ متميز",
-      "basic": "🔹 أساسي"
-    }
+  "select_subcategory": "الفئة الفرعية الرئيسية",
+  "choose_subcategory": "-- اختر فئة فرعية رئيسية --",
+  "select_subcategory_help": "اختر الفئة الرئيسية لمنتجك",
+  "specific_type": "النوع المحدد",
   
+  "clothing": "👕 ملابس",
+  "mens_clothing": "👔 ملابس رجالية",
+  "womens_clothing": "👗 ملابس نسائية",
+  
+  "footwear": "👟 أحذية",
+  "mens_shoes": "👞 أحذية رجالية",
+  "womens_shoes": "👠 أحذية نسائية",
+  
+  "accessories": "💎 إكسسوارات",
+  "watches": "⌚ ساعات",
+  "glasses": "👓 نظارات",
+  "jewelry": "💎 مجوهرات",
+  "bags_luggage": "👜 حقائب ومستلزمات سفر",
+  
+  "children_clothing": "👶 ملابس أطفال",
+  "boys_clothing": "👦 ملابس أولاد",
+  "girls_clothing": "👧 ملابس بنات",
+  "baby_clothing": "👶 ملابس أطفال",
+  
+  "professional": "💼 مهني",
+  "professional_clothing": "💼 ملابس مهنية"
+}

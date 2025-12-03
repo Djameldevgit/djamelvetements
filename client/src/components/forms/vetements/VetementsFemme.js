@@ -14,8 +14,8 @@ const VetementsFemme = ({ postData, handleChangeInput }) => {
           👗 {t('womens_clothing', 'Ropa Femenina')}
         </Form.Label>
         <Form.Select
-          name="subCategory"
-          value={postData.subCategory}
+          name="tipoArticulo"
+          value={postData.tipoArticulo}
           onChange={handleChangeInput}
           className="form-control border-0 shadow-sm"
         >

@@ -14,8 +14,8 @@ const Bijoux = ({ postData, handleChangeInput }) => {
           💎 {t('jewelry_type', 'Tipo de joyería')}
         </Form.Label>
         <Form.Select
-          name="subCategory"
-          value={postData.subCategory}
+          name="tipoArticulo"
+          value={postData.tipoArticulo}
           onChange={handleChangeInput}
           className="form-control border-0 shadow-sm"
         >

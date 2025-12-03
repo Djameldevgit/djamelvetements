@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Card } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 const Marca = ({ postData = {}, handleChangeInput, theme }) => {
@@ -145,55 +145,59 @@ const Marca = ({ postData = {}, handleChangeInput, theme }) => {
 
     if (!postData.subCategory) {
         return (
-            <div className="text-center py-4 text-muted">
-                <div className="mb-2" style={{ fontSize: '2rem' }}>🏷️</div>
-                <p className="mb-0">
-                    {isRTL ? 'اختر فئة فرعية لرؤية العلامات التجارية المتاحة' : 'Selecciona una subcategoría para ver las marcas disponibles'}
-                </p>
-            </div>
+            <Card className="p-3 mb-3">
+                <div className="text-center py-4 text-muted">
+                    <p className="mb-0">
+                        {isRTL ? 'اختر فئة فرعية لرؤية العلامات التجارية' : 'Selecciona una subcategoría para ver las marcas'}
+                    </p>
+                </div>
+            </Card>
         )
     }
 
     return (
-        <div className="mb-3 w-100" dir={isRTL ? 'rtl' : 'ltr'}>
-            <Form.Label className={`fw-bold fs-6 mb-3 d-block w-100 ${isRTL ? 'text-end' : ''}`}>
-                🏷️ {getTranslation('brand', 'Marca del Producto')}
-            </Form.Label>
-            
-            <Form.Select
-                name="marca"
-                value={safePostData.marca}
-                onChange={handleChangeInput}
-                className={`border-0 bg-light py-3 ${isRTL ? 'text-end' : ''}`}
-                dir={isRTL ? 'rtl' : 'ltr'}
-                style={{
-                    fontSize: '16px'
-                }}
-            >
-                <option value="">{getTranslation('select_brand', 'Selecciona una marca')}</option>
-                <option value="otra">{getTranslation('other_brand', 'Otra marca...')}</option>
-                {getFilteredBrands.map(marca => (
-                    <option key={marca} value={marca}>
-                        {marca}
-                    </option>
-                ))}
-            </Form.Select>
-
-            {/* Campo para otra marca */}
-            {safePostData.marca === "otra" && (
-                <Form.Control
-                    type="text"
+        <Card className="p-3 mb-3">
+            <Form.Group>
+                {/* 📄 TÍTULO SIMPLE */}
+                <Form.Label className="fw-bold mb-2">
+                    {getTranslation('brand', 'Marca del Producto')}
+                </Form.Label>
+                
+                {/* 📝 SELECT SIMPLE */}
+                <Form.Select
                     name="marca"
-                    placeholder={getTranslation('write_brand', 'Escribe el nombre de la marca...')}
+                    value={safePostData.marca}
                     onChange={handleChangeInput}
-                    className={`w-100 border-0 bg-light py-3 mt-2 ${isRTL ? 'text-end' : ''}`}
-                    dir={isRTL ? 'rtl' : 'ltr'}
                     style={{
-                        fontSize: '16px'
+                        textAlign: isRTL ? 'right' : 'left',
+                        direction: isRTL ? 'rtl' : 'ltr'
                     }}
-                />
-            )}
-        </div>
+                >
+                    <option value="">{getTranslation('select_brand', 'Selecciona una marca')}</option>
+                    <option value="otra">{getTranslation('other_brand', 'Otra marca...')}</option>
+                    {getFilteredBrands.map(marca => (
+                        <option key={marca} value={marca}>
+                            {marca}
+                        </option>
+                    ))}
+                </Form.Select>
+                
+                {/* 🔢 INPUT PARA OTRA MARCA */}
+                {safePostData.marca === "otra" && (
+                    <Form.Control
+                        type="text"
+                        name="marca"
+                        placeholder={getTranslation('write_brand', 'Escribe el nombre de la marca...')}
+                        onChange={handleChangeInput}
+                        className="mt-2"
+                        style={{
+                            textAlign: isRTL ? 'right' : 'left',
+                            direction: isRTL ? 'rtl' : 'ltr'
+                        }}
+                    />
+                )}
+            </Form.Group>
+        </Card>
     )
 }
 

@@ -14,8 +14,8 @@ const Garcons = ({ postData, handleChangeInput }) => {
           👦 {t('boys_clothing', 'Ropa para niños')}
         </Form.Label>
         <Form.Select
-          name="subCategory"
-          value={postData.subCategory}
+          name="tipoArticulo"
+          value={postData.tipoArticulo}
           onChange={handleChangeInput}
           className="form-control border-0 shadow-sm"
         >

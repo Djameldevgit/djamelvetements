@@ -22,8 +22,8 @@ const TennueProfesionelle = ({ postData, handleChangeInput }) => {
                 🎯 {t('uniform_type')}
               </Form.Label>
               <Form.Select
-                name="tipodelabata"
-                value={postData.tipodelabata}
+                name="tipoArticulo"
+                value={postData.tipoArticulo}
                 onChange={handleChangeInput}
                 className="form-control border-0 shadow-sm"
                 style={{ textAlign: isRTL ? 'right' : 'left' }}

@@ -1,14 +1,18 @@
+const mongoose = require('mongoose')
 const Posts = require('../models/postModel')
 const Comments = require('../models/commentModel')
 const Users = require('../models/userModel')
-const cloudinary = require('cloudinary').v2;
+const Vetement = require('../models/CategoriesModel/vetementModel')
+const Telephone = require('../models/CategoriesModel/TelephoneModel')
+const cloudinary = require('cloudinary').v2
 
 // Configurar Cloudinary
 cloudinary.config({
     cloud_name: 'dfjipgj2o',
     api_key: '213981915435275',
     api_secret: 'wv_IiCM9zzhdiWDNXXo8HZi7wX4'
-});
+})
+
 class APIfeatures {
     constructor(query, queryString){
         this.query = query;
@@ -25,7 +29,126 @@ class APIfeatures {
 }
 
 const postCtrl = {
+    
     createPost: async (req, res) => {
+        try {
+            const { postData, images } = req.body
+
+            // ✅ VALIDACIONES BÁSICAS
+            if (!images || images.length === 0) {
+                return res.status(400).json({msg: "Veuillez ajouter au moins une photo."})
+            }
+
+            if (!postData || !postData.category) {
+                return res.status(400).json({msg: "Les données du post sont incomplètes."})
+            }
+
+            if (!postData.subCategory) {
+                return res.status(400).json({msg: "La sous-catégorie est requise."})
+            }
+
+            // ✅ VALIDAR CATEGORÍAS PERMITIDAS
+            const validCategories = ['vetements', 'telephones'];
+            if (!validCategories.includes(postData.category)) {
+                return res.status(400).json({ 
+                    msg: `Catégorie invalide. Utilisez: ${validCategories.join(' ou ')}` 
+                })
+            }
+
+            // ✅ DETERMINAR EL MODELO ESPECÍFICO SEGÚN CATEGORÍA - CORREGIDO
+            let SpecificModel, modelRef;
+            
+            if (postData.category === 'vetements') {
+                SpecificModel = Vetement;
+                modelRef = 'vetement';
+            } else if (postData.category === 'telephones') {
+                SpecificModel = Telephone;
+                modelRef = 'telephone';
+            } else {
+                return res.status(400).json({msg: "Catégorie non reconnue."})
+            }
+
+            console.log(`🔍 Creando post para categoría: ${postData.category}`);
+            console.log(`🔍 Modelo específico: ${SpecificModel.modelName}`);
+            console.log(`🔍 Referencia: ${modelRef}`);
+
+            // ✅ VERIFICAR SI EL MODELO EXISTE
+            if (!SpecificModel) {
+                return res.status(500).json({msg: `Modèle ${postData.category} non trouvé`})
+            }
+
+            // ✅ CREAR MODELO ESPECÍFICO
+            const newSpecific = new SpecificModel({
+                ...postData,
+                user: req.user._id,
+                // Mantener el nombre del campo como en el modelo específico
+                subCategory: postData.subCategory || postData.subCategoryType
+            })
+            
+            console.log('🔍 Guardando modelo específico...');
+            const savedSpecific = await newSpecific.save();
+            console.log('✅ Modelo específico guardado:', savedSpecific._id);
+
+            // ✅ CREAR POST BASE
+            const newPost = new Posts({
+                ...postData,
+                images: images,
+                user: req.user._id,
+                [modelRef]: savedSpecific._id // ✅ REFERENCIA DINÁMICA CORRECTA
+            })
+
+            console.log('🔍 Guardando post base...');
+            const savedPost = await newPost.save();
+            console.log('✅ Post base guardado:', savedPost._id);
+
+            // ✅ ACTUALIZAR REFERENCIA EN EL MODELO ESPECÍFICO
+            savedSpecific.post = savedPost._id;
+            await savedSpecific.save();
+
+            console.log('✅ Referencia actualizada en modelo específico');
+
+            // ✅ POPULATE Y RESPUESTA
+            await savedPost.populate('user', 'avatar username followers');
+            await savedPost.populate(modelRef);
+
+            console.log('✅ Post populado correctamente');
+
+            res.json({
+                msg: 'Post créé avec succès!',
+                newPost: {
+                    ...savedPost.toObject(),
+                    specificData: savedPost[modelRef] // Incluir datos específicos
+                }
+            })
+
+        } catch (err) {
+            console.error('❌ Error en createPost:', err)
+            
+            // 🔹 ERRORES ESPECÍFICOS
+            if (err.name === 'ValidationError') {
+                const errors = Object.values(err.errors).map(e => e.message);
+                return res.status(400).json({
+                    msg: 'Erreurs de validation',
+                    errors
+                })
+            }
+            
+            if (err.code === 11000) {
+                return res.status(400).json({msg: 'Un post similaire existe déjà.'})
+            }
+            
+            return res.status(500).json({
+                msg: 'Erreur interne du serveur',
+                error: process.env.NODE_ENV === 'development' ? err.message : undefined
+            })
+        }
+    },
+    
+ 
+
+
+    
+ /*  createPost: async (req, res) => {
         try {
             const { postData, images } = req.body
     
@@ -72,7 +195,11 @@ const postCtrl = {
         }
     },
   
-   
+   */
+
+    
+
+
     likePost: async (req, res) => {
         try {
             const post = await Posts.find({_id: req.params.id, likes: req.user._id})
@@ -113,118 +240,74 @@ const postCtrl = {
 getPosts: async (req, res) => {
     try {
         const { 
-            subCategory, 
-            title,           // 🆕 Nombre del producto
-            talla,           // 🆕 Talla
-            genero,          // 🆕 Género
-            color,           // 🆕 Color
-            marca,           // 🆕 Marca
-            estado,          // 🆕 Estado/condición
-            minPrice,        // Precio mínimo
-            maxPrice,        // Precio máximo
-            sort
+            category,        // 🆕 Categoría principal (vetements, telephones)
+            subCategory,     // Subcategoría dinámica
+            tipoArticulo,    // 🆕 Tipo de artículo
+            limit,           // Para paginación
+            page            // Para paginación
         } = req.query;
 
         // 🔹 INICIALIZAR QUERY
         const query = {};
 
-        // 🔹 Filtros directos
+        // 🔹 FILTRO POR CATEGORÍA PRINCIPAL
+        if (category && category.trim() !== "") {
+            const categoryValue = category.trim().toLowerCase();
+            
+            // Validar que sea una categoría permitida
+            if (categoryValue === 'vetements' || categoryValue === 'telephones') {
+                query.category = categoryValue;
+            } else {
+                return res.status(400).json({ 
+                    msg: "Categoría no válida. Use 'vetements' o 'telephones'" 
+                });
+            }
+        }
+
+        // 🔹 FILTRO POR SUBCATEGORÍA
         if (subCategory && subCategory.trim() !== "") {
-            query.subCategory = { $regex: subCategory.trim(), $options: "i" };
-        }
-
-        // 🆕 BÚSQUEDA POR TÍTULO/NOMBRE DEL PRODUCTO
-        if (title && title.trim() !== "") {
-            const searchTitle = title.trim();
-            query.$or = query.$or || [];
-            query.$or.push(
-                { title: { $regex: searchTitle, $options: "i" } },
-                { description: { $regex: searchTitle, $options: "i" } },
-                { content: { $regex: searchTitle, $options: "i" } }
-            );
-        }
-
-        // 🆕 FILTRO POR TALLA
-        if (talla && talla.trim() !== "") {
-            const searchTalla = talla.trim();
-            query.$or = query.$or || [];
-            query.$or.push(
-                { talla: { $regex: searchTalla, $options: "i" } },
-                { tallaSaco: { $regex: searchTalla, $options: "i" } }
-            );
-        }
-
-        // 🆕 FILTRO POR GÉNERO
-        if (genero && genero.trim() !== "") {
-            query.genero = { $regex: genero.trim(), $options: "i" };
-        }
-
-        // 🆕 FILTRO POR COLOR
-        if (color && color.trim() !== "") {
-            const searchColor = color.trim();
-            query.$or = query.$or || [];
-            query.$or.push(
-                { color: { $regex: searchColor, $options: "i" } },
-                { tipocolor: { $regex: searchColor, $options: "i" } }
-            );
-        }
-
-        // 🆕 FILTRO POR MARCA
-        if (marca && marca.trim() !== "") {
-            query.marca = { $regex: marca.trim(), $options: "i" };
-        }
-
-        // 🆕 FILTRO POR ESTADO/CONDICIÓN
-        if (estado && estado.trim() !== "") {
-            query.etat = { $regex: estado.trim(), $options: "i" };
-        }
-
-        // 🆕 FILTRO POR RANGO DE PRECIOS - MEJORADO PARA ROPA
-        if (minPrice || maxPrice) {
-            const priceFilter = {};
+            const subCategoryValue = subCategory.trim();
             
-            if (minPrice) {
-                const min = parseFloat(minPrice);
-                if (!isNaN(min)) {
-                    priceFilter.$gte = min;
-                }
-            }
-            
-            if (maxPrice) {
-                const max = parseFloat(maxPrice);
-                if (!isNaN(max)) {
-                    priceFilter.$lte = max;
-                }
-            }
-            
-            // Solo aplicar filtro si hay precios válidos
-            if (Object.keys(priceFilter).length > 0) {
-                // Buscar en múltiples campos de precio para ropa
-                query.$or = query.$or || [];
-                query.$or.push(
-                    { price: priceFilter },
-                    { precioBase: priceFilter }
-                );
-            }
+            // Usar búsqueda case-insensitive
+            query.subCategory = { $regex: subCategoryValue, $options: "i" };
         }
 
-        // 🔥 Optimizar consulta si hay múltiples condiciones OR
+        // 🔹 FILTRO POR TIPO DE ARTÍCULO
+        if (tipoArticulo && tipoArticulo.trim() !== "") {
+            const tipoArticuloValue = tipoArticulo.trim();
+            
+            // Usar búsqueda case-insensitive
+            query.tipoArticulo = { $regex: tipoArticuloValue, $options: "i" };
+        }
+
+        // 🔥 CONSOLIDACIÓN DE QUERY (para evitar conflictos con $or)
+        // Si hay múltiples condiciones OR, se manejan correctamente
         if (query.$or && query.$or.length === 0) {
             delete query.$or;
         }
 
-        // 🔥 Mantener paginación con APIfeatures
-        const features = new APIfeatures(Posts.find(query), req.query).paginating();
+        console.log("🔍 Query de búsqueda:", JSON.stringify(query, null, 2));
+        console.log("📊 Parámetros recibidos:", { category, subCategory, tipoArticulo, limit, page });
 
-        // ✅ MANEJO DEL SORT
-        let sortOption = "-createdAt";
-        if (sort && sort === "-createdAt") {
-            sortOption = "-createdAt";
+        // 🔥 MANTENER PAGINACIÓN CON APIfeatures
+        // Clonar req.query para modificar el sort
+        const queryParams = { ...req.query };
+        
+        // Configurar orden por defecto (más recientes primero)
+        if (!queryParams.sort) {
+            queryParams.sort = "-createdAt";
         }
 
+        // Crear instancia de APIfeatures
+        const features = new APIfeatures(Posts.find(query), queryParams);
+
+        // 🔹 APLICAR PAGINACIÓN Y SORT
+        features.paginating();
+
+        // Ejecutar consulta con populación
         const posts = await features.query
-            .sort(sortOption)
-            .populate("user likes", "avatar username  mobile presentacion story:website address followers")
+            .sort(queryParams.sort)
+            .populate("user likes", "avatar username mobile presentacion story website address followers")
             .populate({
                 path: "comments",
                 populate: {
@@ -233,17 +316,39 @@ getPosts: async (req, res) => {
                 },
             });
 
+        // 🔹 CONTAR TOTAL DE DOCUMENTOS (para paginación)
+        const totalCount = await Posts.countDocuments(query);
+
+        // 🔹 CALCULAR PÁGINAS TOTALES
+        const itemsPerPage = parseInt(limit) || 9;
+        const currentPage = parseInt(page) || 1;
+        const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+        console.log("📈 Resultados paginados:", {
+            encontrados: posts.length,
+            total: totalCount,
+            paginaActual: currentPage,
+            totalPaginas: totalPages,
+            porPagina: itemsPerPage
+        });
+
         res.json({
             msg: "Success!",
             result: posts.length,
+            total: totalCount,
+            page: currentPage,
+            totalPages: totalPages,
             posts,
         });
+
     } catch (err) {
-        console.error("Error en getPosts:", err);
-        return res.status(500).json({ msg: err.message });
+        console.error("❌ Error en getPosts:", err);
+        return res.status(500).json({ 
+            msg: "Error al obtener posts", 
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+        });
     }
 },
-
     getUserPosts: async (req, res) => {
         try {
             const features = new APIfeatures(Posts.find({user: req.params.id}), req.query)

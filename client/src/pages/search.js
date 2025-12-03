@@ -5,13 +5,9 @@ import { getDataAPI } from "../utils/fetchData";
 import Posts from "../components/home/Posts";
 import LoadIcon from "../images/loading.gif";
 
-// 🔷 COMPONENTES ESENCIALES SOLO PARA BÚSQUEDA
-import CategorySelector from '../components/forms/searchh/CategorySelector';
-import Talla from '../components/forms/vetements/Talla';
- 
-import Estado from '../components/forms/vetements/Estado';
-import Color from '../components/forms/vetements/Color';
-import Marca from '../components/forms/vetements/Marca';
+// 🔷 COMPONENTES ESENCIALES PARA BÚSQUEDA
+import SubCategoryTelephone from '../components/forms/Telephone/SubCategoryTelephone';
+import SubCategoryVetements from '../components/forms/vetements/SubCategoryVetements';
 
 import {
   Container,
@@ -40,18 +36,12 @@ export default function SearchPage() {
     }
   }, [languageReducer?.language, i18n]);
 
-  // 🔹 Estados para filtros de ropa - OPTIMIZADOS
+  // 🔹 Estados para filtros SIMPLIFICADOS
   const [filters, setFilters] = useState({
-    category: "",        // 🔥 NUEVO: Para manejar categoría principal
-    subCategory: "",    
-    talla: "",
-    
-    color: "",
-    marca: "",
-    estado: "",
-    minPrice: "",
-    maxPrice: "",
-    latest: false       
+    category: "",        // vetements o telephones
+    subCategory: "",    // Subcategoría dinámica según categoría
+    tipoArticulo: "",   // Tipo de artículo
+    latest: false       // Últimos productos
   });
 
   const [loading, setLoading] = useState(false);
@@ -69,17 +59,11 @@ export default function SearchPage() {
     try {
       const queryParams = new URLSearchParams();
       
-      // 🔥 INCLUIR CATEGORÍA PRINCIPAL EN BÚSQUEDA
+      // 🔥 SOLO 3 FILTROS PRINCIPALES
       if (filters.category.trim()) queryParams.append('category', filters.category.trim());
       if (filters.subCategory.trim()) queryParams.append('subCategory', filters.subCategory.trim());
-  
-      if (filters.talla.trim()) queryParams.append('talla', filters.talla.trim());
-     
-      if (filters.color.trim()) queryParams.append('color', filters.color.trim());
-      if (filters.marca.trim()) queryParams.append('marca', filters.marca.trim());
-      if (filters.estado.trim()) queryParams.append('estado', filters.estado.trim());
-      if (filters.minPrice.trim()) queryParams.append('minPrice', filters.minPrice.trim());
-      if (filters.maxPrice.trim()) queryParams.append('maxPrice', filters.maxPrice.trim());
+      if (filters.tipoArticulo.trim()) queryParams.append('tipoArticulo', filters.tipoArticulo.trim());
+      
       if (filters.latest) queryParams.append('sort', '-createdAt');
       
       const queryString = queryParams.toString();
@@ -103,13 +87,7 @@ export default function SearchPage() {
       latest: true,
       category: "",
       subCategory: "",
-      talla: "",
- 
-      color: "",
-      marca: "",
-      estado: "",
-      minPrice: "",
-      maxPrice: ""
+      tipoArticulo: ""
     }));
   };
 
@@ -127,8 +105,18 @@ export default function SearchPage() {
       latest: false // Desactivar latest cuando se usan otros filtros
     }));
 
+    // 🔥 RESETEAR SUBCATEGORÍA Y TIPOARTICULO CUANDO CAMBIA CATEGORÍA
+    if (field === 'category') {
+      setFilters(prev => ({
+        ...prev,
+        subCategory: "",
+        tipoArticulo: "",
+        latest: false
+      }));
+    }
+
     // 🔥 BUSCAR AUTOMÁTICAMENTE AL SELECCIONAR CATEGORÍA/SUBCATEGORÍA
-    if (field === 'category' || field === 'subCategory') {
+    if (field === 'category' || field === 'subCategory' || field === 'tipoArticulo') {
       setTimeout(() => handleSearch(), 300);
     }
   };
@@ -138,13 +126,7 @@ export default function SearchPage() {
     setFilters({
       category: "",
       subCategory: "",
-      talla: "",
- 
-      color: "",
-      marca: "",
-      estado: "",
-      minPrice: "",
-      maxPrice: "",
+      tipoArticulo: "",
       latest: false
     });
     setResults([]);
@@ -152,48 +134,64 @@ export default function SearchPage() {
     setShowAdvancedSearch(false);
   };
 
-  // 🔹 Contador de filtros activos
-  const activeFiltersCount = [
-    filters.category,
-    filters.subCategory,
-    filters.talla,
- 
-    filters.color,
-    filters.marca,
-    filters.estado,
-    filters.minPrice,
-    filters.maxPrice,
-    filters.latest
-  ].filter(Boolean).length;
-
-  // 🔥 COMPONENTES DE FORMULARIO DINÁMICOS
-  const renderFormComponent = (component, props = {}) => {
-    const componentProps = {
+  // 🔹 Renderizar componente de subcategoría según categoría seleccionada
+  const renderSubCategoryComponent = () => {
+    const props = {
       postData: filters,
       handleChangeInput: (e) => {
         const fieldName = e.target.name;
         const value = e.target.value;
         updateFilter(fieldName, value);
-      },
-      ...props
+      }
     };
 
-    switch (component) {
-      case 'CategorySelector':
-        return <CategorySelector {...componentProps} />;
-      case 'Talla':
-        return <Talla {...componentProps} />;
-    
-      case 'Estado':
-        return <Estado {...componentProps} />;
-      case 'Color':
-        return <Color {...componentProps} />;
-      case 'Marca':
-        return <Marca {...componentProps} />;
+    switch (filters.category) {
+      case 'vetements':
+        return <SubCategoryVetements {...props} />;
+      case 'telephones':
+        return <SubCategoryTelephone {...props} />;
       default:
         return null;
     }
   };
+
+  // 🔹 Renderizar opciones de tipoArticulo según categoría
+  const renderTipoArticuloOptions = () => {
+    // Esto depende de cómo tengas configurado el campo tipoArticulo en tu backend
+    // Aquí te pongo un ejemplo básico
+    const options = {
+      vetements: ['Nuevo', 'Usado', 'Vintage', 'Colección'],
+      telephones: ['Nuevo', 'Seminuevo', 'Usado', 'Reacondicionado'],
+      default: ['Nuevo', 'Usado']
+    };
+
+    const currentOptions = options[filters.category] || options.default;
+
+    return (
+      <Form.Select
+        name="tipoArticulo"
+        value={filters.tipoArticulo}
+        onChange={(e) => updateFilter('tipoArticulo', e.target.value)}
+        size="sm"
+        disabled={!filters.category}
+      >
+        <option value="">{t('labels.selectType', 'Tipo de artículo')}</option>
+        {currentOptions.map((option, index) => (
+          <option key={index} value={option.toLowerCase()}>
+            {option}
+          </option>
+        ))}
+      </Form.Select>
+    );
+  };
+
+  // 🔹 Contador de filtros activos
+  const activeFiltersCount = [
+    filters.category,
+    filters.subCategory,
+    filters.tipoArticulo,
+    filters.latest
+  ].filter(Boolean).length;
 
   return (
     <Container fluid className="px-0" dir={isRTL ? "rtl" : "ltr"}>
@@ -202,26 +200,59 @@ export default function SearchPage() {
         <Card.Body className="p-3">
           <Form onSubmit={handleSearch}>
             
-            {/* 🆕 FILA 1: CATEGORÍA + SUBCATEGORÍA EN MISMA FILA */}
+            {/* 🆕 FILA 1: CATEGORÍA + SUBCATEGORÍA + TIPOARTICULO */}
             <Row className={`g-3 align-items-start ${isRTL ? 'flex-row-reverse' : ''}`}>
               
-              {/* 🔥 COLUMNA IZQUIERDA - CATEGORÍA PRINCIPAL */}
-       
+              {/* 🔥 COLUMNA 1 - CATEGORÍA PRINCIPAL */}
+              <Col xl={3} lg={3} md={4} sm={6}>
                 <Form.Group>
                   <Form.Label className="small fw-semibold mb-2">
                     📂 {t('labels.mainCategory', 'Categoría Principal')}
                   </Form.Label>
-                  {renderFormComponent('CategorySelector')}
+                  <Form.Select
+                    name="category"
+                    value={filters.category}
+                    onChange={(e) => updateFilter('category', e.target.value)}
+                    size="sm"
+                  >
+                    <option value="">{t('labels.selectCategory', 'Seleccionar categoría')}</option>
+                    <option value="vetements">👕 {t('categories.clothing', 'Vestimenta')}</option>
+                    <option value="telephones">📱 {t('categories.phones', 'Teléfonos')}</option>
+                  </Form.Select>
                 </Form.Group>
-             
- 
+              </Col>
+
+              {/* 🔥 COLUMNA 2 - SUBCATEGORÍA DINÁMICA */}
+              <Col xl={3} lg={3} md={4} sm={6}>
+                <Form.Group>
+                  <Form.Label className="small fw-semibold mb-2">
+                    🏷️ {t('labels.subCategory', 'Subcategoría')}
+                  </Form.Label>
+                  {filters.category ? (
+                    renderSubCategoryComponent()
+                  ) : (
+                    <Form.Select disabled size="sm">
+                      <option>{t('labels.selectCategoryFirst', 'Selecciona categoría primero')}</option>
+                    </Form.Select>
+                  )}
+                </Form.Group>
+              </Col>
+
+              {/* 🔥 COLUMNA 3 - TIPO DE ARTÍCULO */}
+              <Col xl={3} lg={3} md={4} sm={6}>
+                <Form.Group>
+                  <Form.Label className="small fw-semibold mb-2">
+                    🏷️ {t('labels.itemType', 'Tipo de artículo')}
+                  </Form.Label>
+                  {renderTipoArticuloOptions()}
+                </Form.Group>
+              </Col>
 
             </Row>
 
             {/* 🆕 FILA 2: BÚSQUEDA AVANZADA Y BOTONES */}
             <Row className={`g-2 align-items-end mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
               
-           
               {/* BOTONES DE ACCIÓN */}
               <Col xl={4} lg={4} md={6} sm={12}>
                 <div className={`d-flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -290,79 +321,16 @@ export default function SearchPage() {
               <div className="mt-3 pt-3 border-top">
                 <Row className={`g-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   
-                  {/* TALLA */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.size', 'Talla')}
-                      </Form.Label>
-                      {renderFormComponent('Talla')}
-                    </Form.Group>
+                  {/* INFORMACIÓN ADICIONAL */}
+                  <Col xl={12} lg={12} md={12} sm={12}>
+                    <Alert variant="info" className="py-2 mb-0">
+                      <small>
+                        <i className={`fas fa-info-circle ${isRTL ? "ms-2" : "me-2"}`}></i>
+                        {t('messages.advancedSearchInfo', 'Actualmente los filtros están simplificados a categoría, subcategoría y tipo de artículo para una mejor experiencia.')}
+                      </small>
+                    </Alert>
                   </Col>
 
-                  {/* COLOR */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.color', 'Color')}
-                      </Form.Label>
-                      {renderFormComponent('Color')}
-                    </Form.Group>
-                  </Col>
-
-                  {/* MARCA */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.brand', 'Marca')}
-                      </Form.Label>
-                      {renderFormComponent('Marca')}
-                    </Form.Group>
-                  </Col>
-
-                  {/* ESTADO */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.condition', 'Estado')}
-                      </Form.Label>
-                      {renderFormComponent('Estado')}
-                    </Form.Group>
-                  </Col>
-
-                  {/* PRECIO MÍN */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.minPrice', 'Precio Min')}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="Min"
-                        value={filters.minPrice}
-                        onChange={(e) => updateFilter('minPrice', e.target.value)}
-                        size="sm"
-                        min="0"
-                      />
-                    </Form.Group>
-                  </Col>
-
-                  {/* PRECIO MÁX */}
-                  <Col xl={2} lg={2} md={4} sm={6}>
-                    <Form.Group>
-                      <Form.Label className="small fw-semibold mb-1">
-                        {t('labels.maxPrice', 'Precio Max')}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        placeholder="Max"
-                        value={filters.maxPrice}
-                        onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                        size="sm"
-                        min={filters.minPrice || "0"}
-                      />
-                    </Form.Group>
-                  </Col>
                 </Row>
               </div>
             </Collapse>
@@ -377,26 +345,25 @@ export default function SearchPage() {
                   
                   {filters.category && (
                     <Badge bg="primary" className={isRTL ? "ms-1 mb-1" : "me-1 mb-1"}>
-                      Cat: {filters.category}
+                      📂 {filters.category === 'vetements' ? '👕 Vestimenta' : '📱 Teléfonos'}
                     </Badge>
                   )}
                   
                   {filters.subCategory && (
                     <Badge bg="info" className={isRTL ? "ms-1 mb-1" : "me-1 mb-1"}>
-                      Sub: {filters.subCategory}
+                      🏷️ {filters.subCategory}
                     </Badge>
                   )}
-                
-                  {filters.talla && (
+                  
+                  {filters.tipoArticulo && (
                     <Badge bg="warning" className={isRTL ? "ms-1 mb-1" : "me-1 mb-1"}>
-                      Talla: {filters.talla}
+                      🏷️ {filters.tipoArticulo}
                     </Badge>
                   )}
-               
                   
                   {filters.latest && (
                     <Badge bg="secondary" className={isRTL ? "ms-1 mb-1" : "me-1 mb-1"}>
-                      Últimos
+                      ⏰ Últimos
                     </Badge>
                   )}
                 </div>
